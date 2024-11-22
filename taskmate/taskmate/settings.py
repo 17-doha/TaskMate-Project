@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-SITE_ID = 2
+SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = [
@@ -152,5 +152,5 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend'
 )
 
-LOGIN_REDIRECT_URL = '/main'
+LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
