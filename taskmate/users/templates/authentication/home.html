@@ -1,0 +1,253 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+  <title>TaskMate Login</title>
+  <style>
+    /* styles.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  display: flex;
+  width: 90%;
+  max-width: 1200px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.left-section {
+  flex: 1;
+  background-color: #fff;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+}
+
+.left-section h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.left-section p {
+  color: #666;
+  line-height: 1.6;
+}
+
+.login-form label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.forgot-password {
+  text-align: center;
+  display: block;
+  margin-bottom: 20px;
+  color: #5030E5;
+  text-decoration: none;
+}
+
+.sign-in-button {
+  width: 100%;
+  background-color: rgba(130, 104, 249, 0.72);
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.divider {
+  text-align: center;
+  margin: 20px 0;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.social-login button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  
+}
+
+
+.google-button {
+  background-color: white;
+}
+
+.facebook-button {
+  background-color: #4267B2;
+  color: white;
+}
+
+.signup-prompt {
+  text-align: center;
+  color: #666;
+}
+
+.signup-prompt a {
+  color: #6c63ff;
+  text-decoration: none;
+}
+
+.right-section {
+  flex: 1;
+  background-color: #f3eefc;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  text-align: center;
+}
+
+.right-section img {
+  max-width: 100%;
+  height: auto;
+}
+
+.logo {
+  font-size: 2rem;
+  margin-top: 20px;
+  color: #6c63ff;
+}
+
+/* Add a transition effect to all buttons for smooth hover behavior */
+button {
+  transition: all 0.3s ease-in-out;
+}
+
+/* Hover effect for the Sign In button */
+.sign-in-button:hover {
+  background-color: rgba(130, 104, 249, 1); /* Slightly darker shade for hover */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+  transform: translateY(-3px); /* Slight lift effect */
+}
+
+/* Hover effect for social login buttons */
+.social-login button:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+  transform: translateY(-3px); /* Slight lift effect */
+}
+
+/* Hover effect for the Google button */
+.google-button:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+  transform: translateY(-3px); /* Slight lift effect */
+}
+
+/* Hover effect for the Facebook button */
+.facebook-button:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+  transform: translateY(-3px); /* Slight lift effect */
+}
+
+/* Hover effect for the Forgot Password link */
+.forgot-password:hover {
+  color: #3b1cc6; /* Change the color on hover */
+  text-decoration: underline; /* Underline the text */
+}
+
+.alert-container {
+    position: absolute;
+    top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 10;
+}
+
+.alert {
+    width: 50%;
+    font-size: 1rem;
+}
+
+
+
+  </style>
+</head>
+<body>
+  {% load socialaccount %}
+  <div class="container">
+    <div class="left-section">
+      <h1>Welcome Back 👋</h1>
+      <p>Today is a new day. It's your day. You shape it.<br>Sign in to start managing your tasks.</p>
+      <form class="login-form" method="POST" >
+        {% csrf_token %}
+        <label for="email">Email</label>
+        <input type="text" name="email" placeholder="Example@email.com" required>
+        
+        <label for="password">Password</label>
+        <input type="password" name="password" placeholder="at least 8 characters" required>
+        
+        <a href="#" class="forgot-password">Forgot Password?</a>
+        
+        <button type="submit" class="sign-in-button">Sign in</button>
+      </form>
+      
+      <div class="divider">Or</div>
+      <div class="social-login">
+        <a href="{% provider_login_url 'google' %}?next=/">
+          <button class="google-button">
+            <i class="fab fa-google"></i> Sign in with Google
+          </button>
+        </a>
+        <button class="facebook-button">
+          <i class="fab fa-facebook-f"></i> Sign in with Facebook
+        </button>
+      </div>
+      
+      
+      <p class="signup-prompt">
+        Don't you have an account? <a href="#">Sign up</a>
+      </p>
+    </div>
+    
+    <div class="right-section">
+      <img src="illustration.png" alt="TaskMate Illustration">
+      <h2 class="logo">TaskMate</h2>
+    </div>
+  </div>
+</body>
+</html>
+
+
+{% endblock %}
+
