@@ -2,36 +2,38 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth import logout
 from .models import Login
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 
 
 def login_user(request):
-    # Get email and password from the POST request
-    email = request.POST.get('email')  # Strip spaces from email
-    password = request.POST.get('password')
+    if request.method == 'POST':
+        # Get email and password from the POST request
+        email = request.POST.get('email')
+        password = request.POST.get('password')
 
-    print(f"Email from form: {email}")  # Debugging line
+        print(f"Email from form: {email}")  # Debugging line
 
-    # Perform the exact match query for the email (case-sensitive)
-    try:
-        user = Login.objects.get(email=email)  # This ensures exact match for email
-        print(f"User found: {user.email}")  # Debugging line
+        # Perform the exact match query for the email
+        try:
+            user = Login.objects.get(email=email)
+            print(f"User found: {user.email}")  # Debugging line
+
+            # Compare the password (assuming plain-text comparison)
+            if password == user.password:
+                print("Validated")
+                messages.success(request, "Successfully logged in")
+                return redirect('main')
+            else:
+                print("Incorrect password")
+                messages.error(request, "Incorrect password. Please try again.")
         
-        # Directly compare the password (since we're not hashing)
-        if password == user.password:  # Compare plain-text passwords
-            print("Validated")
-            messages.success(request, "Successfully logged in")
-            return redirect('main')  # Redirect to main page
-        else:
-            print("Not validated - Incorrect password")
-            messages.error(request, "Incorrect password")
-    
-    except Login.DoesNotExist:
-        print(f"Email {email} not found")
-        messages.error(request, "Email not found")
+        except Login.DoesNotExist:
+            print(f"Email {email} not found")
+            messages.error(request, "Email not correct. Please check your input.")
 
     return render(request, 'authentication/home.html')
-
 
 
 
@@ -50,3 +52,9 @@ def home(request):
 def logout_view(request):
     logout(request)
     return redirect('/')
+
+
+
+@login_required
+def google_redirect(request):
+    return render(request, 'your_app/google_redirect.html')

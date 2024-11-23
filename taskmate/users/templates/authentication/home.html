@@ -1,6 +1,7 @@
+
 {% extends 'base.html' %}
 {% block content %}
-
+{% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -26,6 +27,12 @@ body {
   align-items: center;
   height: 100vh;
 }
+.curved-image {
+      width: 700px; /* Adjust size as needed */
+      height: auto;
+      border-radius: 20px; /* This makes the edges curved */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for depth */
+    }
 
 .container {
   display: flex;
@@ -198,6 +205,73 @@ button {
     width: 50%;
     font-size: 1rem;
 }
+.alert-container {
+  position: absolute;
+  top: 20px;
+  left:0px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.alert {
+  padding: 15px 20px;
+  font-size: 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 90%;
+  animation: slide-down 0.5s ease-out;
+}
+
+.alert.error {
+  background-color: #f8d7da;
+  color: #842029;
+  border: 1px solid #f5c2c7;
+}
+
+.alert.success {
+  background-color: #d1e7dd;
+  color: #0f5132;
+  border: 1px solid #badbcc;
+}
+
+.alert i {
+  font-size: 1.2rem;
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* New slide-up animation */
+@keyframes slide-up {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+/* Style for alerts during slide-up */
+.alert.hide {
+  animation: slide-up 0.5s ease-out forwards;
+}
+
+
 
 
 
@@ -205,7 +279,17 @@ button {
 </head>
 <body>
   {% load socialaccount %}
+
   <div class="container">
+    <div class="alert-container">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert {% if message.tags %}{{ message.tags }}{% endif %}">
+            <i class="fas fa-exclamation-circle"></i> {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
     <div class="left-section">
       <h1>Welcome Back 👋</h1>
       <p>Today is a new day. It's your day. You shape it.<br>Sign in to start managing your tasks.</p>
@@ -241,10 +325,31 @@ button {
     </div>
     
     <div class="right-section">
-      <img src="illustration.png" alt="TaskMate Illustration">
+      <img src="{% static 'imgs/login.jpeg' %}" alt="Login Image"  class="curved-image">
+
       <h2 class="logo">TaskMate</h2>
     </div>
   </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const alerts = document.querySelectorAll('.alert');
+  
+      alerts.forEach(alert => {
+        // Set a timeout to slide up and remove the alert
+        setTimeout(() => {
+          alert.classList.add('hide'); // Trigger the slide-up animation
+        }, 1500); // Show alert for 3 seconds
+  
+        // Remove the alert element after the animation completes
+        alert.addEventListener('animationend', () => {
+          if (alert.classList.contains('hide')) {
+            alert.remove();
+          }
+        });
+      });
+    });
+  </script>
+  
 </body>
 </html>
 
