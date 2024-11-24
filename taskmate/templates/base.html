@@ -1,0 +1,172 @@
+{%load static%}
+<link rel="stylesheet" href="{%static 'css/styles.css' %}">
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskMate Dashboard</title>
+  <link rel="stylesheet" href="{%static 'css/styles.css' %}">
+  <!-- Add Font Awesome for Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+  <!-- Internal Styles (Correctly placed in <head>) -->
+  <style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        height: 100vh;
+        background: #f9fafb;
+    }
+    
+    .dashboard {
+        display: flex;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+    }
+
+    /* navbar.css */
+    header.navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #ddd;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .search-bar {
+        flex-grow: 1;
+        margin-right: 20px;
+    }
+    
+    .search-bar input {
+        width: 95%;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+    
+    .search-bar input:focus {
+        border-color: #3b82f6;
+        outline: none;
+        box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+    }
+
+    /* Fix for spacing between icons */
+    .navbar-right {
+        display: flex;
+        align-items: center;
+    }
+
+    .user-actions {
+        display: flex;
+        gap: 30px; /* Increased space between icons */
+        align-items: center; /* Ensure vertical alignment of icons */
+    }
+
+    .user-actions i {
+        font-size: 20px;
+        color: #333;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .user-actions i:hover {
+        color: #3b82f6;
+    }
+
+    /* sidebar.css */
+    .sidebar {
+        width: 15%;
+        background: #ffffff;
+        padding: 20px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        border-right: 2px solid #e0e0e0;
+    }
+
+    .sidebar h1.logo {
+        font-size: 24px;
+        font-weight: bold;
+        color: #3b82f6;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+    }
+
+    .sidebar .menu {
+        list-style: none;
+        padding: 0;
+    }
+
+    .sidebar .menu li {
+        padding: 10px 0;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .sidebar .menu li.active {
+        font-weight: bold;
+        color: #3b82f6;
+    }
+
+    .sidebar .menu li:hover {
+        color: #3b82f6;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h1 class="logo">TaskMate</h1>
+      <nav>
+        <ul class="menu">
+          <li class="active">Home</li>
+          <li class="profile">Profile</li>
+          <li class="environments">
+            <a href="javascript:void(0);">Environments <i class="fas fa-caret-down"></i></a>
+            <ul class="dropdown">
+              <li class="environment">Mobile App</li>
+              <li>Design System</li>
+              <li>Website Redesign</li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="navbar">
+        <div class="search-bar">
+          <input type="text" placeholder="Search for a task or an environment...">
+        </div>
+        <div class="navbar-right">
+          <div class="user-actions">
+            <i class="fas fa-adjust theme-toggle-icon"></i>
+            <i class="fas fa-bell notification-icon"></i>
+            <i class="fas fa-user-circle profile-icon"></i>
+          </div>
+        </div>
+      </header>
+      
+      <!-- Block for child content -->
+      {% block content %}
+      {% endblock %}
+    </main>
+  </div>
+</body>
+</html>
