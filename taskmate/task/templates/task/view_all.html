@@ -1,0 +1,25 @@
+<h1>All Tasks</h1>
+
+{% if tasks %}
+    <ul>
+        {% for task in tasks %}
+            <li>
+                <h2>{{ task.content }}</h2>
+                <p>Status: {{ task.status }}</p>
+                <p>Priority: {{ task.priority }}</p>
+                <p>Deadline: {{ task.deadline }}</p>
+
+                {% if task.assigned %}
+                    <p>Assigned to: {{ task.assigned_id.user }}</p>
+                {% else %}
+                    <p>This task is not assigned.</p>
+                {% endif %}
+
+                <a href="{% url 'task:edit_task' task.task_id %}" class="btn btn-primary">Edit</a>
+                <a href="{% url 'task:delete_task' task.task_id %}" class="btn btn-danger">Delete</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No tasks available.</p>
+{% endif %}
