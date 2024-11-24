@@ -23,9 +23,8 @@ def login_user(request):
             # Compare the password (assuming plain-text comparison)
             if password == user.password:
                 print("Validated")
-                messages.success(request, "Successfully logged in")
                 return redirect('main')
-            else:
+            elif password != user.password:
                 print("Incorrect password")
                 messages.error(request, "Incorrect password. Please try again.")
         
