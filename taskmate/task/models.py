@@ -23,15 +23,17 @@ class Task(models.Model):
         (HIGH, 'High'),
     ]
     
+    # SQL table content
     task_id = models.AutoField(primary_key=True)
     content = models.TextField()  
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
     deadline = models.DateTimeField()  
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default=MEDIUM)
-    # table = models.ForeignKey(Table, on_delete=models.CASCADE)  
-    created_by = models.ForeignKey(User, related_name='created_tasks', on_delete=models.CASCADE)
-    assigned = models.ForeignKey(User, related_name='assigned_tasks', on_delete=models.CASCADE, null=True, blank=True)
+    # table = models.ForeignKey(Table, on_delete=models.CASCADE)   # refrence Table when created un hash
+    created_by = models.ForeignKey(User, related_name='created_tasks', on_delete=models.CASCADE) # refrence User
+    assigned = models.ForeignKey(User, related_name='assigned_tasks', on_delete=models.CASCADE, null=True, blank=True) # refrence User
 
+    # return str of content of table
     def __str__(self):
         return self.content
 
