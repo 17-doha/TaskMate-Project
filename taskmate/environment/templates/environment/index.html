@@ -1,0 +1,227 @@
+{%extends 'base.html'%}
+{% block content %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TaskMate Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Add Font Awesome for Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    /* General Styles */
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        height: 100vh;
+        background: #f9fafb;
+    }
+
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+    }
+
+    /* Task Board */
+    .board {
+        flex: 1;
+        padding: 20px;
+        display: flex;
+        gap: 20px;
+        transition: transform 0.3s ease;
+    }
+
+    .columns {
+        display: flex;
+        gap: 20px;
+        width: 100%;
+    }
+
+    /* Columns */
+    .column {
+        background: #f7f7f8;
+        border-radius: 8px;
+        flex: 1;
+        padding: 20px;
+        position: relative;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .column:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .column-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .column h3 {
+        font-size: 20px;
+        font-weight: bold;
+        margin: 0;
+        color: #333;
+    }
+
+    .add-task {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent; /* Transparent background */
+        color: #083b0d; /* Text and icon color */
+        padding: 8px 12px; /* Balanced padding for button size */
+        border: none; /* Remove border */
+        border-radius: 4px; /* Optional slight rounding, set to 0 for sharp edges */
+        font-size: 14px; /* Slightly smaller font for clean look */
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease; /* Smooth transition for hover effects */
+    }
+
+    .add-task:hover {
+        background: rgba(156, 197, 182, 0.5); /* Add a subtle hover effect */
+    }
+
+    .add-task i {
+        margin-right: 6px; /* Spacing between the "+" icon and text */
+        font-size: 16px; /* Icon size */
+    }
+
+    .column-bar {
+        height: 5px;
+        width: 100%;
+        border-radius: 4px;
+        margin-bottom: 15px;
+    }
+
+    .column-bar.low {
+        background: #10b981;
+    }
+
+    .column-bar.medium {
+        background: #f59e0b;
+    }
+
+    .column-bar.high {
+        background: #ef4444;
+    }
+
+    /* Task Cards */
+    .task-card {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 10px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .task-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .task-card h4 {
+        margin: 5px 0;
+    }
+
+    .task-card .label {
+        display: inline-block;
+        font-size: 12px;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 4px;
+    }
+
+    .label.low {
+        background: #10b981;
+    }
+
+    .label.medium {
+        background: #f59e0b;
+    }
+
+    .label.high {
+        background: #ef4444;
+    }
+
+    /* Column Hover Effect */
+    .column:hover {
+        background-color: #eef2f7;
+    }
+
+  </style>
+</head>
+<body>
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Board Content -->
+    <section class="board">
+      <div class="columns">
+        <!-- Low Priority Column -->
+        <div class="column" id="low" ondrop="drop(event)" ondragover="allowDrop(event)">
+          <div class="column-header">
+            <h3>To Do</h3>
+            <button class="add-task">
+              <i class="fas fa-plus"></i> Add Task
+            </button>
+          </div>
+          <div class="column-bar low"></div>
+          <div class="task-card" draggable="true" ondragstart="drag(event)" id="task1">
+            <p class="label low">Low</p>
+            <h4>Brainstorming</h4>
+            <p>Brainstorming ideas for members' diverse opinions.</p>
+          </div>
+          <div class="task-card" draggable="true" ondragstart="drag(event)" id="task2">
+            <p class="label low">Low</p>
+            <h4>Moodboard</h4>
+            <p>Creating a moodboard for project visuals.</p>
+          </div>
+        </div>
+
+        <!-- Medium Priority Column -->
+        <div class="column" id="medium" ondrop="drop(event)" ondragover="allowDrop(event)">
+          <div class="column-header">
+            <h3>On Progress</h3>
+          </div>
+          <div class="column-bar medium"></div>
+          <div class="task-card" draggable="true" ondragstart="drag(event)" id="task3">
+            <p class="label medium">Medium</p>
+            <h4>Onboarding Illustrations</h4>
+            <p>Designing illustrations for onboarding screens.</p>
+          </div>
+        </div>
+
+        <!-- High Priority Column -->
+        <div class="column" id="high" ondrop="drop(event)" ondragover="allowDrop(event)">
+          <div class="column-header">
+            <h3>Done</h3>
+          </div>
+          <div class="column-bar high"></div>
+          <div class="task-card" draggable="true" ondragstart="drag(event)" id="task4">
+            <p class="label high">High</p>
+            <h4>Research</h4>
+            <p>User research to create a solid product base.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+{% endblock %}
