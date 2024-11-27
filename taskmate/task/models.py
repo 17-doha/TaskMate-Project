@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from environment.models import Environment
 
 class Task(models.Model):
     # Constants for task status and priority
@@ -32,6 +33,7 @@ class Task(models.Model):
     # table = models.ForeignKey(Table, on_delete=models.CASCADE)   # refrence Table when created un hash
     created_by = models.ForeignKey(User, related_name='created_tasks', on_delete=models.CASCADE) # refrence User
     assigned = models.ForeignKey(User, related_name='assigned_tasks', on_delete=models.CASCADE, null=True, blank=True) # refrence User
+    environment_id = models.ForeignKey(Environment, related_name='tasks', on_delete=models.CASCADE, null=True, blank=True) # refrence Environment
 
     # return str of content of table
     def __str__(self):
