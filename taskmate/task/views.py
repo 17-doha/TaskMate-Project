@@ -25,7 +25,9 @@ def EditTask(request, id):
             return redirect('task:view_all_tasks')
     else:
         form = TaskEditForm(instance=task)
-    return render(request, 'task/edit_task.html', {'form': form})
+
+    users = User.objects.all()
+    return render(request, 'task/edit_task.html', {'form': form, 'task': task, 'users': users})
 
 
 # A view to delete tasks on immediate click 
