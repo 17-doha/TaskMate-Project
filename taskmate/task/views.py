@@ -1,6 +1,9 @@
 from django.shortcuts import render,get_object_or_404, redirect
 from .models import Task
-from .forms import TaskForm  
+from .forms import TaskEditForm, TaskCreateForm
+from django.contrib.auth.models import User
+from environment.models import Environment
+from django.contrib import messages
 
 #A view to show all tasks with the edit and delete buttons
 def ViewAllTasks(request):
@@ -16,12 +19,12 @@ def ViewAllTasks(request):
 def EditTask(request, id):
     task = get_object_or_404(Task, task_id=id)
     if request.method == 'POST':
-        form = TaskForm(request.POST, instance=task)
+        form = TaskEditForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
             return redirect('task:view_all_tasks')
     else:
-        form = TaskForm(instance=task)
+        form = TaskEditForm(instance=task)
     return render(request, 'task/edit_task.html', {'form': form})
 
 
@@ -30,3 +33,27 @@ def DeleteTask(request, id):
     task = get_object_or_404(Task, task_id=id)
     task.delete()
     return redirect('task:view_all_tasks')
+
+def CreateTask(request):
+    if request.method == "POST":
+        # Create a form instance 
+        form = TaskCreateForm(request.POST)
+        
+        if form.is_valid():
+            # If the form is valid save the new task
+            task = form.save(commit=False)
+            task.created_by = request.user  # Automatically assign the logged-in user as the creator
+            task.save()
+            messages.success(request, 'Task created successfully!')
+            return redirect('task:view_all_tasks') 
+        else:
+            messages.error(request, 'There was an error creating the task. Please try again.')
+
+    # Get all users and environments to choose from
+    users = User.objects.all()
+    environments = Environment.objects.all()
+
+    return render(request, 'task/create_task.html', {
+        'users': users,
+        'environments': environments
+    })
