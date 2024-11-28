@@ -19,11 +19,12 @@
     border: 1px solid #ddd;
     padding: 10px;
 }
-.btn-primary {
+.btn-basic {
     background-color: #6f42c1;
     border-color: #6f42c1;
+    color:white;
 }
-.btn-secondary {
+.btn-second {
     background-color: #e0e0e0;
     border-color: #e0e0e0;
 }
