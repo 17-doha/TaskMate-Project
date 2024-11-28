@@ -1,0 +1,94 @@
+
+
+{% block content %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+  <title>TaskMate Login</title>
+
+</head>
+<body>
+  {% load socialaccount %}
+
+  <div class="container">
+    <div class="alert-container">
+      {% if messages %}
+        {% for message in messages %}
+          {% if message.tags != "success" or "Successfully login" not in message %}
+            <div class="alert {% if message.tags %}{{ message.tags }}{% endif %}">
+              <i class="fas fa-exclamation-circle"></i> {{ message }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+    <div class="left-section">
+      <h1>Welcome Back 👋</h1>
+      <p>Today is a new day. It's your day. You shape it.<br>Sign in to start managing your tasks.</p>
+      <form class="login-form" method="POST" >
+        {% csrf_token %}
+        <label for="email">Email</label>
+        <input type="text" name="email" placeholder="Example@email.com" required>
+        
+        <label for="password">Password</label>
+        <input type="password" name="password" placeholder="at least 8 characters" required>
+        
+        <a href="#" class="forgot-password">Forgot Password?</a>
+        
+        <button type="submit" class="sign-in-button">Sign in</button>
+      </form>
+      
+      <div class="divider">Or</div>
+      <div class="social-login">
+        <a href="{% provider_login_url 'google' %}?next=/">
+          <button class="google-button">
+            <i class="fab fa-google"></i> Sign in with Google
+          </button>
+        </a>
+    
+      </div>
+      
+      
+      <p class="signup-prompt">
+        Don't you have an account? <a href="#">Sign up</a>
+      </p>
+    </div>
+    
+    <div class="right-section">
+      <img src="{% static 'imgs/login.jpeg' %}" alt="Login Image"  class="curved-image">
+
+      <h2 class="logo">TaskMate</h2>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const alerts = document.querySelectorAll('.alert');
+  
+      alerts.forEach(alert => {
+        // Set a timeout to slide up and remove the alert
+        setTimeout(() => {
+          alert.classList.add('hide'); // Trigger the slide-up animation
+        }, 1500); // Show alert for 3 seconds
+  
+        // Remove the alert element after the animation completes
+        alert.addEventListener('animationend', () => {
+          if (alert.classList.contains('hide')) {
+            alert.remove();
+          }
+        });
+      });
+    });
+  </script>
+  
+</body>
+</html>
+
+
+{% endblock %}
+

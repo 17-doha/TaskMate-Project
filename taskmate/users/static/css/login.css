@@ -1,0 +1,255 @@
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+body {
+font-family: Arial, sans-serif;
+background-color: #f8f9fc;
+display: flex;
+justify-content: center;
+align-items: center;
+height: 100vh;
+}
+.curved-image {
+  width: 700px; 
+  height: auto;
+  border-radius: 20px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+}
+
+.container {
+display: flex;
+width: 90%;
+max-width: 1200px;
+box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+border-radius: 12px;
+overflow: hidden;
+}
+
+.left-section {
+flex: 1;
+background-color: #fff;
+padding: 40px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+gap: 20px;
+}
+
+.left-section h1 {
+font-size: 2rem;
+margin-bottom: 10px;
+}
+
+.left-section p {
+color: #666;
+line-height: 1.6;
+}
+
+.login-form label {
+font-weight: bold;
+margin-bottom: 5px;
+display: block;
+}
+
+.login-form input {
+width: 100%;
+padding: 10px;
+margin-bottom: 15px;
+border: 1px solid #ccc;
+border-radius: 5px;
+}
+
+.forgot-password {
+text-align: center;
+display: block;
+margin-bottom: 20px;
+color: #5030E5;
+text-decoration: none;
+}
+
+.sign-in-button {
+width: 100%;
+background-color: rgba(130, 104, 249, 0.72);
+color: white;
+padding: 10px;
+border: none;
+border-radius: 5px;
+font-size: 1rem;
+cursor: pointer;
+}
+
+.divider {
+text-align: center;
+margin: 20px 0;
+font-size: 0.9rem;
+color: #888;
+}
+
+.social-login button {
+width: 100%;
+padding: 10px;
+margin-bottom: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+cursor: pointer;
+font-size: 1rem;
+
+}
+
+
+.google-button {
+background-color: white;
+}
+
+
+.signup-prompt {
+text-align: center;
+color: #666;
+}
+
+.signup-prompt a {
+color: #6c63ff;
+text-decoration: none;
+}
+
+.right-section {
+flex: 1;
+background-color: #f3eefc;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+padding: 40px;
+text-align: center;
+}
+
+.right-section img {
+max-width: 100%;
+height: auto;
+}
+
+.logo {
+font-size: 2rem;
+margin-top: 20px;
+color: #6c63ff;
+}
+
+/* Add a transition effect to all buttons for smooth hover behavior */
+button {
+transition: all 0.3s ease-in-out;
+}
+
+/* Hover effect for the Sign In button */
+.sign-in-button:hover {
+background-color: rgba(130, 104, 249, 1); /* Slightly darker shade for hover */
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+transform: translateY(-3px); /* Slight lift effect */
+}
+
+/* Hover effect for social login buttons */
+.social-login button:hover {
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+transform: translateY(-3px); /* Slight lift effect */
+}
+
+/* Hover effect for the Google button */
+.google-button:hover {
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+transform: translateY(-3px); /* Slight lift effect */
+}
+
+
+
+/* Hover effect for the Forgot Password link */
+.forgot-password:hover {
+color: #3b1cc6; /* Change the color on hover */
+text-decoration: underline; /* Underline the text */
+}
+
+.alert-container {
+position: absolute;
+top: 20px;
+width: 100%;
+display: flex;
+justify-content: center;
+z-index: 10;
+}
+
+.alert {
+width: 50%;
+font-size: 1rem;
+}
+.alert-container {
+position: absolute;
+top: 20px;
+left:0px;
+width: 100%;
+display: flex;
+justify-content: center;
+z-index: 1000;
+}
+
+.alert {
+padding: 15px 20px;
+font-size: 1rem;
+border-radius: 8px;
+display: flex;
+align-items: center;
+gap: 10px;
+box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+max-width: 90%;
+animation: slide-down 0.5s ease-out;
+}
+
+.alert.error {
+background-color: #f8d7da;
+color: #842029;
+border: 1px solid #f5c2c7;
+}
+
+.alert.success {
+background-color: #d1e7dd;
+color: #0f5132;
+border: 1px solid #badbcc;
+}
+
+.alert i {
+font-size: 1.2rem;
+}
+
+@keyframes slide-down {
+from {
+opacity: 0;
+transform: translateY(-20px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+/* New slide-up animation */
+@keyframes slide-up {
+from {
+opacity: 1;
+transform: translateY(0);
+}
+to {
+opacity: 0;
+transform: translateY(-20px);
+}
+}
+
+/* Style for alerts during slide-up */
+.alert.hide {
+animation: slide-up 0.5s ease-out forwards;
+}
+
+
+
+
+
