@@ -40,11 +40,9 @@ def main(request):
 
 
 def home(request):
-    return render(request, 'home2.html')
+    return render(request, 'main.html')
 
 
-def logout_view(request):
-    logout(request)
-    return redirect('/')
+
 
 
