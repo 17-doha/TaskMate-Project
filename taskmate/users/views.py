@@ -13,23 +13,18 @@ def login_user(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        print(f"Email from form: {email}")  # Debugging line
 
         # Perform the exact match query for the email
         try:
             user = Login.objects.get(email=email)
-            print(f"User found: {user.email}")  # Debugging line
 
             # Compare the password (assuming plain-text comparison)
             if password == user.password:
-                print("Validated")
                 return redirect('main')
             elif password != user.password:
-                print("Incorrect password")
                 messages.error(request, "Incorrect password. Please try again.")
         
         except Login.DoesNotExist:
-            print(f"Email {email} not found")
             messages.error(request, "Email not correct. Please check your input.")
 
     return render(request, 'authentication/login.html')

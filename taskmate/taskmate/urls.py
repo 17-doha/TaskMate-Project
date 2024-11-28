@@ -20,7 +20,7 @@ from users import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('login/', views.login_user, name='home'),
+    path('login/', views.login_user, name='login'),
     path('login/', include('django.contrib.auth.urls')),
     path('main/', views.main, name='main'),
     path('accounts/', include('allauth.urls')),
