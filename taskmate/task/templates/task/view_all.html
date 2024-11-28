@@ -1,25 +1,48 @@
-<h1>All Tasks</h1>
+{% load static %}
+<!-- Include Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-{% if tasks %}
-    <ul>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include custom styles and scripts -->
+<link rel="stylesheet" href="{% static 'css/pop_ups/create_task_pop_up.css' %}">
+<script src="{% static 'js/edit_task_injection.js' %}"></script>
+
+<h1>Task List</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Task</th>
+            <th>Status</th>
+            <th>Assigned To</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
         {% for task in tasks %}
-            <li>
-                <h2>{{ task.content }}</h2>
-                <p>Status: {{ task.status }}</p>
-                <p>Priority: {{ task.priority }}</p>
-                <p>Deadline: {{ task.deadline }}</p>
-
-                {% if task.assigned %}
-                    <p>Assigned to: {{ task.assigned_id.user }}</p>
-                {% else %}
-                    <p>This task is not assigned.</p>
-                {% endif %}
-
-                <a href="{% url 'task:edit_task' task.task_id %}" class="btn btn-primary">Edit</a>
+        <tr>
+            <td>{{ task.content }}</td>
+            <td>{{ task.get_status_display }}</td>
+            <td>{{ task.assigned_to }}</td>
+            <td>
+                <!-- Edit Task Button -->
+                <button type="button" class="btn btn-primary edit-task-btn" data-task-id="{{ task.task_id }}">Edit Task</button>
                 <a href="{% url 'task:delete_task' task.task_id %}" class="btn btn-danger">Delete</a>
-            </li>
+            </td>
+        </tr>
         {% endfor %}
-    </ul>
-{% else %}
-    <p>No tasks available.</p>
-{% endif %}
+    </tbody>
+</table>
+
+<!-- Edit Task Modal (Initially empty) -->
+<div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="editTaskModalContent">
+            <!-- Modal content will be dynamically injected here -->
+        </div>
+    </div>
+</div>
+
+<!-- Include Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
