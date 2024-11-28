@@ -25,7 +25,6 @@ urlpatterns = [
     path('main/', views.main, name='main'),
     path('accounts/', include('allauth.urls')),
     path("", include("users.urls")),
-    path('google-redirect/', views.google_redirect, name='google_redirect'),
     path("environment/", include("environment.urls")),
     path("task/", include("task.urls")),
 ]

@@ -7,6 +7,5 @@ urlpatterns = [
      path('main/', views.main, name = 'main'),
      path("", views.home),
      path("logout", views.logout_view),
-     path('google-redirect/', views.google_redirect, name='google_redirect'),
 
 ]

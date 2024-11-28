@@ -32,7 +32,7 @@ def login_user(request):
             print(f"Email {email} not found")
             messages.error(request, "Email not correct. Please check your input.")
 
-    return render(request, 'authentication/home.html')
+    return render(request, 'authentication/login.html')
 
 
 
@@ -53,7 +53,3 @@ def logout_view(request):
     return redirect('/')
 
 
-
-@login_required
-def google_redirect(request):
-    return render(request, 'your_app/google_redirect.html')
