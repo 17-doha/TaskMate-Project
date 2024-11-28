@@ -7,9 +7,10 @@ class TaskEditForm(forms.ModelForm):
     class Meta:
         model = Task  
         # fields that will be there when editting or creating a task
-        fields = ['content', 'status', 'priority', 'deadline', 'assigned_to']  
+        fields = ['content', 'status', 'priority', 'deadline', 'assigned_to','start_date']  
         widgets = {
             'deadline': forms.DateInput(attrs={'type': 'date'}),  
+            'start_date': forms.DateInput(attrs={'type': 'date'}),  
         }
 
 

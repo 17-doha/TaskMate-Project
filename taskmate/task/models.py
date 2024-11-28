@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from environment.models import Environment
-
+import datetime
 class Task(models.Model):
     # Constants for task status and priority
     PENDING = 'PENDING'
@@ -28,6 +28,7 @@ class Task(models.Model):
     task_id = models.AutoField(primary_key=True)
     content = models.TextField()  
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
+    start_date = models.DateTimeField(default=datetime.date.today)  
     deadline = models.DateTimeField()  
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default=MEDIUM)
     # table = models.ForeignKey(Table, on_delete=models.CASCADE)   # refrence Table when created un hash
