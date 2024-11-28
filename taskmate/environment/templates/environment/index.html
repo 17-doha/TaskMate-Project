@@ -219,7 +219,23 @@
     </section>
   </main>
 
-  <script src="script.js"></script>
+    <!-- Drag and Drop Script -->
+    <script>
+      function allowDrop(ev) {
+          ev.preventDefault();
+      }
+  
+      function drag(ev) {
+          ev.dataTransfer.setData("text", ev.target.id);
+      }
+  
+      function drop(ev) {
+          ev.preventDefault();
+          var data = ev.dataTransfer.getData("text");
+          var task = document.getElementById(data);
+          ev.target.appendChild(task);
+      }
+    </script>
 </body>
 </html>
 
