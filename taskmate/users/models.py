@@ -5,5 +5,4 @@ class Login(models.Model):
     password = models.CharField(max_length=255)
 
     class Meta:
-        db_table = 'users_login'  # Make sure this matches your actual table name in the database
-#commentfeay7aga
+        db_table = 'users_login'  
