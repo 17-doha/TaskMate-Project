@@ -31,7 +31,9 @@ def login_user(request):
 
 
 
-
+@login_required
+def custom_redirect_view(request):
+    return redirect('/main/')  # Redirect to your desired path
 
 def main(request):
     # This is the page to redirect to after login

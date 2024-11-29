@@ -155,5 +155,4 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend'
 )
 
-LOGIN_REDIRECT_URL = 'main/'
-ACCOUNT_SIGNUP_REDIRECT_URL = 'main/'
+LOGIN_REDIRECT_URL = '/main/'
