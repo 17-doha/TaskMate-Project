@@ -1,4 +1,3 @@
-const environment_id = "{{ environment.environment_id }}";
 
 function allowDrop(ev) {
     ev.preventDefault();
@@ -18,7 +17,7 @@ function drop(ev) {
     var targetTableName = targetColumn.querySelector('h3').textContent;
 
     // Make a POST request to update the task's table ID
-    fetch(`/environment/${environment_id}/drag-and-drop/`, {
+    fetch(`/environment/1/drag-and-drop/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
