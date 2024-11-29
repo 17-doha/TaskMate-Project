@@ -8,4 +8,5 @@ urlpatterns = [
      path('accounts/profile/', views.custom_redirect_view), 
      path("", views.home),
 
+
 ]
