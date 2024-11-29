@@ -1,9 +1,10 @@
 from django.shortcuts import render,get_object_or_404, redirect
-from .models import Task
+from .models import Task, Login, Environment
 from .forms import TaskEditForm, TaskCreateForm
 from django.contrib.auth.models import User
 from environment.models import Environment
 from django.contrib import messages
+
 
 #A view to show all tasks with the edit and delete buttons
 def ViewAllTasks(request):
@@ -26,7 +27,7 @@ def EditTask(request, id):
     else:
         form = TaskEditForm(instance=task)
 
-    users = User.objects.all()
+    users = Login.objects.all()
     return render(request, 'task/edit_task.html', {'form': form, 'task': task, 'users': users})
 
 
@@ -44,15 +45,16 @@ def CreateTask(request):
         if form.is_valid():
             # If the form is valid save the new task
             task = form.save(commit=False)
-            task.created_by = request.user  # Automatically assign the logged-in user as the creator
+            task.created_by = Login.objects.get(id = 1) # Automatically assign the logged-in user as the creator
+            task.environment_id = Environment.objects.get(environment_id = 3) # defult for dlw2ty till fix 
             task.save()
             messages.success(request, 'Task created successfully!')
-            return redirect('task:view_all_tasks') 
+            return redirect('environment:index') 
         else:
             messages.error(request, 'There was an error creating the task. Please try again.')
 
     # Get all users and environments to choose from
-    users = User.objects.all()
+    users = Login.objects.all()
     environments = Environment.objects.all()
 
     return render(request, 'task/create_task.html', {

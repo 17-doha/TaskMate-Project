@@ -162,6 +162,31 @@
     .column:hover {
         background-color: #eef2f7;
     }
+/* Smooth modal appearance */
+.modal {
+    display: none !important;  /* Initially hidden */
+    opacity: 0;
+    transform: scale(0.95); /* Slight scaling down for smoothness */
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth fade-in and scale */
+}
+
+.modal.show {
+    display: block !important;
+    opacity: 1;
+    transform: scale(1);  /* Restore to normal scale when shown */
+}
+
+.modal-dialog {
+    transition: transform 0.3s ease-in-out;
+}
+
+.modal-dialog.modal-dialog-centered {
+    transform: translateY(-100px);  /* Initial position off-screen */
+}
+
+.modal.show .modal-dialog.modal-dialog-centered {
+    transform: translateY(0);  /* Slide in from top */
+}
 
   </style>
 </head>
@@ -176,7 +201,7 @@
         <div class="column" id="low" ondrop="drop(event)" ondragover="allowDrop(event)">
           <div class="column-header">
             <h3>To Do</h3>
-            <button class="add-task">
+            <button class="add-task"  id="loadTaskModalButton">
               <i class="fas fa-plus"></i> Add Task
             </button>
           </div>
@@ -285,8 +310,66 @@
     });
 });
 
-    </script>
+// Ensure the button ID matches the one in your environment template
+// Ensure the button ID matches the one in your environment template
+const loadTaskModalButton = document.getElementById('loadTaskModalButton');
+
+// Add an event listener to load the modal
+loadTaskModalButton.addEventListener('click', function () {
+    console.log("Load task modal button clicked");
+
+    // Fetch the modal HTML from the server
+    fetch("{% url 'task:create_task' %}") 
+        .then(response => {
+            console.log("Modal content fetched");
+            if (!response.ok) {
+                throw new Error('Failed to load modal content.');
+            }
+            return response.text(); // Get the HTML content
+        })
+        .then(html => {
+            console.log("HTML content received:", html);
+
+            // Remove any existing modal from the DOM to prevent duplicates
+            const existingModal = document.getElementById('createTaskModal');
+            if (existingModal) {
+                console.log("Removing existing modal");
+                existingModal.remove();
+            }
+
+            // Append the fetched modal content to the body
+            console.log("Appending new modal content");
+            document.body.insertAdjacentHTML('beforeend', html);
+
+            // Initialize and show the modal using Bootstrap's modal API
+            const modal = new bootstrap.Modal(document.getElementById('createTaskModal'));
+            console.log("Initializing modal");
+
+            // Add the class that triggers the smooth transition
+            const modalElement = document.getElementById('createTaskModal');
+            modalElement.classList.add('show'); // Manually add class for custom transition
+
+            // Initialize and show the modal
+            modal.show();
+
+            // Optional: Add any additional event listeners for the modal
+            modalElement.addEventListener('hidden.bs.modal', function () {
+                console.log("Modal closed, removing it from the DOM");
+                modalElement.remove(); // Clean up modal when it's closed
+            });
+        })
+        .catch(error => {
+            console.error('Error loading modal:', error);
+        });
+});
+
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     
+<link rel="stylesheet" href="{% static 'task/css/task_pop_up.css' %}">
      
 </body>
 </html>

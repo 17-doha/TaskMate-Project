@@ -17,10 +17,10 @@ class TaskEditForm(forms.ModelForm):
 class TaskCreateForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['content', 'status', 'priority', 'assigned_to', 'environment_id', 'deadline', 'start_date']
+        fields = ['content', 'status', 'priority', 'environment_id', 'deadline', 'start_date']
 
     content = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'placeholder': 'Task Description'}))
     deadline = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
     start_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
-    assigned_to = forms.ModelChoiceField(queryset=User.objects.all(), required=True)
+    # assigned_to = forms.ModelChoiceField(queryset=User.objects.all(), required=True)
     environment_id = forms.ModelChoiceField(queryset=Environment.objects.all(), required=False) 

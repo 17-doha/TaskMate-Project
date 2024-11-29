@@ -46,7 +46,7 @@
 
         <!-- Assign To -->
         <div class="row mb-3">
-            <div class="col-md-6">
+            <!-- <div class="col-md-6">
                 <label for="assigned_to" class="form-label">Assign to</label>
                 <select class="form-select" id="assigned_to" name="assigned_to" required>
                     <option value="">Select a user</option>
@@ -54,7 +54,7 @@
                         <option value="{{ user.id }}" {% if form.assigned_to.value == user.id %}selected{% endif %}>{{ user.username }}</option>
                     {% endfor %}
                 </select>
-            </div>
+            </div> -->
             <!-- Task Start Date and Deadline -->
             <div class="col-md-6">
                 <label for="start_date" class="form-label">Task Start Date</label>
