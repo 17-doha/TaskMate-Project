@@ -1,5 +1,8 @@
+
 {%extends 'base.html'%}
 {% block content %}
+{% load static %}
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,7 +10,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TaskMate Dashboard</title>
-  <link rel="stylesheet" href="styles.css">
   <!-- Add Font Awesome for Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <style>
@@ -164,6 +166,7 @@
   </style>
 </head>
 <body>
+  <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
   <!-- Main Content -->
   <main class="main-content">
     <!-- Board Content -->
@@ -178,29 +181,32 @@
             </button>
           </div>
           <div class="column-bar low"></div>
-          <div class="task-card" draggable="true" ondragstart="drag(event)" id="task1">
-            <p class="label low">Low</p>
-            <h4>Brainstorming</h4>
-            <p>Brainstorming ideas for members' diverse opinions.</p>
-          </div>
-          <div class="task-card" draggable="true" ondragstart="drag(event)" id="task2">
-            <p class="label low">Low</p>
-            <h4>Moodboard</h4>
-            <p>Creating a moodboard for project visuals.</p>
-          </div>
+          {% for task in todo_tasks %}
+            <div class="task-card" draggable="true" ondragstart="drag(event)" id="task1" data-task-id="{{ task.task_id }}">
+              <p class="label low">{{ task.priority }}</p>
+              <h4>{{ task.content }}</h4>
+              <p>Deadline: {{ task.deadline }}</p>
+            </div>
+            {% empty %}
+          <p>No tasks in To Do</p>
+          {% endfor %}
         </div>
 
         <!-- Medium Priority Column -->
         <div class="column" id="medium" ondrop="drop(event)" ondragover="allowDrop(event)">
           <div class="column-header">
-            <h3>On Progress</h3>
+            <h3>In Progress</h3>
           </div>
           <div class="column-bar medium"></div>
-          <div class="task-card" draggable="true" ondragstart="drag(event)" id="task3">
-            <p class="label medium">Medium</p>
-            <h4>Onboarding Illustrations</h4>
-            <p>Designing illustrations for onboarding screens.</p>
-          </div>
+          {% for task in inprogress_tasks %}
+            <div class="task-card" draggable="true" ondragstart="drag(event)" id="task3" data-task-id="{{ task.task_id }}">
+              <p class="label medium">{{ task.priority }}</p>
+              <h4>{{ task.content }}</h4>
+              <p>Deadline: {{ task.deadline }}</p>
+            </div>
+            {% empty %}
+          <p>No tasks in Progress</p>
+          {% endfor %}
         </div>
 
         <!-- High Priority Column -->
@@ -209,33 +215,79 @@
             <h3>Done</h3>
           </div>
           <div class="column-bar high"></div>
-          <div class="task-card" draggable="true" ondragstart="drag(event)" id="task4">
-            <p class="label high">High</p>
-            <h4>Research</h4>
-            <p>User research to create a solid product base.</p>
-          </div>
+          {% for task in done_tasks %}
+            <div class="task-card" draggable="true" ondragstart="drag(event)" id="task4" data-task-id="{{ task.task_id }}">
+              <p class="label high">{{ task.priority }}</p>
+              <h4>{{ task.content }}</h4>
+              <p>Completed on: {{ task.deadline }}</p>
+            </div>
+            {% empty %}
+          <p>No tasks in Done</p>
+          {% endfor %}
         </div>
       </div>
     </section>
   </main>
 
     <!-- Drag and Drop Script -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-      function allowDrop(ev) {
-          ev.preventDefault();
-      }
-  
-      function drag(ev) {
-          ev.dataTransfer.setData("text", ev.target.id);
-      }
-  
-      function drop(ev) {
-          ev.preventDefault();
-          var data = ev.dataTransfer.getData("text");
-          var task = document.getElementById(data);
-          ev.target.appendChild(task);
-      }
+      const environment_id = "{{ environment.environment_id }}";
+      
     </script>
+    <script>
+    $(document).ready(function () {
+    $(".task-card").on("dragstart", function (event) {
+        event.originalEvent.dataTransfer.setData("text", $(this).attr("id"));
+    });
+
+    $(".column").on("dragover", function (event) {
+        event.preventDefault();
+    });
+
+    $(".column").on("drop", function (event) {
+        event.preventDefault();
+        const taskId = event.originalEvent.dataTransfer.getData("text");
+        const $task = $("#" + taskId);
+        $(this).append($task); // Move the task visually
+
+        const targetTableName = $(this).find("h3").text().trim(); // Extract the column name
+
+        // Get the CSRF token
+        const csrfToken = $("input[name='csrfmiddlewaretoken']").val(); 
+
+        console.log("Task ID:", $task.data("task-id"));
+        console.log("Target Table:", targetTableName);
+
+        // Send AJAX POST request to update the task's table ID
+        $.ajax({
+            url: `/environment/${environment_id}/drag-and-drop/`,
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrfToken, // Add CSRF token to the request headers
+            },
+            data: JSON.stringify({
+                task_id: $task.data("task-id"),
+                target_table: targetTableName,
+            }),
+            contentType: "application/json",
+            success: function (response) {
+                if (response.status === "success") {
+                    console.log("Task moved successfully");
+                } else {
+                    console.error("Error moving task");
+                }
+            },
+            error: function (error) {
+                console.error("Request failed", error);
+            },
+        });
+    });
+});
+
+    </script>
+    
+     
 </body>
 </html>
 
