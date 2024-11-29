@@ -4,10 +4,12 @@ from django.contrib.auth import logout
 from .models import Login
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import check_password
 
 
 def login_user(request):
+
     if request.method == 'POST':
         # Get email and password from the POST request
         email = request.POST.get('email')
@@ -18,10 +20,10 @@ def login_user(request):
         try:
             user = Login.objects.get(email=email)
 
-            # Compare the password (assuming plain-text comparison)
-            if password == user.password:
+            #Comparing both hashed passwords
+            if  check_password(password, user.password):
                 return redirect('main')
-            elif password != user.password:
+            else:
                 messages.error(request, "Incorrect password. Please try again.")
         
         except Login.DoesNotExist:
