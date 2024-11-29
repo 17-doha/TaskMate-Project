@@ -39,10 +39,5 @@ def main(request):
 
 
 
-def home(request):
-    return render(request, 'main.html')
-
-
-
 
 
