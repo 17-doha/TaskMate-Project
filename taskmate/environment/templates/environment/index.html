@@ -12,6 +12,8 @@
   <title>TaskMate Dashboard</title>
   <!-- Add Font Awesome for Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'enviroment.css' %}">
+  
   <style>
     /* General Styles */
     body {
@@ -253,8 +255,13 @@
       </div>
     </section>
   </main>
+  <script>
+    const environment_id = "{{ environment.environment_id }}";
+</script>
 
     <!-- Drag and Drop Script -->
+    <script src="{% static 'environment.js' %}"></script>
+   
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
       const environment_id = "{{ environment.environment_id }}";
