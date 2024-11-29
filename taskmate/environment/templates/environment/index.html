@@ -3,7 +3,6 @@
 {% block content %}
 {% load static %}
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,185 +11,7 @@
   <title>TaskMate Dashboard</title>
   <!-- Add Font Awesome for Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="{% static 'enviroment.css' %}">
-  
-  <style>
-    /* General Styles */
-    body {
-        font-family: 'Arial', sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        height: 100vh;
-        background: #f9fafb;
-    }
 
-    .main-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        background: #fff;
-    }
-
-    /* Task Board */
-    .board {
-        flex: 1;
-        padding: 20px;
-        display: flex;
-        gap: 20px;
-        transition: transform 0.3s ease;
-    }
-
-    .columns {
-        display: flex;
-        gap: 20px;
-        width: 100%;
-    }
-
-    /* Columns */
-    .column {
-        background: #f7f7f8;
-        border-radius: 8px;
-        flex: 1;
-        padding: 20px;
-        position: relative;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .column:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .column-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-
-    .column h3 {
-        font-size: 20px;
-        font-weight: bold;
-        margin: 0;
-        color: #333;
-    }
-
-    .add-task {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: transparent; /* Transparent background */
-        color: #083b0d; /* Text and icon color */
-        padding: 8px 12px; /* Balanced padding for button size */
-        border: none; /* Remove border */
-        border-radius: 4px; /* Optional slight rounding, set to 0 for sharp edges */
-        font-size: 14px; /* Slightly smaller font for clean look */
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.3s ease; /* Smooth transition for hover effects */
-    }
-
-    .add-task:hover {
-        background: rgba(156, 197, 182, 0.5); /* Add a subtle hover effect */
-    }
-
-    .add-task i {
-        margin-right: 6px; /* Spacing between the "+" icon and text */
-        font-size: 16px; /* Icon size */
-    }
-
-    .column-bar {
-        height: 5px;
-        width: 100%;
-        border-radius: 4px;
-        margin-bottom: 15px;
-    }
-
-    .column-bar.low {
-        background: #10b981;
-    }
-
-    .column-bar.medium {
-        background: #f59e0b;
-    }
-
-    .column-bar.high {
-        background: #ef4444;
-    }
-
-    /* Task Cards */
-    .task-card {
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        padding: 15px;
-        margin-bottom: 10px;
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-        cursor: pointer;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .task-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .task-card h4 {
-        margin: 5px 0;
-    }
-
-    .task-card .label {
-        display: inline-block;
-        font-size: 12px;
-        color: white;
-        padding: 3px 8px;
-        border-radius: 4px;
-    }
-
-    .label.low {
-        background: #10b981;
-    }
-
-    .label.medium {
-        background: #f59e0b;
-    }
-
-    .label.high {
-        background: #ef4444;
-    }
-
-    /* Column Hover Effect */
-    .column:hover {
-        background-color: #eef2f7;
-    }
-/* Smooth modal appearance */
-.modal {
-    display: none !important;  /* Initially hidden */
-    opacity: 0;
-    transform: scale(0.95); /* Slight scaling down for smoothness */
-    transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth fade-in and scale */
-}
-
-.modal.show {
-    display: block !important;
-    opacity: 1;
-    transform: scale(1);  /* Restore to normal scale when shown */
-}
-
-.modal-dialog {
-    transition: transform 0.3s ease-in-out;
-}
-
-.modal-dialog.modal-dialog-centered {
-    transform: translateY(-100px);  /* Initial position off-screen */
-}
-
-.modal.show .modal-dialog.modal-dialog-centered {
-    transform: translateY(0);  /* Slide in from top */
-}
-
-  </style>
 </head>
 <body>
   <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
@@ -203,7 +24,7 @@
         <div class="column" id="low" ondrop="drop(event)" ondragover="allowDrop(event)">
           <div class="column-header">
             <h3>To Do</h3>
-            <button class="add-task"  id="loadTaskModalButton">
+            <button class="add-task"  id="loadTaskModalButton" >
               <i class="fas fa-plus"></i> Add Task
             </button>
           </div>
@@ -255,129 +76,24 @@
       </div>
     </section>
   </main>
+
+
   <script>
     const environment_id = "{{ environment.environment_id }}";
-</script>
+    const taskCreateUrl = "{% url 'task:create_task' %}";
+  </script>
 
-    <!-- Drag and Drop Script -->
-    <script src="{% static 'environment.js' %}"></script>
-   
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-      const environment_id = "{{ environment.environment_id }}";
-      
-    </script>
-    <script>
-    $(document).ready(function () {
-    $(".task-card").on("dragstart", function (event) {
-        event.originalEvent.dataTransfer.setData("text", $(this).attr("id"));
-    });
+  <!-- bootstrap js -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Drag and Drop Script -->
+  <script src="{% static 'environment/js/environment.js' %}"></script>
+  <!-- pop up -->
+  <script src="{% static 'environment/js/pop_up.js' %}"></script>
 
-    $(".column").on("dragover", function (event) {
-        event.preventDefault();
-    });
+  <!-- styles -->
+  <link rel="stylesheet" href="{% static 'task/css/task_pop_up.css' %}">
+  <link rel="stylesheet" href="{% static 'environment/css/enviroment.css' %}">
 
-    $(".column").on("drop", function (event) {
-        event.preventDefault();
-        const taskId = event.originalEvent.dataTransfer.getData("text");
-        const $task = $("#" + taskId);
-        $(this).append($task); // Move the task visually
-
-        const targetTableName = $(this).find("h3").text().trim(); // Extract the column name
-
-        // Get the CSRF token
-        const csrfToken = $("input[name='csrfmiddlewaretoken']").val(); 
-
-        console.log("Task ID:", $task.data("task-id"));
-        console.log("Target Table:", targetTableName);
-
-        // Send AJAX POST request to update the task's table ID
-        $.ajax({
-            url: `/environment/${environment_id}/drag-and-drop/`,
-            method: "POST",
-            headers: {
-                "X-CSRFToken": csrfToken, // Add CSRF token to the request headers
-            },
-            data: JSON.stringify({
-                task_id: $task.data("task-id"),
-                target_table: targetTableName,
-            }),
-            contentType: "application/json",
-            success: function (response) {
-                if (response.status === "success") {
-                    console.log("Task moved successfully");
-                } else {
-                    console.error("Error moving task");
-                }
-            },
-            error: function (error) {
-                console.error("Request failed", error);
-            },
-        });
-    });
-});
-
-// Ensure the button ID matches the one in your environment template
-// Ensure the button ID matches the one in your environment template
-const loadTaskModalButton = document.getElementById('loadTaskModalButton');
-
-// Add an event listener to load the modal
-loadTaskModalButton.addEventListener('click', function () {
-    console.log("Load task modal button clicked");
-
-    // Fetch the modal HTML from the server
-    fetch("{% url 'task:create_task' %}") 
-        .then(response => {
-            console.log("Modal content fetched");
-            if (!response.ok) {
-                throw new Error('Failed to load modal content.');
-            }
-            return response.text(); // Get the HTML content
-        })
-        .then(html => {
-            console.log("HTML content received:", html);
-
-            // Remove any existing modal from the DOM to prevent duplicates
-            const existingModal = document.getElementById('createTaskModal');
-            if (existingModal) {
-                console.log("Removing existing modal");
-                existingModal.remove();
-            }
-
-            // Append the fetched modal content to the body
-            console.log("Appending new modal content");
-            document.body.insertAdjacentHTML('beforeend', html);
-
-            // Initialize and show the modal using Bootstrap's modal API
-            const modal = new bootstrap.Modal(document.getElementById('createTaskModal'));
-            console.log("Initializing modal");
-
-            // Add the class that triggers the smooth transition
-            const modalElement = document.getElementById('createTaskModal');
-            modalElement.classList.add('show'); // Manually add class for custom transition
-
-            // Initialize and show the modal
-            modal.show();
-
-            // Optional: Add any additional event listeners for the modal
-            modalElement.addEventListener('hidden.bs.modal', function () {
-                console.log("Modal closed, removing it from the DOM");
-                modalElement.remove(); // Clean up modal when it's closed
-            });
-        })
-        .catch(error => {
-            console.error('Error loading modal:', error);
-        });
-});
-
-
-
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    
-<link rel="stylesheet" href="{% static 'task/css/task_pop_up.css' %}">
-     
 </body>
 </html>
 
