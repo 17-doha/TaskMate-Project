@@ -28,6 +28,5 @@ urlpatterns = [
     path("", include("users.urls")),
     # redirection to environment app urls
     path("environment/", include("environment.urls")),
-    path("task/", include("task.urls")),
-
+    path('task/', include('task.urls')),
 ]

@@ -15,6 +15,9 @@ class Environment(models.Model):
     class Meta:
         db_table = 'environment'  
 
+    def __str__(self):
+        return self.label 
+
 
 class Table(models.Model):
     table_id = models.AutoField(primary_key=True)

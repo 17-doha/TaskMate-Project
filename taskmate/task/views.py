@@ -61,3 +61,33 @@ def CreateTask(request):
         'users': users,
         'environments': environments
     })
+
+
+def search_task(request):
+    if request.method == "POST":
+        searched = request.POST['searched']
+        print(f"Search Term: {searched}")  # Debugging line
+        tasks = Task.objects.filter(content__contains=searched)
+        
+        # Debugging: Print task IDs to check if they're valid
+        for task in tasks:
+            print(f"Task ID: {task.task_id}, Content: {task.content}")
+        
+        return render(request, 'search_environment.html', {'searched': searched, 'tasks': tasks})
+    else:
+        return render(request, 'search_environment.html', {})
+
+
+def View_Task(request, task_id):
+    # Fetch the task by its ID
+    task = get_object_or_404(Task, task_id=task_id)
+
+    # Get the environment ID (reference the id field of the related Environment object)
+    environment_id = task.environment_id_id  # Access the ID of the related Environment object
+    print('environment_id', environment_id)
+
+    # Construct the correct URL to redirect to
+    environment_url = f"/environment/{environment_id}/"  # Use the environment ID in the URL
+
+    # Redirect to the environment page by IDid
+    return redirect(environment_url)

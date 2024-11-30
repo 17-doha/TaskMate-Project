@@ -65,4 +65,12 @@ def dragAndDrop(request, environment_id):
     return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
 
 
+ 
+def search_environment(request):
+    if request.method == "POST":
+        searched = request.POST['searched']
+        environments = Environment.objects.filter(label__contains=searched)
+        return render(request, 'search_environment.html', {'searched': searched, 'environments': environments})
+    else:
+        return render(request, 'search_environment.html', {})
 
