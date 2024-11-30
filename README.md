@@ -22,37 +22,47 @@ TaskMate is a task management and collaboration tool designed to help teams and 
    git clone https://github.com/your-username/taskmate.git
 ```
 
-2. Navigate to the project directory:
-```bash
-cd taskmate
-```
-
-3. Create a Virtual Environment (Recommended): It's a good practice to use a virtual environment to manage project dependencies:
+2. Create a Virtual Environment (Recommended): It's a good practice to use a virtual environment to manage project dependencies:
 ```bash
 python -m venv venv
 ```
 
-4. Activate the Virtual Environment:
-- On Windows:
-```bash
-.\venv\Scripts\activate
-```
 - On Mac/Linux:
 ```bash
 source venv/bin/activate
 ```
 
-5. Install Django
+3. exit the venv
 ```bash
-pip install django
+cd..
 ```
 
-6. Run the development server: Start the Django development server:
+4. Navigate to the project directory:
+```bash
+cd taskmate
+```
+
+5. Setup the database
+```bash
+py manage.py makemigrations
+```
+
+6. Migrate
+```bash
+py manage.py migrate
+```
+
+7. Install dependencies
+```bash
+pip install -r requirements.txt
+```
+
+8. Run the development server: Start the Django development server:
 ```bash
 python manage.py runserver
 ```
 
-7. Access TaskMate in the browser: Open your browser and navigate to `http://127.0.0.1:8000/` to view TaskMate locally.
+9. Access TaskMate in the browser: Open your browser and navigate to `http://127.0.0.1:8000/` to view TaskMate locally.
 
 
 ## Features
@@ -133,10 +143,10 @@ We are grateful to the following contributors who have created this project:
   [LinkedIn](https://www.linkedin.com/in/haneen-alaa-44342b264/) | [GitHub](https://github.com/haneenalaa465)
   
 - **Sara Elsayed**  
-  [LinkedIn](https://www.linkedin.com/in/sarah-elsayed-20aab5284/) | [GitHub]([https://github.com/saraelsayed](https://github.com/selsayed2003)
+  [LinkedIn](https://www.linkedin.com/in/sarah-elsayed-20aab5284/) | [GitHub](https://github.com/selsayed2003)
   
 - **Mariam Elghandour**  
-  [LinkedIn](https://www.linkedin.com/in/mariam-elghandoor-271489255/) | [GitHub]([https://github.com/mariamelghandour](https://github.com/mariamelghandoor)
+  [LinkedIn](https://www.linkedin.com/in/mariam-elghandoor-271489255/) | [GitHub](https://github.com/mariamelghandoor)
   
 - **Salma Sherif**  
   [LinkedIn](https://www.linkedin.com/in/salma-sherif-9b428a246/) | [GitHub](https://github.com/SalmaSherif7070)
