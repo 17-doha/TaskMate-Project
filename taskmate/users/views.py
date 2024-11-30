@@ -19,6 +19,7 @@ from django.contrib.auth.hashers import PBKDF2SHA1PasswordHasher
 def login_user(request):
     """
     Handles local sign-in and ensures the user exists.
+    Uses the Local user from the User model (Login model is a custom model for custom users)
     """
 
     if request.method == 'POST':
@@ -44,12 +45,11 @@ def login_user(request):
 
 
 
-@login_required
-def custom_redirect_view(request):
-    return redirect('/main/')  # Redirect to your desired path
-
 def main(request):
     # This is the page to redirect to after login
+    """
+    The main page that users are redirected to after logging in.
+    """
     return render(request, 'main.html')
 
 
@@ -57,6 +57,7 @@ def main(request):
 def google_sign_in_callback(request):
     """
     Handles Google sign-in and ensures the user exists and if not will create one.
+    Redirects to main after sign-in
     """
     if request.user.is_authenticated:
         # Check if user exists in the custom Login model

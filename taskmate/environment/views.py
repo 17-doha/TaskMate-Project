@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from task.models import Task
 import json
 
+# used in dragAndDrop function
 mapping = {
     'To Do' : 'Pending',
     'In Progress': 'In Progress',
@@ -16,6 +17,13 @@ def index(request):
 
 def ViewTableTask(request, environment_id):
     # Retrieve the environment by ID
+    """
+    A view to render the the tasks for the given environment.
+    
+    :param request: The request object
+    :param environment_id: The ID of the environment to display
+    :return: A rendered HTML page with the tasks
+    """
     environment = get_object_or_404(Environment, environment_id=environment_id)
     
     # Filter tasks associated with this environment
@@ -40,6 +48,19 @@ def ViewTableTask(request, environment_id):
 
 def dragAndDrop(request, environment_id):
 
+    """
+    Handle drag and drop of a task to a new table.
+
+    This view expects a POST request with the following JSON data:
+        {
+            'task_id': <task_id>,
+            'target_table': <target_table_name>
+        }
+
+    It will update the task's table ID and status in the database.
+
+    Returns a JSON response with a status and message.
+    """
     if request.method == "POST":
         # Get JSON data from request body
         data = json.loads(request.body)

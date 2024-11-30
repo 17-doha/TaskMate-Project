@@ -3,6 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from .models import Login
 
 @admin.register(Login)
+# Generating Custom user admin and make this consistent with the User in Django
 class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password', 'username', 'age', 'phone_num', 'theme_is_light', 'badge_name')}),

@@ -1,3 +1,8 @@
+/**
+ * Allows an element to be a valid drop target by preventing the default behavior.
+ * 
+ * @param {Event} ev - The event object representing the drag event.
+ */
 function allowDrop(ev) {
     ev.preventDefault();
 }
@@ -5,6 +10,13 @@ function allowDrop(ev) {
 function drag(ev) {
     ev.dataTransfer.setData("text", ev.target.id);
 }
+
+/**
+ * Handles the drop event by appending the dropped task to the target column.
+ * It also makes a POST request to update the task's table ID in the database.
+ * 
+ * @param {Event} ev - The event object representing the drop event.
+ */
 
 function drop(ev) {   
 
