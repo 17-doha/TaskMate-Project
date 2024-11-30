@@ -13,11 +13,36 @@ from django.core.mail import BadHeaderError, send_mail
 from django.template.loader import render_to_string
 
 class User(AbstractUser):
+    """
+    Extends the default Django user model with additional fields.
+
+    Attributes:
+        phone_number (str): An optional field for storing the user's phone number,
+                            with a maximum length of 30 characters.
+        is_verified (bool): A boolean field indicating whether the user's account
+                            is verified. Defaults to False.
+    """
     phone_number = models.CharField(max_length=30, blank=True)
     is_verified = models.BooleanField(default=False)
 
 @receiver(post_save, sender=User)
 def send_activation_email(sender, instance, created, **kwargs):
+    """
+    Sends an account activation email to a newly created user.
+
+    This function is triggered after a new user instance is saved. It generates
+    a unique token and user ID, constructs an HTML email message, and sends it
+    to the user's email address for account verification.
+
+    Args:
+        sender (Model): The model class that sent the signal.
+        instance (User): The instance of the user model that was saved.
+        created (bool): A boolean indicating whether a new record was created.
+        **kwargs: Additional keyword arguments.
+
+    Raises:
+        BadHeaderError: If there is an issue with the email header.
+    """
     if created:
         token = default_token_generator.make_token(instance)
         uid = urlsafe_base64_encode(force_bytes(instance.pk))
