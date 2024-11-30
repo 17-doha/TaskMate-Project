@@ -11,46 +11,34 @@ function removeModal(modalId) {
         modalElement.remove(); // Clean up modal when it's closed
     }
 }
+///////////////////////////////////// create task/////////////////////////////////////////
 
-// Function to handle loading task creation modal
-const loadTaskModalButton = document.getElementById('loadTaskModalButton');
+$(document).ready(function () {
+    // Event listener for the "Add Task" button (to load the create task form)
+    $('#loadTaskModalButton').click(function () {
+        // Use the `taskCreateUrl` variable directly here
+        $.ajax({
+            url: taskCreateUrl,
+            method: 'GET',
+            success: function (data) {
+                // Clear any existing content in the modal
+                $('#createTaskModalContent').html('');
 
-// Event listener to load the modal content dynamically
-loadTaskModalButton.addEventListener('click', function () {
-    console.log("Load task modal button clicked");
+                // Insert the fetched content into the modal
+                $('#createTaskModalContent').html(data);
 
-    // Fetch the modal content (task creation form)
-    fetch(taskCreateUrl)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to load modal content.');
+                // Show the modal using Bootstrap
+                showModal('createTaskModal');
+            },
+            error: function (_, status, error) {
+                console.error('Error fetching task create form:', status, error);
+                alert('Failed to load the create form. Please try again later.');
             }
-            return response.text(); // Get the HTML content
-        })
-        .then(html => {
-            console.log("HTML content received:", html);
-
-            // Remove any existing modal to avoid duplicates
-            removeModal('createTaskModal');
-
-            // Append the fetched modal content to the body
-            document.body.insertAdjacentHTML('beforeend', html);
-
-            // Initialize and show the modal using Bootstrap's modal API
-            showModal('createTaskModal');
-
-            // Clean up the modal when it's closed
-            const modalElement = document.getElementById('createTaskModal');
-            modalElement.addEventListener('hidden.bs.modal', function () {
-                console.log("Modal closed, removing it from the DOM");
-                removeModal('createTaskModal'); // Clean up modal after it's closed
-            });
-        })
-        .catch(error => {
-            console.error('Error loading modal:', error);
-            alert('An error occurred while loading the modal. Please try again.');
         });
+    });
 });
+
+
 
 /////////////////////////////////////////// Edit Task Pop Up //////////////////////////////////////////
 

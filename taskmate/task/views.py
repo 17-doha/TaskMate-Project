@@ -23,7 +23,7 @@ def EditTask(request, id):
         form = TaskEditForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
-            return redirect('environment:index')
+            return redirect('task:view_all_tasks')
     else:
         form = TaskEditForm(instance=task)
 
@@ -35,7 +35,7 @@ def EditTask(request, id):
 def DeleteTask(request, id):
     task = get_object_or_404(Task, task_id=id)
     task.delete()
-    return redirect('environment:indexa')
+    return redirect('task:view_all_tasks')
 
 def CreateTask(request):
     if request.method == "POST":
@@ -53,11 +53,10 @@ def CreateTask(request):
         else:
             messages.error(request, 'There was an error creating the task. Please try again.')
 
-    # Get all users and environments to choose from
+    # Get all users to choose from
     users = Login.objects.all()
-    environments = Environment.objects.all()
+    
 
     return render(request, 'task/create_task.html', {
         'users': users,
-        'environments': environments
     })

@@ -128,10 +128,23 @@
   <div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content" id="editTaskModalContent">
-            <!-- Modal content will be dynamically injected -->
+            <!-- Edit Modal content will be dynamically injected -->
         </div>
     </div>
 </div>
+<!-- Create Task Modal -->
+<div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" id="createTaskModalContent">
+      <!-- Content will be dynamically injected here -->
+    </div>
+  </div>
+</div>
+
+
+
+
+
   <script>
     const environment_id = "{{ environment.environment_id }}";
     const taskCreateUrl = "{% url 'task:create_task' %}";

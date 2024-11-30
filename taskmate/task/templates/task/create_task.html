@@ -20,9 +20,7 @@
         </button> -->
 
         <!-- Create Task Modal -->
-        <div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
+
                     <form method="POST" action="{% url 'task:create_task' %}">
                         {% csrf_token %}
                         <div class="modal-header">
@@ -106,9 +104,7 @@
 
                         </div>
                     </form>
-                </div>
-            </div>
-        </div>
+   
 
 
     </body>
