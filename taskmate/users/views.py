@@ -70,7 +70,7 @@ def google_sign_in_callback(request):
             except Login.DoesNotExist:
                 Login.objects.create(
                     email=email,
-                    name=request.user.username,
+                    username=request.user.username,
                     password="",  # Leave password empty as this is Google sign-in
                 )
 
