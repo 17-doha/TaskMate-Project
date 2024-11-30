@@ -39,14 +39,15 @@
         <label for="password">Password</label>
         <input type="password" name="password" placeholder="at least 8 characters" required>
         
-        <a href="#" class="forgot-password">Forgot Password?</a>
+        <a href="{% url 'password_reset' %}" class="forgot-password">Forgot Password?</a>
+
         
         <button type="submit" class="sign-in-button">Sign in</button>
       </form>
       
       <div class="divider">Or</div>
       <div class="social-login">
-        <a href="{% provider_login_url 'google' %}?next=/">
+        <a href="{% provider_login_url 'google' %}?next=/google-sign-in-callback/">
           <button class="google-button">
             <i class="fab fa-google"></i> Sign in with Google
           </button>
@@ -61,9 +62,10 @@
     </div>
     
     <div class="right-section">
+      <div class="logo">
+        <img src="{% static 'imgs/logo1.png' %}" alt="TaskMate Logo">
+    </div>
       <img src="{% static 'imgs/login.jpeg' %}" alt="Login Image"  class="curved-image">
-
-      <h2 class="logo">TaskMate</h2>
     </div>
   </div>
   <script>

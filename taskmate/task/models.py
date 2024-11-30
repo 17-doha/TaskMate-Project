@@ -41,4 +41,7 @@ class Task(models.Model):
     # return str of content of table
     def __str__(self):
         return self.content
+        
+    class Meta:
+        ordering = ['priority', 'deadline']
 

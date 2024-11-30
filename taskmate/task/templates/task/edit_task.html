@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Task</title>
@@ -9,77 +8,92 @@
    
     <!-- Include Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
     <!-- Include Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-     <!-- CSS -->
-     <link rel="stylesheet" href="{% static 'task/css/task_pop_up.css' %}">
-</head>
-<body class="container mt-4">
-    <!-- Header Section -->
-    <header>
-        <h1>Edit Task</h1>
-    </header>
     
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'task/css/task_pop_up.css' %}">
+    <link rel="stylesheet" href="{% static 'environment/css/enviroment.css' %}">
+</head>
+<body>
+
     <!-- Edit Task Form -->
     <form method="POST" action="{% url 'task:edit_task' task.task_id %}">
         {% csrf_token %}
-        
-        <!-- Task Status and Task Priority -->
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="status" class="form-label">Task State</label>
-                <select class="form-select" id="status" name="status" required>
-                    <option value="PENDING" {% if form.status.value == 'PENDING' %}selected{% endif %}>Pending</option>
-                    <option value="IN_PROGRESS" {% if form.status.value == 'IN_PROGRESS' %}selected{% endif %}>In Progress</option>
-                    <option value="COMPLETED" {% if form.status.value == 'COMPLETED' %}selected{% endif %}>Completed</option>
-                </select>
-            </div>
-            <div class="col-md-6">
-                <label for="priority" class="form-label">Task Priority</label>
-                <select class="form-select" id="priority" name="priority" required>
-                    <option value="LOW" {% if form.priority.value == 'LOW' %}selected{% endif %}>Low</option>
-                    <option value="MEDIUM" {% if form.priority.value == 'MEDIUM' %}selected{% endif %}>Medium</option>
-                    <option value="HIGH" {% if form.priority.value == 'HIGH' %}selected{% endif %}>High</option>
-                </select>
-            </div>
+
+        <!-- header -->
+        <div class="modal-header">
+            <h5 class="modal-title" id="editTaskModalLabel">Edit Task</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
-        <!-- Assign To -->
-        <div class="row mb-3">
-            <!-- <div class="col-md-6">
-                <label for="assigned_to" class="form-label">Assign to</label>
-                <select class="form-select" id="assigned_to" name="assigned_to" required>
-                    <option value="">Select a user</option>
-                    {% for user in users %}
-                        <option value="{{ user.id }}" {% if form.assigned_to.value == user.id %}selected{% endif %}>{{ user.username }}</option>
-                    {% endfor %}
-                </select>
-            </div> -->
-            <!-- Task Start Date and Deadline -->
-            <div class="col-md-6">
-                <label for="start_date" class="form-label">Task Start Date</label>
-                <input type="datetime-local" class="form-control" id="start_date" name="start_date" 
-                        value="{{ form.start_date.value|date:'Y-m-d\TH:i' }}" required>
-            </div>
-            <div class="col-md-6">
-                <label for="deadline" class="form-label">Task Deadline</label>
-                <input type="datetime-local" class="form-control" id="deadline" name="deadline" 
-                        value="{{ form.deadline.value|date:'Y-m-d\TH:i' }}" required>
-            </div>
-        </div>
+        <div class="modal-body">
 
-        <!-- Task Content (Alone in the Row) -->
-        <div class="mb-3">
-            <label for="content" class="form-label">Task Content</label>
-            <textarea class="form-control" id="content" name="content" rows="4" required>{{ form.content.value }}</textarea>
-        </div>
+            <div class="row mb-3">
 
-        <!-- Form Footer -->
-        <div class="modal-footer">
-            <button type="submit" class="btn btn-basic">Save Changes</button>
-            <button type="button" class="btn btn-second" data-bs-dismiss="modal">Cancel</button>
+                <!-- Task Status  -->
+                <div class="col-md-6">
+                    <label for="status" class="form-label">Task State</label>
+                    <select class="form-select" id="status" name="status" required>
+                        <option value="PENDING" {% if form.status.value == 'PENDING' %}selected{% endif %}>Pending</option>
+                        <option value="IN_PROGRESS" {% if form.status.value == 'IN_PROGRESS' %}selected{% endif %}>In Progress</option>
+                        <option value="COMPLETED" {% if form.status.value == 'COMPLETED' %}selected{% endif %}>Completed</option>
+                    </select>
+                </div>
+
+                <!-- Task Priority -->
+                <div class="col-md-6">
+                    <label for="priority" class="form-label">Task Priority</label>
+                    <select class="form-select" id="priority" name="priority" required>
+                        <option value="LOW" {% if form.priority.value == 'LOW' %}selected{% endif %}>Low</option>
+                        <option value="MEDIUM" {% if form.priority.value == 'MEDIUM' %}selected{% endif %}>Medium</option>
+                        <option value="HIGH" {% if form.priority.value == 'HIGH' %}selected{% endif %}>High</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <!-- Assign To -->
+                <div class="col-md-6">
+                    <label for="assigned_to" class="form-label">Assign to</label>
+                    <select class="form-select" id="assigned_to" name="assigned_to" required>
+                        <option value="">Select a user</option>
+                        {% for user in users %}
+                            <option value="{{ user.id }}" {% if form.assigned_to.value == user.id %}selected{% endif %}>{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Task Start Date -->
+                <div class="col-md-6">
+                    <label for="start_date" class="form-label">Task Start Date</label>
+                    <input type="datetime-local" class="form-control" id="start_date" name="start_date" 
+                            value="{{ form.start_date.value|date:'Y-m-d\TH:i' }}" required>
+                </div>
+
+                <!-- Task deadline -->
+                <div class="col-md-6">
+                    <label for="deadline" class="form-label">Task Deadline</label>
+                    <input type="datetime-local" class="form-control" id="deadline" name="deadline" 
+                            value="{{ form.deadline.value|date:'Y-m-d\TH:i' }}" required>
+                </div>
+            </div>
+
+            <!-- Task Content -->
+            <div class="mb-3">
+                <label for="content" class="form-label">Task Content</label>
+                <textarea class="form-control" id="content" name="content" rows="4" required>{{ form.content.value }}</textarea>
+            </div>
+
+            <!-- Form Footer -->
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-basic">Save Changes</button>
+                <button type="button" class="btn btn-second" data-bs-dismiss="modal">Cancel</button>
+            </div>
         </div>
     </form>
+
 </body>
 </html>
 
