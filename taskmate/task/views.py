@@ -1,7 +1,7 @@
 from django.shortcuts import render,get_object_or_404, redirect
-from .models import Task, Login, Environment
+from .models import Task, Environment
 from .forms import TaskEditForm, TaskCreateForm
-from django.contrib.auth.models import User
+from signup.models import User
 from environment.models import Environment
 from django.contrib import messages
 
@@ -27,7 +27,7 @@ def EditTask(request, id):
     else:
         form = TaskEditForm(instance=task)
 
-    users = Login.objects.all()
+    users = User.objects.all()
     return render(request, 'task/edit_task.html', {'form': form, 'task': task, 'users': users})
 
 
@@ -44,8 +44,8 @@ def CreateTask(request):
         
         if form.is_valid():
             task = form.save(commit=False)
-            task.created_by = Login.objects.get(id = 1) # default for now
-            task.environment_id = Environment.objects.get(environment_id = 3) # defult for dlw2ty till fix 
+            task.created_by = User.objects.get(id = 10) # default for now
+            task.environment_id = Environment.objects.get(environment_id = 1) # defult for dlw2ty till fix 
             task.save()
             messages.success(request, 'Task created successfully!')
             return redirect('environment:index') 
@@ -53,7 +53,7 @@ def CreateTask(request):
             messages.error(request, 'There was an error creating the task. Please try again.')
 
     # Get all users to choose from
-    users = Login.objects.all()
+    users = User.objects.all()
 
     return render(request, 'task/create_task.html', {
         'users': users,

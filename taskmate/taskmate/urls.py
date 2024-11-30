@@ -17,7 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, reverse_lazy
 from users import views
+from signup.views import signup, activate_mail
 from django.contrib.auth import views as auth_views
+
 
 
 urlpatterns = [
@@ -31,6 +33,11 @@ urlpatterns = [
     path("environment/", include("environment.urls")),
     path("task/", include("task.urls")),
 
+
+    #Signup urls
+    path('signup/', signup, name='signup'),
+    path('activate/<uidb64>/<token>/', activate_mail, name = "activate"),
+
     path('password-reset/', 
          auth_views.PasswordResetView.as_view(template_name='password_reset/password_reset.html'),
          name='password_reset'),
@@ -42,4 +49,5 @@ urlpatterns = [
          success_url=reverse_lazy('login')
          ), 
         name='password_reset_confirm'),
+
 ]

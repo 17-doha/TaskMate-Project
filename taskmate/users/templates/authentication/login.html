@@ -14,8 +14,9 @@
 
 </head>
 <body>
-  {% load socialaccount %}
 
+  <!-- The Warning Messages Container or Alerts -->
+  {% load socialaccount %}
   <div class="container">
     <div class="alert-container">
       {% if messages %}
@@ -27,7 +28,9 @@
           {% endif %}
         {% endfor %}
       {% endif %}
+    <!-- End of the Alert Container -->
     </div>
+    <!-- Left Section with Login Form -->
     <div class="left-section">
       <h1>Welcome Back 👋</h1>
       <p>Today is a new day. It's your day. You shape it.<br>Sign in to start managing your tasks.</p>
@@ -59,34 +62,22 @@
       <p class="signup-prompt">
         Don't you have an account? <a href="#">Sign up</a>
       </p>
+      <!-- End of the Left Section -->
     </div>
-    
+
+
+    <!-- Right Section with Login Image and Logo -->
     <div class="right-section">
       <div class="logo">
         <img src="{% static 'imgs/logo1.png' %}" alt="TaskMate Logo">
     </div>
       <img src="{% static 'imgs/login.jpeg' %}" alt="Login Image"  class="curved-image">
     </div>
+    <!-- End of the Right Section -->
   </div>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const alerts = document.querySelectorAll('.alert');
-  
-      alerts.forEach(alert => {
-        // Set a timeout to slide up and remove the alert
-        setTimeout(() => {
-          alert.classList.add('hide'); // Trigger the slide-up animation
-        }, 1500); // Show alert for 3 seconds
-  
-        // Remove the alert element after the animation completes
-        alert.addEventListener('animationend', () => {
-          if (alert.classList.contains('hide')) {
-            alert.remove();
-          }
-        });
-      });
-    });
-  </script>
+
+  <!-- Loading the js for the Warning or the Alerts -->
+  <script src="{% static 'js/login.js' %}"></script>
   
 </body>
 </html>

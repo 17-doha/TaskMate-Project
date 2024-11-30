@@ -1,6 +1,6 @@
 from django import forms
-from .models import Task, Login
-from django.contrib.auth.models import User
+from .models import Task
+from signup.models import User
 from environment.models import Environment
 
 
@@ -25,5 +25,5 @@ class TaskCreateForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea(attrs={'rows': 4, 'placeholder': 'Task Description'}))
     deadline = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
     start_date = forms.DateTimeField(widget=forms.DateTimeInput(attrs={'type': 'datetime-local'}))
-    assigned_to = forms.ModelChoiceField(queryset=Login.objects.all(), required=True)
+    assigned_to = forms.ModelChoiceField(queryset=User.objects.all(), required=True)
     environment_id = forms.ModelChoiceField(queryset=Environment.objects.all(), required=False) 
