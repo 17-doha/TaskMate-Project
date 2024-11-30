@@ -11,16 +11,20 @@
   <title>TaskMate Dashboard</title>
   <!-- Add Font Awesome for Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <!-- load jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
   <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+
   <!-- Main Content -->
   <main class="main-content">
+
     <!-- Board Content -->
     <section class="board">
       <div class="columns">
-        <!-- Lto do Column -->
+
+        <!-- To do Column -->
         <div class="column" id="low" ondrop="drop(event)" ondragover="allowDrop(event)">
           <div class="column-header">
             <h3>To Do</h3>
@@ -32,7 +36,10 @@
           {% for task in todo_tasks %}
             <div class="task-card" draggable="true" ondragstart="drag(event)" id="task{{ task.task_id }}" data-task-id="{{ task.task_id }}">
               <div style="display: flex; justify-content: space-between;">
-                <p class="label {{ task.priority|lower }}">{{ task.priority }}</p> <!-- Task's priority -->
+
+                <!-- Task's priority -->
+                <p class="label {{ task.priority|lower }}">{{ task.priority }}</p> 
+
                 <!-- dropdown part -->
                 <div class="dropdown">
                   <button class="dropdown-toggle">
@@ -45,17 +52,20 @@
                         <button type="submit" class="dropdown-item">Delete</button>
                     </form>
                   </div>
+                </div>
+                
               </div>
-            </div>
 
                 <h4>{{ task.content }}</h4>
                 <p>Deadline: {{ task.deadline }}</p>
             </div>
             {% empty %}
+            <!-- remove no tasks if i droped a task there -->
           <p class="no-tasks-message">No tasks in To Do</p>
         {% endfor %}
 
         </div>
+
 
         <!-- In progress Column -->
         <div class="column" id="medium" ondrop="drop(event)" ondragover="allowDrop(event)">
@@ -66,7 +76,10 @@
           {% for task in inprogress_tasks %}
           <div class="task-card" draggable="true" ondragstart="drag(event)" id="task{{ task.task_id }}" data-task-id="{{ task.task_id }}">
             <div style="display: flex; justify-content: space-between;">
-              <p class="label {{ task.priority|lower }}">{{ task.priority }}</p> <!-- Task's priority -->
+
+              <!-- Task's priority -->
+              <p class="label {{ task.priority|lower }}">{{ task.priority }}</p> 
+
               <!-- dropdown part -->
               <div class="dropdown">
                 <button class="dropdown-toggle">
@@ -79,13 +92,15 @@
                       <button type="submit" class="dropdown-item">Delete</button>
                   </form>
                 </div>
-            </div>
-          </div>
+              </div>
 
+            </div>
               <h4>{{ task.content }}</h4>
               <p>Deadline: {{ task.deadline }}</p>
           </div>
           {% empty %}
+
+        <!-- remove no tasks if i droped a task there -->
         <p class="no-tasks-message">No tasks in In progress</p> 
           {% endfor %}
         </div>
@@ -99,7 +114,10 @@
           {% for task in done_tasks %}
           <div class="task-card" draggable="true" ondragstart="drag(event)" id="task{{ task.task_id }}" data-task-id="{{ task.task_id }}">
             <div style="display: flex; justify-content: space-between;">
-              <p class="label {{ task.priority|lower }}">{{ task.priority }}</p> <!-- Task's priority -->
+
+              <!-- Task's priority -->
+              <p class="label {{ task.priority|lower }}">{{ task.priority }}</p> 
+
               <!-- dropdown part -->
               <div class="dropdown">
                 <button class="dropdown-toggle">
@@ -112,13 +130,16 @@
                       <button type="submit" class="dropdown-item">Delete</button>
                   </form>
                 </div>
+
+              </div>
             </div>
-          </div>
 
               <h4>{{ task.content }}</h4>
               <p>Deadline: {{ task.deadline }}</p>
           </div>
-            {% empty %}
+          {% empty %}
+
+          <!-- remove no tasks if i droped a task there -->
           <p class="no-tasks-message">No tasks in Done</p>
           {% endfor %}
         </div>
@@ -128,31 +149,32 @@
 
 
   <!--------------------------- model rendering ----------------------------->
-<!-- Edit Task Modal -->
-<div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
+  <!-- Edit Task Modal -->
+  <div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content" id="editTaskModalContent">
-            <!-- Edit Modal content will be dynamically injected -->
-        </div>
-    </div>
-</div>
-<!-- Create Task Modal -->
-<div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content" id="createTaskModalContent">
-      <!-- Content will be dynamically injected here -->
+      <div class="modal-content" id="editTaskModalContent">
+        <!-- Edit Modal content will be injected -->
+      </div>
     </div>
   </div>
-</div>
-<!-- ------------------------------------------------------------------ -->
+  <!-- Create Task Modal -->
+  <div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content" id="createTaskModalContent">
+        <!-- Create Modal Content will be injected here -->
+      </div>
+    </div>
+  </div>
+  <!-- ------------------------------------------------------------------ -->
 
 
 
-
+  <!-- needed vars -->
   <script>
     const environment_id = "{{ environment.environment_id }}";
     const taskCreateUrl = "{% url 'task:create_task' %}";
   </script>
+
   <!-- styles -->
   <link rel="stylesheet" href="{% static 'task/css/task_pop_up.css' %}">
   <link rel="stylesheet" href="{% static 'environment/css/enviroment.css' %}">
@@ -165,10 +187,6 @@
   <script src="{% static 'environment/js/pop_up.js' %}"></script>
 
 
-
-
 </body>
 </html>
-
-
 {% endblock %}

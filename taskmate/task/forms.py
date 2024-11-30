@@ -3,6 +3,8 @@ from .models import Task, Login
 from django.contrib.auth.models import User
 from environment.models import Environment
 
+
+# Edit Task Form
 class TaskEditForm(forms.ModelForm):
     class Meta:
         model = Task  
@@ -14,6 +16,7 @@ class TaskEditForm(forms.ModelForm):
         }
 
 
+# Create Task Form
 class TaskCreateForm(forms.ModelForm):
     class Meta:
         model = Task

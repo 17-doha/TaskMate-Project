@@ -8,10 +8,12 @@ function showModal(modalId) {
 function removeModal(modalId) {
     const modalElement = document.getElementById(modalId);
     if (modalElement) {
-        modalElement.remove(); // Clean up modal when it's closed
+        modalElement.remove(); 
     }
 }
-///////////////////////////////////// create task/////////////////////////////////////////
+
+
+///////////////////////////////////// create task /////////////////////////////////////////
 
 $(document).ready(function () {
     // Event listener for the "Add Task" button (to load the create task form)
@@ -40,29 +42,26 @@ $(document).ready(function () {
 
 
 
-/////////////////////////////////////////// Edit Task Pop Up //////////////////////////////////////////
+/////////////////////////////////////////// Edit Task  //////////////////////////////////////////
 
 
 
-// Create the modal element and append it to the DOM
 const editTaskModal = $('<div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true"></div>');
 $('body').append(editTaskModal);
 
-// Set up the event listener for the modal's hidden event
+
 editTaskModal.on('hidden.bs.modal', function () {
     console.log("Modal closed, removing it from the DOM");
     removeModal('editTaskModal'); // Clean up modal after it's closed
 });
 
 $(document).ready(function () {
-    // Event listener for Edit Task buttons
     $('.edit-task-btn').click(function () {
-        const taskId = $(this).data('task-id'); // Get task ID from button data attribute
 
-        // Construct URL for fetching the edit form
+        const taskId = $(this).data('task-id');
         const url = `/task/edit/${taskId}/`;
 
-        // Send an AJAX request to fetch the edit form for the task
+        // Send an AJAX request 
         $.ajax({
             url: url,
             method: 'GET',

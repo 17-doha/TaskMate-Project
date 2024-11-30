@@ -1,5 +1,5 @@
- /* General Styles */
- body {
+/* General Styles */
+body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
@@ -63,24 +63,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent; /* Transparent background */
-    color: #083b0d; /* Text and icon color */
-    padding: 8px 12px; /* Balanced padding for button size */
-    border: none; /* Remove border */
-    border-radius: 4px; /* Optional slight rounding, set to 0 for sharp edges */
-    font-size: 14px; /* Slightly smaller font for clean look */
+    background: transparent; 
+    color: #083b0d; 
+    padding: 8px 12px; 
+    border: none; 
+    border-radius: 4px; 
+    font-size: 14px; 
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease; /* Smooth transition for hover effects */
 }
 
 .add-task:hover {
-    background: rgba(156, 197, 182, 0.5); /* Add a subtle hover effect */
+    background: rgba(156, 197, 182, 0.5); 
 }
 
 .add-task i {
     margin-right: 6px; /* Spacing between the "+" icon and text */
-    font-size: 16px; /* Icon size */
+    font-size: 16px; 
 }
 
 .column-bar {
@@ -179,13 +179,13 @@
 
 /* dropdown css */
 
-/* Dropdown container */
+
 .dropdown {
     position: relative;
     display: inline-block;
 }
 
-/* Dropdown button */
+
 .dropdown-toggle {
     background: none;
     border: none;
@@ -194,7 +194,6 @@
     color: #555;
 }
 
-/* Dropdown menu */
 .dropdown-menu {
     display: none;
     position: absolute;
@@ -209,7 +208,7 @@
     padding: 8px 0;
 }
 
-/* Dropdown item */
+
 .dropdown-item {
     display: block;
     width: 100%;
@@ -226,10 +225,7 @@
     background: #f5f5f5;
 }
 
-/* Show dropdown menu when the parent is hovered */
+
 .dropdown:hover .dropdown-menu {
     display: block;
 }
-
-
-/* task card layout  */
