@@ -60,7 +60,7 @@
                     <select class="form-select" id="assigned_to" name="assigned_to" required>
                         <option value="">Select a user</option>
                         {% for user in users %}
-                            <option value="{{ user.id }}" {% if form.assigned_to.value == user.id %}selected{% endif %}>{{ user.name }}</option>
+                            <option value="{{ user.id }}" {% if form.assigned_to.value == user.id %}selected{% endif %}>{{ user.username }}</option>
                         {% endfor %}
                     </select>
                 </div>

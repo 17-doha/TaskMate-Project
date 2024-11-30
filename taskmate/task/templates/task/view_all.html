@@ -29,7 +29,7 @@
             <tr>
                 <td>{{ task.content }}</td>
                 <td>{{ task.get_status_display }}</td>
-                <td>{{ task.assigned_to.name }}</td>
+                <td>{{ task.assigned_to.username }}</td>
                 <td>
                     <!-- Edit Task Button -->
                     <button type="button" class="btn btn-basic edit-task-btn" data-task-id="{{ task.task_id }}">Edit Task</button>
