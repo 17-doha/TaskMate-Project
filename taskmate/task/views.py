@@ -57,7 +57,6 @@ def CreateTask(request):
 
     return render(request, 'task/create_task.html', {
         'users': users,
-        'environments': environments
     })
 
 
