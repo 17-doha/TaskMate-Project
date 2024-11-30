@@ -41,7 +41,7 @@ class Task(models.Model):
     def __str__(self):
         
         return self.content
-        
+    # Any query which gets this table, it makes data retreived with this order
     class Meta:
-        ordering = ['priority', 'deadline']
-
+        ordering = ['priority',  'deadline']
+#mal7ozaaaaaaaaaaaaaa
