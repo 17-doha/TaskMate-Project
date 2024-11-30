@@ -17,11 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include, reverse_lazy
 from users import views
-<<<<<<< HEAD
 from signup.views import signup, activate_mail
-=======
 from django.contrib.auth import views as auth_views
->>>>>>> origin/Sign-In
+
 
 
 urlpatterns = [

@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static 'css/signup.css' %}" />
   </head>
   <body>
+    {% load socialaccount %}
     <div class="container">
       <!-- Left Section -->
       <div class="left-section">
@@ -115,6 +116,7 @@
 
           <!-- Social Login -->
           <div class="social-login">
+            <a href="{% provider_login_url 'google' %}?next=/google-sign-in-callback/">
             <button type="button" class="google-login">
               <img
                 src="{% static 'images/image.png' %}"
