@@ -88,10 +88,28 @@ def dragAndDrop(request, environment_id):
 
  
 def search_environment(request):
+    """
+    Handles search functionality for environments.
+
+    Parameters:
+    - request: HttpRequest object that contains metadata about the request. 
+      It includes the HTTP method and any data submitted via POST.
+
+    Returns:
+    - If the request method is POST:
+        - Renders the 'search_environment.html' template with:
+          - 'searched': The search term entered by the user.
+          - 'environments': Queryset of Environment objects whose 'label' contains the search term.
+    - If the request method is not POST:
+        - Renders the 'search_environment.html' template with an empty context.
+    """
     if request.method == "POST":
+        # Get the search term from the POST request
         searched = request.POST['searched']
+        # Query the database for environments with labels containing the search term
         environments = Environment.objects.filter(label__contains=searched)
+        # Render the template with the search term and the results
         return render(request, 'search_environment.html', {'searched': searched, 'environments': environments})
     else:
+        # Render the template without any context if the method is not POST
         return render(request, 'search_environment.html', {})
-
