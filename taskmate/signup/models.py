@@ -48,10 +48,12 @@ def send_activation_email(sender, instance, created, **kwargs):
         uid = urlsafe_base64_encode(force_bytes(instance.pk))
         subject = "TaskMate Account Verification"
         html_message = f"""
-        <p>Hi {instance.first_name},</p>
+        <div>
+        <h3>Hi {instance.first_name},</h3>
         <p>Please confirm your email address by clicking the link below:</p>
-        <a href="http://127.0.0.1:8000/activate/{uid}/{token}style="color:white; text-decoration: none;border-radius: 25px; background-color: #8661ff; padding: 7px 25px;"> <strong>Verify Email<strong></a>
+        <a href="http://127.0.0.1:8000/activate/{uid}/{token}" style="color:white; text-decoration: none;border-radius: 25px; background-color: #8661ff; padding: 7px 25px;"> <strong>Verify Email<strong></a>
         <p>Thank you!</p>
+        </div>
         """
         try:
             send_mail(
