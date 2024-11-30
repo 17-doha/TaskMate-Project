@@ -11,7 +11,7 @@
   <title>TaskMate Dashboard</title>
   <!-- Add Font Awesome for Icons -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
   <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
@@ -20,7 +20,7 @@
     <!-- Board Content -->
     <section class="board">
       <div class="columns">
-        <!-- Low Priority Column -->
+        <!-- Lto do Column -->
         <div class="column" id="low" ondrop="drop(event)" ondragover="allowDrop(event)">
           <div class="column-header">
             <h3>To Do</h3>
@@ -30,58 +30,128 @@
           </div>
           <div class="column-bar low"></div>
           {% for task in todo_tasks %}
-            <div class="task-card" draggable="true" ondragstart="drag(event)" id="task1" data-task-id="{{ task.task_id }}">
-              <p class="label low">{{ task.priority }}</p>
-              <h4>{{ task.content }}</h4>
-              <p>Deadline: {{ task.deadline }}</p>
+            <div class="task-card" draggable="true" ondragstart="drag(event)" id="task{{ task.task_id }}" data-task-id="{{ task.task_id }}">
+              <div style="display: flex; justify-content: space-between;">
+                <p class="label {{ task.priority|lower }}">{{ task.priority }}</p> <!-- Task's priority -->
+                <!-- dropdown part -->
+                <div class="dropdown">
+                  <button class="dropdown-toggle">
+                      <i class="fas fa-ellipsis"></i>
+                  </button>
+                  <div class="dropdown-menu">
+                      <button class="dropdown-item edit-task-btn" data-task-id="{{ task.task_id }}">Edit</button>
+                      <form action="{% url 'task:delete_task' id=task.task_id %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="dropdown-item">Delete</button>
+                    </form>
+                  </div>
+              </div>
+            </div>
+
+                <h4>{{ task.content }}</h4>
+                <p>Deadline: {{ task.deadline }}</p>
             </div>
             {% empty %}
-          <p>No tasks in To Do</p>
-          {% endfor %}
+          <p class="no-tasks-message">No tasks in To Do</p>
+        {% endfor %}
+
         </div>
 
-        <!-- Medium Priority Column -->
+        <!-- In progress Column -->
         <div class="column" id="medium" ondrop="drop(event)" ondragover="allowDrop(event)">
           <div class="column-header">
             <h3>In Progress</h3>
           </div>
           <div class="column-bar medium"></div>
           {% for task in inprogress_tasks %}
-            <div class="task-card" draggable="true" ondragstart="drag(event)" id="task3" data-task-id="{{ task.task_id }}">
-              <p class="label medium">{{ task.priority }}</p>
+          <div class="task-card" draggable="true" ondragstart="drag(event)" id="task{{ task.task_id }}" data-task-id="{{ task.task_id }}">
+            <div style="display: flex; justify-content: space-between;">
+              <p class="label {{ task.priority|lower }}">{{ task.priority }}</p> <!-- Task's priority -->
+              <!-- dropdown part -->
+              <div class="dropdown">
+                <button class="dropdown-toggle">
+                    <i class="fas fa-ellipsis"></i>
+                </button>
+                <div class="dropdown-menu">
+                    <button class="dropdown-item edit-task-btn" data-task-id="{{ task.task_id }}">Edit</button>
+                    <form action="{% url 'task:delete_task' id=task.task_id %}" method="POST">
+                      {% csrf_token %}
+                      <button type="submit" class="dropdown-item">Delete</button>
+                  </form>
+                </div>
+            </div>
+          </div>
+
               <h4>{{ task.content }}</h4>
               <p>Deadline: {{ task.deadline }}</p>
-            </div>
-            {% empty %}
-          <p>No tasks in Progress</p>
+          </div>
+          {% empty %}
+        <p class="no-tasks-message">No tasks in In progress</p> 
           {% endfor %}
         </div>
 
-        <!-- High Priority Column -->
+        <!-- Done Column -->
         <div class="column" id="high" ondrop="drop(event)" ondragover="allowDrop(event)">
           <div class="column-header">
             <h3>Done</h3>
           </div>
           <div class="column-bar high"></div>
           {% for task in done_tasks %}
-            <div class="task-card" draggable="true" ondragstart="drag(event)" id="task4" data-task-id="{{ task.task_id }}">
-              <p class="label high">{{ task.priority }}</p>
-              <h4>{{ task.content }}</h4>
-              <p>Completed on: {{ task.deadline }}</p>
+          <div class="task-card" draggable="true" ondragstart="drag(event)" id="task{{ task.task_id }}" data-task-id="{{ task.task_id }}">
+            <div style="display: flex; justify-content: space-between;">
+              <p class="label {{ task.priority|lower }}">{{ task.priority }}</p> <!-- Task's priority -->
+              <!-- dropdown part -->
+              <div class="dropdown">
+                <button class="dropdown-toggle">
+                    <i class="fas fa-ellipsis"></i>
+                </button>
+                <div class="dropdown-menu">
+                    <button class="dropdown-item edit-task-btn" data-task-id="{{ task.task_id }}">Edit</button>
+                    <form action="{% url 'task:delete_task' id=task.task_id %}" method="POST">
+                      {% csrf_token %}
+                      <button type="submit" class="dropdown-item">Delete</button>
+                  </form>
+                </div>
             </div>
+          </div>
+
+              <h4>{{ task.content }}</h4>
+              <p>Deadline: {{ task.deadline }}</p>
+          </div>
             {% empty %}
-          <p>No tasks in Done</p>
+          <p class="no-tasks-message">No tasks in Done</p>
           {% endfor %}
         </div>
       </div>
     </section>
   </main>
+  <div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="editTaskModalContent">
+            <!-- Edit Modal content will be dynamically injected -->
+        </div>
+    </div>
+</div>
+<!-- Create Task Modal -->
+<div class="modal fade" id="createTaskModal" tabindex="-1" aria-labelledby="createTaskModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" id="createTaskModalContent">
+      <!-- Content will be dynamically injected here -->
+    </div>
+  </div>
+</div>
+
+
+
 
 
   <script>
     const environment_id = "{{ environment.environment_id }}";
     const taskCreateUrl = "{% url 'task:create_task' %}";
   </script>
+  <!-- styles -->
+  <link rel="stylesheet" href="{% static 'task/css/task_pop_up.css' %}">
+  <link rel="stylesheet" href="{% static 'environment/css/enviroment.css' %}">
 
   <!-- bootstrap js -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -90,9 +160,8 @@
   <!-- pop up -->
   <script src="{% static 'environment/js/pop_up.js' %}"></script>
 
-  <!-- styles -->
-  <link rel="stylesheet" href="{% static 'task/css/task_pop_up.css' %}">
-  <link rel="stylesheet" href="{% static 'environment/css/enviroment.css' %}">
+
+
 
 </body>
 </html>

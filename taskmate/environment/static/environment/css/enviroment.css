@@ -174,3 +174,62 @@
 .modal.show .modal-dialog.modal-dialog-centered {
     transform: translateY(0);  /* Slide in from top */
 }
+
+
+
+/* dropdown css */
+
+/* Dropdown container */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown button */
+.dropdown-toggle {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #555;
+}
+
+/* Dropdown menu */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    z-index: 1000;
+    min-width: 120px;
+    padding: 8px 0;
+}
+
+/* Dropdown item */
+.dropdown-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    color: #333;
+}
+
+.dropdown-item:hover {
+    background: #f5f5f5;
+}
+
+/* Show dropdown menu when the parent is hovered */
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+
+/* task card layout  */

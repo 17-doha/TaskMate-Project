@@ -53,11 +53,10 @@ def CreateTask(request):
         else:
             messages.error(request, 'There was an error creating the task. Please try again.')
 
-    # Get all users and environments to choose from
+    # Get all users to choose from
     users = Login.objects.all()
-    environments = Environment.objects.all()
+    
 
     return render(request, 'task/create_task.html', {
         'users': users,
-        'environments': environments
     })
