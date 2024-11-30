@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}  <!-- Add this line to load the static tag -->
 {% block content %}
 
 <!DOCTYPE html>
@@ -7,70 +8,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7fc;
-            margin: 0;
-            padding: 0;
-        }
-
-        .search-results {
-            width: 80%;
-            margin: 30px auto;
-            padding: 20px;
-        }
-
-        .results-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-
-        .result-card {
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 300px;
-            padding: 20px;
-            transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
-        }
-
-        .result-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            color: #555;
-            margin-top: 20px;
-        }
-
-        p {
-            font-size: 14px;
-            color: #555;
-            line-height: 1.5;
-        }
-
-        a {
-            color: #0066cc;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'search_environment/css/search_environment.css' %}">
 </head>
 <body>
     {% if searched %}
@@ -91,7 +29,6 @@
                 </div>
             {% endif %}
 
-            <!-- Only display tasks section if results are found -->
             {% if tasks %}
                 <h2>Found Tasks</h2>
                 <div class="results-container">
@@ -110,6 +47,7 @@
     {% else %}
         <h1 class="error-message">Hey! You forgot to search...</h1>
     {% endif %}
+    <script src="{% static 'search_environment/js/search_environment.js' %}"></script>
 </body>
 </html>
 
