@@ -99,25 +99,17 @@ WSGI_APPLICATION = 'taskmate.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'mssql',
-#         'NAME': 'Taskmate',
-
-
-#         'OPTIONS': {
-#             'driver': 'ODBC Driver 17 for SQL Server',
-#             'trusted_connection': 'yes',
-#         },
-#     },
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-} 
+        'ENGINE': 'mssql',
+        'NAME': 'Taskmate',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+            'trusted_connection': 'yes',
+        },
+    },
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

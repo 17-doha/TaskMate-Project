@@ -8,6 +8,11 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import PBKDF2SHA1PasswordHasher
+
+# The password to hash
+
 
 
 
@@ -15,6 +20,7 @@ def login_user(request):
     """
     Handles local sign-in and ensures the user exists.
     """
+
     if request.method == 'POST':
         # Get email and password from the POST request
         email = request.POST.get('email')
