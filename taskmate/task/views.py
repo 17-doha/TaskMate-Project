@@ -23,7 +23,7 @@ def EditTask(request, id):
         form = TaskEditForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
-            return redirect('task:view_all_tasks')
+            return redirect('environment:index')
     else:
         form = TaskEditForm(instance=task)
 
@@ -35,7 +35,7 @@ def EditTask(request, id):
 def DeleteTask(request, id):
     task = get_object_or_404(Task, task_id=id)
     task.delete()
-    return redirect('task:view_all_tasks')
+    return redirect('environment:indexa')
 
 def CreateTask(request):
     if request.method == "POST":

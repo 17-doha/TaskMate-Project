@@ -13,6 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
      <!-- CSS -->
      <link rel="stylesheet" href="{% static 'task/css/task_pop_up.css' %}">
+     <link rel="stylesheet" href="{% static 'environment/css/enviroment.css' %}">
 </head>
 <body class="container mt-4">
     <!-- Header Section -->
@@ -46,15 +47,15 @@
 
         <!-- Assign To -->
         <div class="row mb-3">
-            <!-- <div class="col-md-6">
+            <div class="col-md-6">
                 <label for="assigned_to" class="form-label">Assign to</label>
                 <select class="form-select" id="assigned_to" name="assigned_to" required>
                     <option value="">Select a user</option>
                     {% for user in users %}
-                        <option value="{{ user.id }}" {% if form.assigned_to.value == user.id %}selected{% endif %}>{{ user.username }}</option>
+                        <option value="{{ user.id }}" {% if form.assigned_to.value == user.id %}selected{% endif %}>{{ user.name }}</option>
                     {% endfor %}
                 </select>
-            </div> -->
+            </div>
             <!-- Task Start Date and Deadline -->
             <div class="col-md-6">
                 <label for="start_date" class="form-label">Task Start Date</label>
