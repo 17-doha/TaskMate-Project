@@ -14,6 +14,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
+AUTH_USER_MODEL = 'users.Login'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -35,6 +37,7 @@ SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = [
+    'password_reset',
     'environment.apps.EnvironmentConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -113,8 +116,6 @@ DATABASES = {
     'default': {
         'ENGINE': 'mssql',
         'NAME': 'Taskmate',
-
-
         'OPTIONS': {
             'driver': 'ODBC Driver 17 for SQL Server',
             'trusted_connection': 'yes',
@@ -175,5 +176,13 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend'
 )
 
-LOGIN_REDIRECT_URL = 'main/'
-ACCOUNT_SIGNUP_REDIRECT_URL = 'main/'
+LOGIN_REDIRECT_URL = '/main/'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "sarahelsayed202200347@gmail.com"
+EMAIL_HOST_PASSWORD = "dtwnmwawgulzelpw"

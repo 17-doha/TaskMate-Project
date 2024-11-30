@@ -6,7 +6,7 @@ from environment.models import Environment
 from django.contrib import messages
 
 
-#A view to show all tasks with the edit and delete buttons
+#A view to show all tasks with the edit and delete buttons for testing
 def ViewAllTasks(request):
     queryset = Task.objects.all()
     print(len(queryset))
@@ -16,7 +16,7 @@ def ViewAllTasks(request):
     return render(request,'task/view_all.html',context)
 
 
-# A view to allow edit in another page (pop up later)
+# A view to allow edit in another page 
 def EditTask(request, id):
     task = get_object_or_404(Task, task_id=id)
     if request.method == 'POST':
@@ -31,21 +31,20 @@ def EditTask(request, id):
     return render(request, 'task/edit_task.html', {'form': form, 'task': task, 'users': users})
 
 
-# A view to delete tasks on immediate click 
+# A view to delete tasks on click 
 def DeleteTask(request, id):
     task = get_object_or_404(Task, task_id=id)
     task.delete()
     return redirect('task:view_all_tasks')
 
+
 def CreateTask(request):
     if request.method == "POST":
-        # Create a form instance 
         form = TaskCreateForm(request.POST)
         
         if form.is_valid():
-            # If the form is valid save the new task
             task = form.save(commit=False)
-            task.created_by = Login.objects.get(id = 1) # Automatically assign the logged-in user as the creator
+            task.created_by = Login.objects.get(id = 1) # default for now
             task.environment_id = Environment.objects.get(environment_id = 3) # defult for dlw2ty till fix 
             task.save()
             messages.success(request, 'Task created successfully!')
@@ -53,11 +52,9 @@ def CreateTask(request):
         else:
             messages.error(request, 'There was an error creating the task. Please try again.')
 
-    # Get all users and environments to choose from
+    # Get all users to choose from
     users = Login.objects.all()
-    environments = Environment.objects.all()
 
     return render(request, 'task/create_task.html', {
         'users': users,
-        'environments': environments
     })

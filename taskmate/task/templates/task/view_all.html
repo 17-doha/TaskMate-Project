@@ -11,6 +11,7 @@
 
     <!-- Include custom styles -->
     <link rel="stylesheet" href="{% static 'task/css/task_pop_up.css' %}">
+    
 </head>
 <body>
     <h1 class="text-center mb-4">Task List</h1>
@@ -28,7 +29,7 @@
             <tr>
                 <td>{{ task.content }}</td>
                 <td>{{ task.get_status_display }}</td>
-                <td>{{ task.assigned_to }}</td>
+                <td>{{ task.assigned_to.username }}</td>
                 <td>
                     <!-- Edit Task Button -->
                     <button type="button" class="btn btn-basic edit-task-btn" data-task-id="{{ task.task_id }}">Edit Task</button>
