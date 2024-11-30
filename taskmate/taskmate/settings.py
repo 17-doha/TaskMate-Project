@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 import os
 from pathlib import Path
-import os
+from dotenv import load_dotenv
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -27,6 +28,8 @@ SECRET_KEY = 'django-insecure-&@&39d^^#r%lg624ae@h(e327pnt9^1j=7n5*+*#u=_dw_)9^a
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+# AUTH_USER_MODEL = 'users.User'
 
 SITE_ID = 1
 # Application definition
@@ -46,7 +49,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google', 
     'task',
-    
+    'signup',
 ]
 SOCIALACCOUNT_LOGIN_ON_GET=True
 SOCIALACCOUNT_PROVIDERS = {
@@ -92,6 +95,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'taskmate.wsgi.application'
 
+#Update the settings.py file Allowed host list which was empty
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
+EMAIL_USE_TLS = True 
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST_USER = "haneenalaa465@gmail.com"
+EMAIL_HOST_PASSWORD = "mmtmhjpsemdmsvkg"
+EMAIL_PORT = 587
+
+AUTH_USER_MODEL = 'signup.User'
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
