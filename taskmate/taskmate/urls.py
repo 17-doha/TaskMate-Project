@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include, reverse_lazy
 from users import views
 from django.contrib.auth import views as auth_views
+from signup.views import signup, activate_mail
 
 
 urlpatterns = [
@@ -42,4 +43,10 @@ urlpatterns = [
          success_url=reverse_lazy('login')
          ), 
         name='password_reset_confirm'),
+
+    #Signup urls
+    path('signup/', signup, name='signup'),
+    path('activate/<uidb64>/<token>/', activate_mail, name = "activate"),
+
+
 ]
