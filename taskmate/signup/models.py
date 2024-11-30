@@ -1,11 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.conf import settings
-
-
 from django.utils.encoding import force_bytes 
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
@@ -24,6 +21,10 @@ class User(AbstractUser):
     """
     phone_number = models.CharField(max_length=30, blank=True)
     is_verified = models.BooleanField(default=False)
+    age = models.IntegerField(null=True, blank=True)
+    phone_num = models.CharField(max_length=15, null=True, blank=True)
+    theme_is_light = models.BooleanField(default=True)
+    badge_name = models.CharField(max_length=255, null=True, blank=True)
 
 @receiver(post_save, sender=User)
 def send_activation_email(sender, instance, created, **kwargs):
