@@ -1,130 +1,122 @@
 from django.shortcuts import render, redirect
-from .forms import SignUpForm
 from django.contrib import messages
-from django.utils.http import urlsafe_base64_decode
-from django.utils.encoding import force_str
+from django.contrib.auth import logout, login
 from signup.models import User
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
+from allauth.socialaccount.models import SocialAccount
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import PBKDF2SHA1PasswordHasher
 
-# View to render the homepage
-def home(request):
-    """
-    Renders the base/homepage of the application.
+# The password to hash
 
-    Parameters:
-    - request: HttpRequest object containing metadata about the request.
 
-    Returns:
-    - Rendered HTML template 'users/base.html'.
-    """
-    return render(request, 'users/base.html')
 
-# View to handle user signup
-def signup(request):
-    """
-    Handles the user signup process:
-    - Validates the input data.
-    - Checks for duplicate email registration.
-    - Creates and saves a new user in the database.
 
-    Parameters:
-    - request: HttpRequest object containing form data submitted via POST.
+def login_user(request):
+    '''
+    Handles the login process for local users.
 
-    Returns:
-    - On success: Redirects to the login page with a success message.
-    - On failure: Renders the signup page with error messages.
-    """
+    Logic:
+    - Retrieves the user's email and password from the POST request.
+    - Validates the email and checks if it exists in the database.
+    - Compares the provided password with the hashed password stored in the database.
+    - Redirects to the main page on success.
+    - Displays error messages for incorrect credentials or non-existent users.
+
+    Inputs:
+    - request: HttpRequest object containing login credentials.
+
+    Outputs:
+    - On successful login: Redirects to the 'main' page.
+    - On failure: Renders the login page with error messages.
+    '''
+
     if request.method == 'POST':
-        # Extract form data
-        first_name = request.POST.get("first_name", "").strip()
-        last_name = request.POST.get("last_name", "").strip()
-        email = request.POST.get("email", "").strip()
-        password = request.POST.get("password", "").strip()
-        confirm_password = request.POST.get("confirm_password", "").strip()
+        # Get email and password from the POST request
+        email = request.POST.get('email')
+        password = request.POST.get('password')
 
-        # Check if passwords match
-        if password != confirm_password:
-            messages.error(request, "Passwords do not match!")
-            return redirect('signup')
+
+        # Perform the exact match query for the email
+        try:
+            user = User.objects.get(email=email)
+
+            #Comparing both hashed passwords
+            if  check_password(password, user.password):
+                return redirect('main')
+            else:
+                messages.error(request, "Incorrect password. Please try again.")
         
-        # Ensure all fields are filled
-        if not all([first_name, last_name, email, password, confirm_password]):
-            messages.error(request, "All fields are required.")
-            return render(request, "signup.html")
+        except User.DoesNotExist:
+            messages.error(request, "Email not correct. Please check your input.")
 
-        # Check if email is already registered
-        if User.objects.filter(email=email).exists():
-            messages.error(request, "Email is already registered!")
-            return redirect('signup')
+    return render(request, 'authentication/login.html')
 
-        # Create the new user
-        user = User.objects.create_user(
-            username=email,  # Using email as username
-            email=email,
-            password=password,
-            first_name=first_name,
-            last_name=last_name
-        )
-        user.save()
 
-        # Notify user to verify email
-        messages.success(request, "Signup successful! Please Check your email to verify your account.")
-        return redirect("login") 
 
-    return render(request, 'signup.html')
-
-# View to activate user account through email
-def activate_mail(request, uidb64, token):
+def main(request):
+    # This is the page to redirect to after login
     """
-    Activates a user account based on email verification.
+    Renders the main dashboard page after a successful login.
 
-    Parameters:
+    Logic:
+    - Displays the main page for authenticated users.
+    - Redirects here after both local and Google sign-ins.
+
+    Inputs:
     - request: HttpRequest object.
-    - uidb64: Base64-encoded user ID.
-    - token: Token for email verification.
 
-    Returns:
-    - On success: Redirects to login with a success message.
-    - On failure: Redirects to signup with an error message.
+    Outputs:
+    - Renders the 'main.html' template.
     """
-    try:  
-        # Decode user ID and fetch user
-        uid = force_str(urlsafe_base64_decode(uidb64))  
-        user = User.objects.get(id=uid)  
-        if user is not None: 
-            user.is_verified = True  # Mark user as verified
-            user.save()
-            messages.success(request, 'Email confirmation done successfully')
-            return redirect('login')
-    except User.DoesNotExist: 
-        # Handle invalid user cases
-        messages.error(request, "Please sign up.") 
-        return redirect('signup')
+    return render(request, 'main.html')
 
-# View to create a new user with hashed password
-def create_user(request):
+
+
+def google_sign_in_callback(request):
     """
-    Handles the creation of a new user:
-    - Hashes the provided password.
-    - Saves the user to the database.
+    Handles Google OAuth sign-in and user registration if not already registered.
 
-    Parameters:
-    - request: HttpRequest object containing form data submitted via POST.
+    Logic:
+    - Verifies the user's authentication status.
+    - Retrieves Google account information from the SocialAccount model.
+    - Checks if a user with the associated email exists in the custom User model.
+    - If the user doesn't exist, creates a new user without a password (Google sign-in only).
+    - Redirects authenticated users to the 'main' page.
 
-    Returns:
-    - On success: Redirects to login page.
+    Inputs:
+    - request: HttpRequest object.
+
+    Outputs:
+    - On success: Redirects to the 'main' page.
+    - On failure: Redirects to the 'login' page.
     """
-    if request.method == "POST":
-        # Extract username and password from form
-        username = request.POST['username']
-        password = request.POST['password']
+
+    if request.user.is_authenticated:
+        # Check if user exists in the custom User model
+        social_account = SocialAccount.objects.filter(user=request.user, provider="google").first()
+       
         
-        # Hash the password before saving
-        hashed_password = make_password(password)
-        user = User.objects.create(username=username, password=hashed_password)
-        user.save()
-        
-        return redirect('login')
-    
-    return render(request, 'signup.html')
+        if social_account:
+            email = social_account.extra_data.get("email")
+
+            try:
+                User.objects.get(email=email)
+                print("User already exists")
+            except User.DoesNotExist:
+                User.objects.create(
+                    email=email,
+                    username=request.user.username,
+                    password="",  # Leave password empty as this is Google sign-in
+                )
+
+        return redirect("main")
+
+    return redirect("login")
+
+
+
+
