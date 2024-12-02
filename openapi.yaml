@@ -1,0 +1,274 @@
+openapi: 3.0.0
+info:
+  title: Taskmate API
+  description: API documentation for the Taskmate project, grouped by apps.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+
+tags:
+  - name: Login
+    description: Endpoints for login and authentication.
+  - name: Signup
+    description: Endpoints for user signup and account activation.
+  - name: Environment
+    description: Endpoints for managing environments.
+  - name: Task
+    description: Endpoints for task operations.
+  - name: Password Reset
+    description: Endpoints for password reset functionality.
+  - name: Other
+    description: Miscellaneous endpoints.
+
+paths:
+  ## Login App
+  /login/:
+    post:
+      tags:
+        - Login
+      summary: User Login
+      description: Login endpoint for user authentication.
+      responses:
+        '200':
+          description: Successfully logged in.
+
+  /google-sign-in-callback/:
+    get:
+      tags:
+        - Login
+      summary: Google Sign-In Callback
+      description: Callback endpoint for Google Sign-In.
+      responses:
+        '200':
+          description: Sign-in callback handled successfully.
+
+  ## Signup App
+  /signup/:
+    post:
+      tags:
+        - Signup
+      summary: User Signup
+      description: Endpoint for user registration.
+      responses:
+        '201':
+          description: User registered successfully.
+
+  /activate/{uidb64}/{token}/:
+    get:
+      tags:
+        - Signup
+      summary: Account Activation
+      description: Activates user accounts via email token.
+      parameters:
+        - name: uidb64
+          in: path
+          required: true
+          description: Base64 encoded user ID.
+          schema:
+            type: string
+        - name: token
+          in: path
+          required: true
+          description: Token for account activation.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Account activated successfully.
+
+  ## Environment App
+  /environment/:
+    get:
+      tags:
+        - Environment
+      summary: List Environments
+      description: Lists all available environments.
+      responses:
+        '200':
+          description: List of environments.
+
+  /environment/{environment_id}/:
+    get:
+      tags:
+        - Environment
+      summary: View Environment
+      description: Displays tasks for a specific environment.
+      parameters:
+        - name: environment_id
+          in: path
+          required: true
+          description: Environment ID.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Tasks for the environment.
+
+  /environment/{environment_id}/drag-and-drop/:
+    post:
+      tags:
+        - Environment
+      summary: Drag-and-Drop Tasks
+      description: Allows drag-and-drop operations for tasks in an environment.
+      parameters:
+        - name: environment_id
+          in: path
+          required: true
+          description: Environment ID.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Drag-and-drop action successful.
+
+  /environment/search_environment/:
+    get:
+      tags:
+        - Environment
+      summary: Search Environment
+      description: Searches for environments based on query parameters.
+      responses:
+        '200':
+          description: Search results.
+
+  ## Task App
+  /task/viewall/:
+    get:
+      tags:
+        - Task
+      summary: View All Tasks
+      description: Displays all tasks.
+      responses:
+        '200':
+          description: List of all tasks.
+
+  /task/create/:
+    post:
+      tags:
+        - Task
+      summary: Create Task
+      description: Creates a new task.
+      responses:
+        '201':
+          description: Task created successfully.
+
+  /task/edit/{id}/:
+    put:
+      tags:
+        - Task
+      summary: Edit Task
+      description: Updates the details of a specific task.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Task ID.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Task updated successfully.
+
+  /task/delete/{id}/:
+    delete:
+      tags:
+        - Task
+      summary: Delete Task
+      description: Deletes a specific task.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Task ID.
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Task deleted successfully.
+
+  /task/search_task/:
+    get:
+      tags:
+        - Task
+      summary: Search Tasks
+      description: Searches for tasks based on query parameters.
+      responses:
+        '200':
+          description: Search results.
+
+  ## Password Reset App
+  /password-reset/:
+    post:
+      tags:
+        - Password Reset
+      summary: Password Reset
+      description: Initiates a password reset email.
+      responses:
+        '200':
+          description: Password reset email sent.
+
+  /password-reset/done/:
+    get:
+      tags:
+        - Password Reset
+      summary: Password Reset Confirmation
+      description: Confirms that the password reset email was sent.
+      responses:
+        '200':
+          description: Password reset email confirmation page.
+
+  /password-reset-confirm/{uidb64}/{token}/:
+    post:
+      tags:
+        - Password Reset
+      summary: Password Reset Confirmation
+      description: Allows users to reset their password with the provided token.
+      parameters:
+        - name: uidb64
+          in: path
+          required: true
+          description: Base64 encoded user ID.
+          schema:
+            type: string
+        - name: token
+          in: path
+          required: true
+          description: Token for password reset.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Password successfully reset.
+
+  ## Other Endpoints
+  /admin/:
+    get:
+      tags:
+        - Other
+      summary: Admin Panel
+      description: Django admin interface for managing the application.
+      responses:
+        '200':
+          description: Admin panel loaded successfully.
+
+  /main/:
+    get:
+      tags:
+        - Other
+      summary: Main Page
+      description: The main dashboard page for logged-in users.
+      responses:
+        '200':
+          description: Main page loaded successfully.
+
+  /accounts/:
+    get:
+      tags:
+        - Other
+      summary: Social Account Management
+      description: Django-Allauth account management views.
+      responses:
+        '200':
+          description: Accounts page loaded successfully.
+
+

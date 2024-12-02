@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render, redirect
 from .forms import SignUpForm
 from django.contrib import messages
 from django.utils.http import urlsafe_base64_decode
@@ -7,55 +7,60 @@ from signup.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 
+# View to render the homepage
 def home(request):
     """
-    Render the home page.
-
-    This view renders the base.html template as the home page.
+    Renders the base/homepage of the application.
 
     Parameters:
-        request (HttpRequest): The request object.
+    - request: HttpRequest object containing metadata about the request.
 
     Returns:
-        HttpResponse: The rendered template.
+    - Rendered HTML template 'users/base.html'.
     """
     return render(request, 'users/base.html')
 
+# View to handle user signup
 def signup(request):
     """
-    Handle user signup.
-
-    This view handles the GET and POST requests to the signup page. If the request is a GET request, it renders the signup.html template. If the request is a POST request, it validates the input, creates the user, and logs the user in.
+    Handles the user signup process:
+    - Validates the input data.
+    - Checks for duplicate email registration.
+    - Creates and saves a new user in the database.
 
     Parameters:
-        request (HttpRequest): The request object.
+    - request: HttpRequest object containing form data submitted via POST.
 
     Returns:
-        HttpResponse: The rendered template or a redirect to the login page.
+    - On success: Redirects to the login page with a success message.
+    - On failure: Renders the signup page with error messages.
     """
     if request.method == 'POST':
+        # Extract form data
         first_name = request.POST.get("first_name", "").strip()
         last_name = request.POST.get("last_name", "").strip()
         email = request.POST.get("email", "").strip()
         password = request.POST.get("password", "").strip()
         confirm_password = request.POST.get("confirm_password", "").strip()
 
-        # Validation
+        # Check if passwords match
         if password != confirm_password:
             messages.error(request, "Passwords do not match!")
             return redirect('signup')
         
+        # Ensure all fields are filled
         if not all([first_name, last_name, email, password, confirm_password]):
             messages.error(request, "All fields are required.")
             return render(request, "signup.html")
 
+        # Check if email is already registered
         if User.objects.filter(email=email).exists():
             messages.error(request, "Email is already registered!")
             return redirect('signup')
 
-        # Create user
+        # Create the new user
         user = User.objects.create_user(
-            username=email,  # You can use email as username
+            username=email,  # Using email as username
             email=email,
             password=password,
             first_name=first_name,
@@ -63,55 +68,59 @@ def signup(request):
         )
         user.save()
 
-        #log the user in
-        messages.success(request, "Signup successful! Please Check your email to verify your account")
+        # Notify user to verify email
+        messages.success(request, "Signup successful! Please Check your email to verify your account.")
         return redirect("login") 
 
     return render(request, 'signup.html')
 
+# View to activate user account through email
 def activate_mail(request, uidb64, token):
     """
-    Activate a user's email address.
-
-    This view is used to activate a user's email address. It takes a uidb64 and a token as parameters, decodes the uidb64 to a user id, and checks if the corresponding user exists in the database. If the user exists, it sets the user's is_verified attribute to True and saves the user. If the user does not exist, it displays an error message and redirects the user to the signup page.
+    Activates a user account based on email verification.
 
     Parameters:
-        request (HttpRequest): The request object.
-        uidb64 (str): The base64 encoded user id.
-        token (str): The token used to verify the user.
+    - request: HttpRequest object.
+    - uidb64: Base64-encoded user ID.
+    - token: Token for email verification.
 
     Returns:
-        HttpResponse: A redirect to the login page if the user exists and the email is verified, a redirect to the signup page if the user does not exist.
+    - On success: Redirects to login with a success message.
+    - On failure: Redirects to signup with an error message.
     """
-    
     try:  
+        # Decode user ID and fetch user
         uid = force_str(urlsafe_base64_decode(uidb64))  
         user = User.objects.get(id=uid)  
         if user is not None: 
-            user.is_verified = True  
-            user.save() 
+            user.is_verified = True  # Mark user as verified
+            user.save()
             messages.success(request, 'Email confirmation done successfully')
             return redirect('login')
     except User.DoesNotExist: 
-         messages.error(request,"Please sign up") 
-         return redirect('signup')
+        # Handle invalid user cases
+        messages.error(request, "Please sign up.") 
+        return redirect('signup')
 
-
+# View to create a new user with hashed password
 def create_user(request):
     """
-    Creates a new user given a username and password.
-
-    This view is used to create a new user given a username and password. It takes a POST request with the username and password, hashes the password, and creates a new user in the database. If the user is created successfully, it redirects the user to the login page.
+    Handles the creation of a new user:
+    - Hashes the provided password.
+    - Saves the user to the database.
 
     Parameters:
-        request (HttpRequest): The request object.
+    - request: HttpRequest object containing form data submitted via POST.
 
     Returns:
-        HttpResponse: A redirect to the login page if the user is created successfully, a redirect to the signup page if the user is not created successfully.
+    - On success: Redirects to login page.
     """
     if request.method == "POST":
+        # Extract username and password from form
         username = request.POST['username']
         password = request.POST['password']
+        
+        # Hash the password before saving
         hashed_password = make_password(password)
         user = User.objects.create(username=username, password=hashed_password)
         user.save()
