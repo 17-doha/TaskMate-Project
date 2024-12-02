@@ -9,14 +9,19 @@ from django.contrib import messages
 # A view to show all tasks with the edit and delete buttons for testing
 def ViewAllTasks(request):
     """
-    Fetches all tasks and displays them in a template along with options to edit or delete.
+    Purpose:
+    - Display all tasks with edit and delete options for testing.
 
-    Parameters:
-    - request: HttpRequest object that contains metadata about the request.
+    Logic:
+    - Fetches all Task objects.
+    - Passes the tasks to the template.
 
-    Returns:
-    - Renders the 'task/view_all.html' template with:
-        - 'tasks': Queryset of all Task objects.
+    Input:
+    - request: HttpRequest object.
+
+    Output:
+    - Renders 'task/view_all.html' with:
+      - 'tasks': Queryset of all Task objects.
     """
     queryset = Task.objects.all()
     print(len(queryset))  # Debugging: Print the number of tasks
@@ -29,20 +34,25 @@ def ViewAllTasks(request):
 # A view to allow editing a task on another page
 def EditTask(request, id):
     """
-    Handles task editing functionality.
+    Purpose:
+    - Allow editing of a specific task.
 
-    Parameters:
-    - request: HttpRequest object that contains metadata about the request.
-    - id: ID of the Task object to be edited.
+    Logic:
+    - Fetches the task by ID.
+    - If POST, updates the task with form data and saves.
+    - If not POST, pre-fills the form with the task data.
 
-    Returns:
-    - If the request method is POST:
-        - Saves the updated Task object and redirects to 'view_all_tasks'.
-    - If the request method is not POST:
-        - Renders the 'task/edit_task.html' template with:
-            - 'form': Pre-filled TaskEditForm for the task.
-            - 'task': The Task object to be edited.
-            - 'users': Queryset of all User objects.
+    Input:
+    - request: HttpRequest object.
+    - id: ID of the Task to edit.
+
+    Output:
+    - If POST:
+      - Redirects to 'view_all_tasks'.
+    - Else:
+      - Renders 'task/edit_task.html' with:
+        - 'form': Pre-filled TaskEditForm.
+        - 'task': Task object.
     """
     task = get_object_or_404(Task, task_id=id)
     if request.method == 'POST':
@@ -60,14 +70,18 @@ def EditTask(request, id):
 # A view to delete tasks on click
 def DeleteTask(request, id):
     """
-    Deletes a specific task based on its ID.
+    Purpose:
+    - Delete a specific task.
 
-    Parameters:
-    - request: HttpRequest object that contains metadata about the request.
-    - id: ID of the Task object to be deleted.
+    Logic:
+    - Fetches the task by ID and deletes it.
 
-    Returns:
-    - Redirects to 'view_all_tasks' after deletion.
+    Input:
+    - request: HttpRequest object.
+    - id: ID of the Task to delete.
+
+    Output:
+    - Redirects to 'view_all_tasks'.
     """
     task = get_object_or_404(Task, task_id=id)
     task.delete()
@@ -77,18 +91,22 @@ def DeleteTask(request, id):
 # A view to create a new task
 def CreateTask(request):
     """
-    Handles task creation functionality.
+    Purpose:
+    - Create a new task.
 
-    Parameters:
-    - request: HttpRequest object that contains metadata about the request.
+    Logic:
+    - If POST, validates form data and creates a task with default user and environment.
+    - If not POST, displays a blank form for task creation.
 
-    Returns:
-    - If the request method is POST:
-        - Saves the new Task object and redirects to 'environment:index'.
-        - Displays a success or error message.
-    - If the request method is not POST:
-        - Renders the 'task/create_task.html' template with:
-            - 'users': Queryset of all User objects.
+    Input:
+    - request: HttpRequest object.
+
+    Output:
+    - If POST and valid:
+      - Redirects to 'environment:index' with a success message.
+    - Else:
+      - Renders 'task/create_task.html' with:
+      - 'users': Queryset of all User objects.
     """
     if request.method == "POST":
         form = TaskCreateForm(request.POST)
@@ -114,18 +132,23 @@ def CreateTask(request):
 # A view to search for tasks based on content
 def search_task(request):
     """
-    Handles search functionality for tasks.
+    Purpose:
+    - Search for tasks based on content.
 
-    Parameters:
-    - request: HttpRequest object that contains metadata about the request.
+    Logic:
+    - If POST, filters Task objects matching the search term.
+    - If not POST, renders a blank search form.
 
-    Returns:
-    - If the request method is POST:
-        - Renders the 'search_environment.html' template with:
-            - 'searched': The search term entered by the user.
-            - 'tasks': Queryset of Task objects whose 'content' contains the search term.
-    - If the request method is not POST:
-        - Renders the 'search_environment.html' template with an empty context.
+    Input:
+    - request: HttpRequest object.
+
+    Output:
+    - If POST:
+      - Renders 'search_environment.html' with:
+        - 'searched': Search term.
+        - 'tasks': Matching Task objects.
+    - Else:
+      - Renders 'search_environment.html' with no context.
     """
     if request.method == "POST":
         searched = request.POST['searched']
@@ -144,14 +167,20 @@ def search_task(request):
 # A view to redirect to the environment page of a task
 def View_Task(request, task_id):
     """
-    Redirects to the environment page of a specific task.
+    Purpose:
+    - Redirect to the environment page of a specific task.
 
-    Parameters:
-    - request: HttpRequest object that contains metadata about the request.
-    - task_id: ID of the Task object.
+    Logic:
+    - Fetches the task by ID.
+    - Extracts the associated Environment ID.
+    - Constructs and redirects to the environment URL.
 
-    Returns:
-    - Redirects to the environment page using the environment ID related to the task.
+    Input:
+    - request: HttpRequest object.
+    - task_id: ID of the Task.
+
+    Output:
+    - Redirects to the environment page URL.
     """
     task = get_object_or_404(Task, task_id=task_id)
 
