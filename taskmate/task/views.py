@@ -95,8 +95,8 @@ def CreateTask(request):
         
         if form.is_valid():
             task = form.save(commit=False)
-            task.created_by = User.objects.get(id=10)  # Default user for now
-            task.environment_id = Environment.objects.get(environment_id=1)  # Default environment
+            task.created_by = User.objects.get(id=1)  # Default user for now
+            task.environment_id = Environment.objects.get(environment_id=2)  # Default environment
             task.save()
             messages.success(request, 'Task created successfully!')
             return redirect('environment:index')

@@ -22,7 +22,7 @@ class Table(models.Model):
     table_id = models.AutoField(primary_key=True)
     label = models.CharField(max_length=255)
     environment = models.ForeignKey(Environment, on_delete=models.CASCADE, related_name='tables')
-    user_login = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_tables')
+
     
     class Meta:
         db_table = 'table'  
