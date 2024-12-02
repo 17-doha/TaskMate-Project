@@ -1,83 +1,107 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Environment, Table
 from django.http import JsonResponse
+from .models import Environment, Table
 from task.models import Task
 import json
 
-# used in dragAndDrop function
+# Mapping for drag-and-drop functionality
 mapping = {
-    'To Do' : 'Pending',
+    'To Do': 'Pending',
     'In Progress': 'In Progress',
     'Done': 'Completed'
 }
 
 def index(request):
-    return render(request, "environment/index.html")    
+    """
+    Purpose:
+        Renders the homepage for the environment application.
+
+    Input:
+        - HTTP Method: GET
+        - Query Parameters: None.
+
+    Output:
+        - Renders 'environment/index.html'.
+
+    Logic:
+        - Simply loads the HTML template for the homepage without any additional context.
+    """
+    return render(request, "environment/index.html")
 
 
 def ViewTableTask(request, environment_id):
-    # Retrieve the environment by ID
     """
-    A view to render the the tasks for the given environment.
-    
-    :param request: The request object
-    :param environment_id: The ID of the environment to display
-    :return: A rendered HTML page with the tasks
+    Purpose:
+        Displays tasks associated with a specific environment, grouped by their status.
+
+    Input:
+        - HTTP Method: GET
+        - Path Parameters:
+            - environment_id: The ID of the environment.
+        - Query Parameters: None.
+
+    Output:
+        - Renders 'environment/index.html'.
+        - Context:
+            - environment: The requested Environment object.
+            - todo_tasks: Tasks with a status of 'Pending'.
+            - inprogress_tasks: Tasks with a status of 'In Progress'.
+            - done_tasks: Tasks with a status of 'Completed'.
+
+    Logic:
+        1. Retrieve the specified environment by `environment_id`.
+        2. Query for tasks associated with this environment and filter them by status.
+        3. Pass the environment and tasks to the template for rendering.
     """
     environment = get_object_or_404(Environment, environment_id=environment_id)
-    
-    # Filter tasks associated with this environment
     tasks = Task.objects.filter(environment_id=environment)
-    
-    # make a list for each type 
-    todo_tasks = tasks.filter(status='Pending')
-    inprogress_tasks = tasks.filter(status='In Progress')
-    done_tasks = tasks.filter(status='Completed')
 
-       
-    # Prepare context for the html
     context = {
         "environment": environment,
-        "todo_tasks": todo_tasks,
-        "inprogress_tasks": inprogress_tasks,
-        "done_tasks": done_tasks,
+        "todo_tasks": tasks.filter(status='Pending'),
+        "inprogress_tasks": tasks.filter(status='In Progress'),
+        "done_tasks": tasks.filter(status='Completed'),
     }
-    
     return render(request, 'environment/index.html', context)
 
 
 def dragAndDrop(request, environment_id):
-
     """
-    Handle drag and drop of a task to a new table.
+    Purpose:
+        Handles drag-and-drop actions for moving tasks between tables in the same environment.
 
-    This view expects a POST request with the following JSON data:
-        {
-            'task_id': <task_id>,
-            'target_table': <target_table_name>
-        }
+    Input:
+        - HTTP Method: POST
+        - Path Parameters:
+            - environment_id: The ID of the environment.
+        - JSON Body:
+            - task_id: The ID of the task to be moved.
+            - target_table: The name of the target table (e.g., 'To Do', 'In Progress', 'Done').
 
-    It will update the task's table ID and status in the database.
+    Output:
+        - JSON Response:
+            - Success: {'status': 'success', 'message': 'Task moved successfully'}
+            - Error: {'status': 'error', 'message': 'Invalid request'}
 
-    Returns a JSON response with a status and message.
+    Logic:
+        1. Parse the request body to get the task ID and target table name.
+        2. Retrieve the specified task and its environment.
+        3. Retrieve the target table for the task within the same environment.
+        4. Update the task's table and status based on the mapping.
+        5. Save the updated task and return a success response.
+        6. Return an error response for invalid methods or missing data.
     """
     if request.method == "POST":
-        # Get JSON data from request body
         data = json.loads(request.body)
         task_id = data.get('task_id')
         target_table_name = data.get('target_table')
 
-        # Get the task object from the database
         task = get_object_or_404(Task, task_id=task_id)
-
-        # Get the environment 
         environment = task.environment_id
-
         target_table = get_object_or_404(Table, environment=environment, label=target_table_name)
 
-        # Update the task's table ID and status
         task.table = target_table
-        task.status = mapping[target_table_name] 
+        task.status = mapping[target_table_name]
         task.table_id = target_table.table_id
         task.save()
 
@@ -86,30 +110,35 @@ def dragAndDrop(request, environment_id):
     return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
 
 
- 
 def search_environment(request):
     """
-    Handles search functionality for environments.
+    Purpose:
+        Implements search functionality to find environments by their label.
 
-    Parameters:
-    - request: HttpRequest object that contains metadata about the request. 
-      It includes the HTTP method and any data submitted via POST.
+    Input:
+        - HTTP Method: POST
+        - Form Data:
+            - searched: The search term entered by the user.
 
-    Returns:
-    - If the request method is POST:
-        - Renders the 'search_environment.html' template with:
-          - 'searched': The search term entered by the user.
-          - 'environments': Queryset of Environment objects whose 'label' contains the search term.
-    - If the request method is not POST:
-        - Renders the 'search_environment.html' template with an empty context.
+    Output:
+        - Renders 'search_environment.html'.
+        - Context (for POST requests):
+            - searched: The search term.
+            - environments: Queryset of Environment objects matching the search term.
+        - Context (for non-POST requests):
+            - Empty.
+
+    Logic:
+        1. If the request method is POST:
+            - Retrieve the search term from the form.
+            - Query the database for environments whose labels contain the search term.
+            - Pass the search results to the template.
+        2. If the request method is not POST:
+            - Render the template with an empty context.
     """
     if request.method == "POST":
-        # Get the search term from the POST request
         searched = request.POST['searched']
-        # Query the database for environments with labels containing the search term
         environments = Environment.objects.filter(label__contains=searched)
-        # Render the template with the search term and the results
         return render(request, 'search_environment.html', {'searched': searched, 'environments': environments})
     else:
-        # Render the template without any context if the method is not POST
         return render(request, 'search_environment.html', {})
