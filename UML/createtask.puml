@@ -1,0 +1,24 @@
+@startuml
+actor User
+participant "Environment Page" as EnvPage
+participant "Task Popup" as TaskPopup
+database "Database" as DB
+
+User -> EnvPage: Press 'Add Task' button
+activate EnvPage
+EnvPage -> TaskPopup: Open task creation popup
+deactivate EnvPage
+
+activate TaskPopup
+User -> TaskPopup: Enter task information
+TaskPopup -> DB: Save task data
+activate DB
+DB --> TaskPopup: Task saved successfully
+deactivate DB
+deactivate TaskPopup
+
+TaskPopup -> EnvPage: Refresh and show new task
+activate EnvPage
+User -> EnvPage: View task in the todo table
+deactivate EnvPage
+@enduml

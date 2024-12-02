@@ -1,0 +1,51 @@
+@startuml
+actor User
+participant "Sign-Up Page" as SignUpPage
+control "Authentication Service" as AuthService
+database "Database" as DB
+entity "Email Service" as EmailService
+participant "Main Page" as MainPage
+participant "Google Service" as GoogleService
+
+User -> SignUpPage: Enter information
+activate SignUpPage
+SignUpPage -> AuthService: Submit information
+activate AuthService
+    AuthService -> DB: Save user information
+    activate DB
+    DB --> AuthService: Information saved
+    deactivate DB
+    AuthService -> EmailService: Send verification email
+    activate EmailService
+    EmailService -> User: Verification email sent
+    deactivate EmailService
+deactivate SignUpPage
+User -> AuthService: Verify email
+AuthService -> DB: Mark user as verified
+activate DB
+DB --> AuthService: User verified
+deactivate DB
+deactivate AuthService
+
+alt Sign Up with Google
+    User -> SignUpPage: Press 'Sign up with Google'
+    SignUpPage -> GoogleService: Request Google sign-up
+    activate GoogleService
+    GoogleService -> AuthService: Send Google user info
+    deactivate GoogleService
+    AuthService -> DB: Save Google user info
+    activate DB
+    DB --> AuthService: Information saved
+    deactivate DB
+
+
+    
+end
+
+
+
+AuthService -> MainPage: Redirect to main page
+activate MainPage
+User -> MainPage: Access main page
+deactivate MainPage
+@enduml

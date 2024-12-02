@@ -1,0 +1,38 @@
+@startuml
+actor User
+participant "Login Page"
+participant "Forgot Password Page"
+control "Authentication Service"
+database "Database"
+entity "Email Service"
+
+User -> "Login Page" : Press 'Forgot Password'
+activate "Login Page"
+"Login Page" -> "Forgot Password Page" : Redirect to Forgot Password Page
+deactivate "Login Page"
+activate "Forgot Password Page"
+User -> "Forgot Password Page" : Enter email
+"Forgot Password Page" -> "Authentication Service" : Send password reset request
+deactivate "Forgot Password Page"
+
+activate "Authentication Service"
+"Authentication Service" -> "Database" : Verify email existence
+activate "Database"
+"Database" --> "Authentication Service" : Email exists
+deactivate "Database"
+
+"Authentication Service" -> "Email Service" : Send reset URL to email
+activate "Email Service"
+"Email Service" -> User : Receive reset URL
+deactivate "Email Service"
+deactivate "Authentication Service"
+
+User -> "Authentication Service" : Access reset URL
+activate "Authentication Service"
+"Authentication Service" -> "Database" : Update password
+activate "Database"
+"Database" --> "Authentication Service" : Password updated
+deactivate "Database"
+"Authentication Service" -> User : Confirm password reset
+deactivate "Authentication Service"
+@enduml

@@ -18,7 +18,16 @@ def ViewAllTasks(request):
     - Renders the 'task/view_all.html' template with:
         - 'tasks': Queryset of all Task objects.
     """
-    queryset = Task.objects.all()
+    queryset = Task.objects.all().annotate(
+        priority_order=Case(
+            When(priority=Task.HIGH, then=Value(1)),
+            When(priority=Task.MEDIUM, then=Value(2)),
+            When(priority=Task.LOW, then=Value(3)),
+            default=Value(4),  # Default case if priority is not recognized
+            output_field=IntegerField()  # Set the output field type
+        )
+    ).order_by('priority_order', 'deadline')  # First by priority, then by deadline
+    
     print(len(queryset))  # Debugging: Print the number of tasks
     context = {
         "tasks": queryset,
@@ -95,8 +104,8 @@ def CreateTask(request):
         
         if form.is_valid():
             task = form.save(commit=False)
-            task.created_by = User.objects.get(id=10)  # Default user for now
-            task.environment_id = Environment.objects.get(environment_id=1)  # Default environment
+            task.created_by = User.objects.get(id=15)  # Default user for now
+            task.environment_id = Environment.objects.get(environment_id=6)  # Default environment
             task.save()
             messages.success(request, 'Task created successfully!')
             return redirect('environment:index')

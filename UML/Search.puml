@@ -1,0 +1,32 @@
+    @startuml
+actor User
+participant "Environment Page" as EnvPage
+control "Search Service" as SearchService
+database "Database" as DB
+participant "Show Result Page" as ResultPage
+
+User -> EnvPage: Access environment
+activate EnvPage
+EnvPage -> SearchService: Initiate search
+deactivate EnvPage
+
+activate SearchService
+alt Search for a task
+    SearchService -> DB: Query for task
+    activate DB
+    DB --> SearchService: Return task data
+    deactivate DB
+else Search for an environment
+    SearchService -> DB: Query for environment
+    activate DB
+    DB --> SearchService: Return environment data
+    deactivate DB
+end
+SearchService -> ResultPage: Redirect to show result
+deactivate SearchService
+
+activate ResultPage
+User -> ResultPage: View results
+ResultPage -> EnvPage: Access task or environment
+deactivate ResultPage
+@enduml

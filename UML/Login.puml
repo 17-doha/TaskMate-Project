@@ -1,0 +1,39 @@
+@startuml
+actor User
+participant "Login Page" as LoginPage
+control "Authentication Service" as AuthService
+database "Database" as DB
+participant "Google Service" as GoogleService
+
+User -> LoginPage: Enters credentials
+activate LoginPage
+LoginPage -> AuthService: Sends login request
+deactivate LoginPage
+
+activate AuthService
+AuthService -> DB: Verifies user credentials
+activate DB
+DB --> AuthService: Returns verification result
+deactivate DB
+
+AuthService --> LoginPage: Sends login response
+deactivate AuthService
+
+alt Sign in with Google
+    User -> LoginPage: Press 'Sign in with Google'
+    LoginPage -> GoogleService: Request Google login
+    activate GoogleService
+    GoogleService -> AuthService: Send Google login info
+    deactivate GoogleService
+    AuthService -> DB: Verify Google user
+    activate DB
+    DB --> AuthService: User found
+    deactivate DB
+    AuthService --> LoginPage: Sends login response
+
+end
+
+activate LoginPage
+LoginPage --> User: Direct to main page
+deactivate LoginPage
+@enduml
