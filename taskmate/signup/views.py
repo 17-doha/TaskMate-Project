@@ -9,32 +9,10 @@ from django.contrib.auth.hashers import check_password
 
 # View to render the homepage
 def home(request):
-    """
-    Renders the base/homepage of the application.
-
-    Parameters:
-    - request: HttpRequest object containing metadata about the request.
-
-    Returns:
-    - Rendered HTML template 'users/base.html'.
-    """
     return render(request, 'users/base.html')
 
 # View to handle user signup
 def signup(request):
-    """
-    Handles the user signup process:
-    - Validates the input data.
-    - Checks for duplicate email registration.
-    - Creates and saves a new user in the database.
-
-    Parameters:
-    - request: HttpRequest object containing form data submitted via POST.
-
-    Returns:
-    - On success: Redirects to the login page with a success message.
-    - On failure: Renders the signup page with error messages.
-    """
     if request.method == 'POST':
         # Extract form data
         first_name = request.POST.get("first_name", "").strip()
@@ -76,20 +54,7 @@ def signup(request):
 
 # View to activate user account through email
 def activate_mail(request, uidb64, token):
-    """
-    Activates a user account based on email verification.
-
-    Parameters:
-    - request: HttpRequest object.
-    - uidb64: Base64-encoded user ID.
-    - token: Token for email verification.
-
-    Returns:
-    - On success: Redirects to login with a success message.
-    - On failure: Redirects to signup with an error message.
-    """
     try:  
-        # Decode user ID and fetch user
         uid = force_str(urlsafe_base64_decode(uidb64))  
         user = User.objects.get(id=uid)  
         if user is not None: 
@@ -104,17 +69,6 @@ def activate_mail(request, uidb64, token):
 
 # View to create a new user with hashed password
 def create_user(request):
-    """
-    Handles the creation of a new user:
-    - Hashes the provided password.
-    - Saves the user to the database.
-
-    Parameters:
-    - request: HttpRequest object containing form data submitted via POST.
-
-    Returns:
-    - On success: Redirects to login page.
-    """
     if request.method == "POST":
         # Extract username and password from form
         username = request.POST['username']
@@ -128,3 +82,7 @@ def create_user(request):
         return redirect('login')
     
     return render(request, 'signup.html')
+
+
+    
+# Create your views here.
