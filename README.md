@@ -10,7 +10,7 @@
 TaskMate is a task management and collaboration tool designed to help teams and individuals stay organized and productive. It allows users to create environments, manage tasks, and collaborate in a simple, visually engaging way. With features such as user registration, theme management, task creation, and real-time notifications, TaskMate provides a streamlined way to manage personal and team tasks.
 
 ## phase 3 vid
-[From here]([https://github.com/SalmaSherif7070](https://drive.google.com/file/d/1TZ9GOQ9J_V8hCet78d7xoy2-B11FA5j0/view?usp=sharing))
+[From here](https://github.com/SalmaSherif7070](https://drive.google.com/file/d/1TZ9GOQ9J_V8hCet78d7xoy2-B11FA5j0/view?usp=sharing)
 
 ## Installation
 
