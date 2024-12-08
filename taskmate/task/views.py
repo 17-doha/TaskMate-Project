@@ -7,6 +7,7 @@ from django.contrib import messages
 
 
 # A view to show all tasks with the edit and delete buttons for testing
+
 def ViewAllTasks(request):
     """
     Purpose:
@@ -23,21 +24,12 @@ def ViewAllTasks(request):
     - Renders 'task/view_all.html' with:
       - 'tasks': Queryset of all Task objects.
     """
-    queryset = Task.objects.all().annotate(
-        priority_order=Case(
-            When(priority=Task.HIGH, then=Value(1)),
-            When(priority=Task.MEDIUM, then=Value(2)),
-            When(priority=Task.LOW, then=Value(3)),
-            default=Value(4),  # Default case if priority is not recognized
-            output_field=IntegerField()  # Set the output field type
-        )
-    ).order_by('priority_order', 'deadline')  # First by priority, then by deadline
-    
-    print(len(queryset))  # Debugging: Print the number of tasks
-    context = {
+    queryset = Task.objects.all()
+    print(len(queryset))
+    context={
         "tasks": queryset,
     }
-    return render(request, 'task/view_all.html', context)
+    return render(request,'task/view_all.html',context)
 
 
 # A view to allow editing a task on another page

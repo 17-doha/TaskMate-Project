@@ -43,5 +43,5 @@ class Task(models.Model):
         return self.content
     # Any query which gets this table, it makes data retreived with this order
     class Meta:
-        ordering = ['priority',  'deadline']
+        ordering = ['deadline']
 #mal7ozaaaaaaaaaaaaaa
