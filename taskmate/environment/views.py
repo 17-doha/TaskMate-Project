@@ -12,6 +12,7 @@ mapping = {
 }
 
 def index(request):
+    # user_id = request.session.get('user_id') "Hash this to access the user_id in any other view"
     """
     Purpose:
         Renders the homepage for the environment application.
@@ -26,6 +27,7 @@ def index(request):
     Logic:
         - Simply loads the HTML template for the homepage without any additional context.
     """
+    # print(user_id, "in the environment")
     return render(request, "environment/index.html")
 
 

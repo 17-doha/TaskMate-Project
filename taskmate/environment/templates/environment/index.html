@@ -71,6 +71,7 @@
         <div class="column" id="medium" ondrop="drop(event)" ondragover="allowDrop(event)">
           <div class="column-header">
             <h3>In Progress</h3>
+            <p>{{ user_id }}</p>
           </div>
           <div class="column-bar medium"></div>
           {% for task in inprogress_tasks %}
