@@ -7,8 +7,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Profile UI</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link rel="stylesheet" href="{% static '_profile/css/profile.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
 </head>
 <body>
   <div class="container">
@@ -18,46 +19,27 @@
         <div>
           <h2>{{ user_profile.first_name }} {{ user_profile.last_name }}</h2>
           <p>{{ user_profile.username }}</p>
+          <button  id="editBtn" style="background: transparent; border: none; padding: 0; cursor: pointer;">
+            <i class="fa-solid fa-pen-to-square" style="font-size: 16px; color: #6c63ff;"></i>
+          </button>
         </div>
       </div>
-      <button class="edit-button" id="editBtn">Edit</button>
+      <button id="deleteBtn" class="delete-button">Delete</button>
     </div>
-<form id="UserprofileForm" method="POST" action="{% url '_profile:profile_edit'  %}">
+    <form id="UserprofileForm" method="POST" action="{% url '_profile:profile_edit' %}">
       {% csrf_token %}
-    <div class="form">
-      <div>
-        <label for="firstName">Full Name</label>
-        <input type="text" name="first_name" value="{{ user_profile.first_name }}" id="firstName" readonly>
-    </div>
-    <div>
-        <label for="lastName">Last Name</label>
-        <input type="text" name="last_name" value="{{ user_profile.last_name }}" id="lastName" readonly>
-    </div>
-      <!-- <div>
-        <label for="gender">Gender</label>
-        <select id="gender">
-          <option value="">Select Gender</option>
-        </select>
+      <div class="form">
+        <div>
+          <label for="firstName">Full Name</label>
+          <input type="text" name="first_name" value="{{ user_profile.first_name }}" id="firstName" readonly>
+        </div>
+        <div>
+          <label for="lastName">Last Name</label>
+          <input type="text" name="last_name" value="{{ user_profile.last_name }}" id="lastName" readonly>
+        </div>
+        <button class="save-button" id="saveBtn" >Save Changes</button>
       </div>
-      <div>
-        <label for="phone_number">Phone Number</label>
-        <input type="text" id="phone_number" placeholder="Phone Number">
-      </div>
-      <div>
-        <label for="language">Language</label>
-        <input type="text" id="language" placeholder="Language">
-      </div>
-      <div>
-        <label for="timeZone">Time Zone</label>
-        <select id="timeZone">
-          <option value="">Select Time Zone</option>
-        </select>
-      </div> -->
-
-      <button class="edit-button" id="saveBtn" style="display: none;">Save Changes</button>
-    </div>
-  </form>
-
+    </form>
     <div class="flex-container">
       <div class="email-section">
         <h3>My Email Address</h3>
@@ -71,7 +53,6 @@
         <br>
         <a class="add-email">+Add Email Address</a>
       </div>
-    
       <div class="badge-progress-container">
         <h3>Badge Progress</h3>
         <div class="badge-progress-label">Topic Completion: 60/60 Tasks</div>
@@ -82,34 +63,72 @@
         </div>
       </div>
     </div>
-
-    
-</body>
-
-
-</html>
-<script>
-  document.getElementById('editBtn').addEventListener('click', function() {
-    const inputs = document.querySelectorAll('input[readonly]');
-    inputs.forEach(input => {
+  </div>
+  <div id="confirmationModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeBtn">&times;</span>
+      <p>Are you sure you want to delete this item?</p>
+      <a class="delete-button" id="confirmBtn" href="{% url '_profile:profile_delete' %}" class="btn btn-danger">Delete Account</a>
+      <button id="cancelBtn" class="cancel-btn cancel-button">Cancel</button>
+    </div>
+  </div>
+  <script>
+    document.getElementById('editBtn').addEventListener('click', function() {
+      const inputs = document.querySelectorAll('input[readonly]');
+      inputs.forEach(input => {
         input.removeAttribute('readonly');
         input.style.cursor = 'text';  // Make cursor a text input when editable
+      });
+      document.getElementById('saveBtn').style.display = 'inline-block';
+      this.style.display = 'none';
     });
 
-    document.getElementById('saveBtn').style.display = 'inline-block';
-    this.style.display = 'none';
-});
-
-document.getElementById('profileForm').addEventListener('submit', function(event) {
-    const inputs = document.querySelectorAll('input');
-    inputs.forEach(input => {
+    document.getElementById('UserprofileForm').addEventListener('submit', function(event) {
+      const inputs = document.querySelectorAll('input');
+      inputs.forEach(input => {
         input.setAttribute('readonly', true);  // Set all inputs back to readonly after save
         input.style.cursor = 'not-allowed';   // Change cursor to not-allowed on readonly
+      });
+      document.getElementById('saveBtn').style.display = 'none';
+      document.getElementById('editBtn').style.display = 'inline-block';
     });
 
-    document.getElementById('saveBtn').style.display = 'none';
-    document.getElementById('editBtn').style.display = 'inline-block';
-});
+    // Get the modal and buttons
+    var modal = document.getElementById("confirmationModal");
+    var deleteBtn = document.getElementById("deleteBtn");
+    var closeBtn = document.getElementById("closeBtn");
+    var cancelBtn = document.getElementById("cancelBtn");
+    var confirmBtn = document.getElementById("confirmBtn");
 
-</script>
+    // When the delete button is clicked, show the modal
+    deleteBtn.onclick = function() {
+      modal.style.display = "block";
+    }
+
+    // When the user clicks on the close button (x), hide the modal
+    closeBtn.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    // When the user clicks on "Cancel", hide the modal
+    cancelBtn.onclick = function() {
+      modal.style.display = "none";
+    }
+
+    // When the user clicks on "Yes, Delete", perform the deletion action
+    confirmBtn.onclick = function() {
+      // Perform your delete action here
+      alert("Item Deleted!");
+      modal.style.display = "none"; // Close the modal
+    }
+
+    // When the user clicks anywhere outside the modal, close it
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+  </script>
+</body>
+</html>
 {% endblock %}

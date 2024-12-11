@@ -47,8 +47,8 @@ body {
   font-size: 14px;
 }
 
-.edit-button {
-  background-color: #0069d9;
+.delete-button {
+  background-color: rgb(208, 59, 59);
   color: #ffffff;
   border: none;
   border-radius: 5px;
@@ -63,10 +63,6 @@ body {
   gap: 15px; /* Adds spacing between the boxes */
   margin-top: 20px;
 }
-
-
-
-
 
 
 .form label {
@@ -128,7 +124,7 @@ body {
 }
 
 .email-item i {
-  background-color: #007bff;
+  background-color:  #6c63ff;
   color: white;
   width: 40px;
   height: 40px;
@@ -149,20 +145,20 @@ body {
 }
 .email-section a.add-email {
   display: inline-block;
-  color: #007bff; /* Blue color for the link */
+  color: #6c63ff; /* Blue color for the link */
   font-size: 14px;
   text-decoration: none;
   margin-top: 10px;
-  border: 1px solid #007bff;
+  border: 1px solid #6c63ff;
   border-radius: 5px;
   padding: 9px 12px;
   transition: 0.3s;
-  background-color: #c0dcfa;
+  background-color: #c2bffc;
   border: none;
 }
 
 .email-section a.add-email:hover {
-  background-color: #007bff;
+  background-color:  #6c63ff;
   color: white;
 }
 
@@ -181,7 +177,7 @@ body {
   position: relative;
   width: 80%; /* Full width of the container */
   height: 20px; /* Height of the progress bar */
-  background: linear-gradient(to right, #4a90e2, #80c0ff); /* Gradient */
+  background: linear-gradient(to right,  #6c63ff,  #b8a1c7); /* Gradient */
   border-radius: 20px;
   overflow: hidden;
 }
@@ -234,4 +230,73 @@ input[readonly] {
 input {
     background-color: white; /* Normal background color for editable fields */
     cursor: text; /* Normal cursor when editable */
+}
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+.modal-content {
+  background-color: #fefefe;
+  margin: 10% auto; /* 15% from the top and centered */
+  padding: 30px;
+  border: 1px solid #888;
+  width: 30%; /* Smaller width */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19); /* Add some shadow */
+  text-align: center;
+  font-size: 20px; 
+}
+.close-btn {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.close-btn:hover,
+.close-btn:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+.modal-content p {
+  margin: 20px 0; /* Add some margin to the paragraph */
+}
+.modal-content .delete-button,
+.modal-content .cancel-btn {
+  font-size: 18px; /* Larger font size for buttons */
+  padding: 10px 20px; /* Increase padding for buttons */
+  margin: 10px; /* Add space between buttons */
+}
+.edit-button {
+  display: none; 
+  color:  #6c63ff;
+}
+
+.cancel-button { 
+  background-color: #c6bccc;;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.save-button{ 
+  background-color: #6c63ff;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 6px;
+  font-size: 14px;
+  width:20%;
+  cursor: pointer;
+ 
 }
