@@ -14,6 +14,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
 
+# this make users.Login is the user instead of django's user
+# AUTH_USER_MODEL = 'users.Login'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -36,6 +38,9 @@ SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+    'Notification.apps.NotificationConfig',
+    'Invitation.apps.InvitationConfig',
     'password_reset',
     'environment.apps.EnvironmentConfig',
     'django.contrib.admin',
@@ -97,6 +102,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'taskmate.wsgi.application'
+ASGI_APPLICATION = 'taskmate.asgi.application'
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
+
 
 #Update the settings.py file Allowed host list which was empty
 ALLOWED_HOSTS = ['127.0.0.1','localhost']
@@ -112,17 +125,27 @@ AUTH_USER_MODEL = 'signup.User'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'Taskmate', 
+#         'USER': 'SarahElsayed2003',
+#         'PASSWORD': '123456789@Sql',
+#         'HOST': '127.0.0.1',
+#         'PORT': '1433', 
+#         # 'OPTIONS': {
+#         #     'driver': 'ODBC Driver 17 for SQL Server',
+#         # },
+#     }
+# }
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'mssql',
-        'NAME': 'Taskmate',
-        'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',
-            'trusted_connection': 'yes',
-        },
-    },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

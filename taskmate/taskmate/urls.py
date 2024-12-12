@@ -49,5 +49,5 @@ urlpatterns = [
          success_url=reverse_lazy('login')
          ), 
         name='password_reset_confirm'),
-
+    path('Invitation/', include('Invitation.urls')),
 ]

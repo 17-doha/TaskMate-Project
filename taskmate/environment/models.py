@@ -5,11 +5,7 @@ class Environment(models.Model):
     environment_id = models.AutoField(primary_key=True) 
     label = models.CharField(max_length=255, unique=True)  
     is_private = models.BooleanField(default=True)  
-    admin = models.ForeignKey(
-        User,
-        related_name='admin_environments',
-        on_delete=models.CASCADE
-    )  # referencing the User 
+    admin = models.ForeignKey(User,related_name='admin_environments',on_delete=models.CASCADE)  
 
     class Meta:
         db_table = 'environment'  
