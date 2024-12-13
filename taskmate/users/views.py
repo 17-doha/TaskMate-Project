@@ -43,7 +43,6 @@ def login_user(request):
                 request.session['user_email'] = user.email
 
                 print(user.id, "in the login")
-                login(request)
                 return redirect('main')  # Redirect to the main page
             else:
                 messages.error(request, "Incorrect password. Please try again.")
@@ -71,6 +70,24 @@ def main(request):
     - Renders the 'main.html' template.
     """
     return render(request, 'main.html')
+
+
+def main2(request):
+    # This is the page to redirect to after login
+    """
+    Renders the main dashboard page after a successful login.
+
+    Logic:
+    - Displays the main page for authenticated users.
+    - Redirects here after both local and Google sign-ins.
+
+    Inputs:
+    - request: HttpRequest object.
+
+    Outputs:
+    - Renders the 'main.html' template.
+    """
+    return render(request, 'main2.html')
 
 def Profile(request):
     return render(request, "Profile.html")
