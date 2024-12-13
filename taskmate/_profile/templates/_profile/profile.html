@@ -8,6 +8,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Profile UI</title>
   <link rel="stylesheet" href="{% static '_profile/css/profile.css' %}">
+  <link rel="stylesheet" href="{% static '_profile/css/footer.css' %}">
+  <link rel="stylesheet" href="{% static '_profile/css/form.css' %}">
+  <link rel="stylesheet" href="{% static '_profile/css/model.css' %}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
 </head>
@@ -15,7 +18,7 @@
   <div class="container">
     <div class="header">
       <div class="profile">
-        <img src="https://via.placeholder.com/80" alt="Profile Picture">
+        <img src="{% static '_profile/imgs/female.png' %}" alt="Profile Picture">
         <div>
           <h2>{{ user_profile.first_name }} {{ user_profile.last_name }}</h2>
           <p>{{ user_profile.username }}</p>
@@ -37,7 +40,7 @@
           <label for="lastName">Last Name</label>
           <input type="text" name="last_name" value="{{ user_profile.last_name }}" id="lastName" readonly>
         </div>
-        <button class="save-button" id="saveBtn" >Save Changes</button>
+        <button class="save-button" id="saveBtn"style="display: none;" >Save Changes</button>
       </div>
     </form>
     <div class="flex-container">
@@ -51,7 +54,7 @@
           </div>
         </div>
         <br>
-        <a class="add-email">+Add Email Address</a>
+        <a class="add-email">Change Email Address</a>
       </div>
       <div class="badge-progress-container">
         <h3>Badge Progress</h3>
@@ -72,63 +75,9 @@
       <button id="cancelBtn" class="cancel-btn cancel-button">Cancel</button>
     </div>
   </div>
-  <script>
-    document.getElementById('editBtn').addEventListener('click', function() {
-      const inputs = document.querySelectorAll('input[readonly]');
-      inputs.forEach(input => {
-        input.removeAttribute('readonly');
-        input.style.cursor = 'text';  // Make cursor a text input when editable
-      });
-      document.getElementById('saveBtn').style.display = 'inline-block';
-      this.style.display = 'none';
-    });
 
-    document.getElementById('UserprofileForm').addEventListener('submit', function(event) {
-      const inputs = document.querySelectorAll('input');
-      inputs.forEach(input => {
-        input.setAttribute('readonly', true);  // Set all inputs back to readonly after save
-        input.style.cursor = 'not-allowed';   // Change cursor to not-allowed on readonly
-      });
-      document.getElementById('saveBtn').style.display = 'none';
-      document.getElementById('editBtn').style.display = 'inline-block';
-    });
-
-    // Get the modal and buttons
-    var modal = document.getElementById("confirmationModal");
-    var deleteBtn = document.getElementById("deleteBtn");
-    var closeBtn = document.getElementById("closeBtn");
-    var cancelBtn = document.getElementById("cancelBtn");
-    var confirmBtn = document.getElementById("confirmBtn");
-
-    // When the delete button is clicked, show the modal
-    deleteBtn.onclick = function() {
-      modal.style.display = "block";
-    }
-
-    // When the user clicks on the close button (x), hide the modal
-    closeBtn.onclick = function() {
-      modal.style.display = "none";
-    }
-
-    // When the user clicks on "Cancel", hide the modal
-    cancelBtn.onclick = function() {
-      modal.style.display = "none";
-    }
-
-    // When the user clicks on "Yes, Delete", perform the deletion action
-    confirmBtn.onclick = function() {
-      // Perform your delete action here
-      alert("Item Deleted!");
-      modal.style.display = "none"; // Close the modal
-    }
-
-    // When the user clicks anywhere outside the modal, close it
-    window.onclick = function(event) {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    }
-  </script>
 </body>
+<script src="{% static '_profile/js/edit.js' %}"></script>
+<script src="{% static '_profile/js/model.js' %}"></script>
 </html>
 {% endblock %}

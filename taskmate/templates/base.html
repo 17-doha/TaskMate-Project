@@ -58,7 +58,9 @@
           <div class="user-actions">
             <i class="fas fa-adjust theme-toggle-icon"></i>
             <i class="fas fa-bell notification-icon"></i>
-            <i class="fas fa-user-circle profile-icon"></i>
+            <a href="{% url '_profile:profile_view'%}">
+              <i class="fas fa-user-circle profile-icon"></i>
+            </a>
           </div>
         </div>
       </header>
