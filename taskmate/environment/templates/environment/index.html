@@ -3,6 +3,84 @@
 {% block content %}
 {% load static %}
 
+
+<style>
+/* Title Styling */
+h1 {
+  font-size: 35px;
+  font-weight: bold;
+  display: inline-block;
+  margin: 0;
+  padding-left: 0px;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+/* Container Styling */
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px 30px; /* Added padding on top and sides */
+  box-sizing: border-box;
+}
+
+/* Buttons Wrapper */
+.buttons {
+  display: flex;
+  gap: 15px; /* Space between buttons */
+}
+
+/* Common Button Styling */
+.invite-btn,
+.participants-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f5; /* Light background */
+  color: #6c5ce7; /* Purple text */
+  border: none; /* Remove the border */
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.3s ease; /* Smooth transition */
+}
+
+/* Icon inside buttons */
+.invite-btn .icon,
+.participants-btn .icon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+/* Specific Styling for Invite Button */
+.invite-btn {
+  background-color: #ffffff; /* White background */
+  color: #6c5ce7; /* Purple text */
+}
+
+.invite-btn:hover {
+  background-color: #c6c6ff; /* Slightly darker blue on hover */
+}
+
+/* Styling for Participants Button */
+.participants-btn {
+  background-color: white;
+  color: #616163; /* Grey text */
+  border: 1px solid #d6d6e1; /* Grey border */
+}
+
+.participants-btn:hover {
+  background-color: #f2f2f2; /* Slightly grey background on hover */
+}
+
+
+</style>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,6 +94,22 @@
 </head>
 <body>
   <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+  <!-- env title and invite button -->
+  <link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+  <div class="container">
+    <h1>{{ environment.label }}</h1>
+    <div class="buttons">
+      <button class="invite-btn">
+        <i class="fa fa-plus icon"></i> Invite
+      </button>
+      <button class="participants-btn">
+        <i class="fa fa-users icon"></i> Participants
+      </button>
+    </div>
+  </div>
+
+  
 
   <!-- Main Content -->
   <main class="main-content">
