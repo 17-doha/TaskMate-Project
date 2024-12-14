@@ -1,8 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from .models import Environment, Table
 from task.models import Task
 import json
+from django.contrib.auth.decorators import login_required
 
 # Mapping for drag-and-drop functionality
 mapping = {
@@ -172,4 +173,14 @@ def ShowEnvironments(request):
     environments = Environment.objects.all()
     return render(request, 'base.html', {'environments': environments})
 
-
+@login_required   #Not ready yet
+def add_environment(request):
+    if request.method == "POST":
+        label = request.POST['label']
+        is_private = 'is_private' in request.POST
+        environment = Environment.objects.create(
+            label=label,
+            is_private=is_private,
+            admin=request.user
+        )
+    return render(request, 'base.html', {'environment': environment})
