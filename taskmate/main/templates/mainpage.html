@@ -8,6 +8,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Small Chart with Cards</title>
   <style>
+
+.chart-title {
+      text-align: right;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-bottom: -20px;
+      margin-right: 100px;
+    }
     /* Container to position the chart */
     .chart-container {
       padding: -750px 1000px; /* Adjust padding (top-bottom and left-right) */
@@ -235,6 +243,8 @@
 <body>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
 
+
+  <div class="chart-title">Progress Overview</div>
   <div class="chart-container">
     
     <canvas id="chart" width="350" height="350"></canvas>
@@ -286,7 +296,8 @@
   <div class="priority-task-container">
     <div class="task-card">
       <div class="priority high-priority">High Priority</div>
-      <div class="task-title">Create user flow for Finance App</div>
+      <div class="task-title">Create user flow for Finance App</div> <br>
+      <div class = "upcoming-deadlines-info">on Mobile App</div>
       <p>50% done</p>
       <div class="progress-bar">
         <div class="done"></div>
@@ -299,7 +310,8 @@
 
     <div class="task-card">
       <div class="priority medium-priority">Med Priority</div>
-      <div class="task-title">Create user flow for Finance App</div>
+      <div class="task-title">Create user flow for Finance App</div> <br>
+      <div class = "upcoming-deadlines-info">on Mobile App</div>
       <p>50% done</p>
       <div class="progress-bar">
         <div class="done"></div>
@@ -342,7 +354,7 @@
     <h3 class="upcoming-deadlines-header">Upcoming Deadlines</h3>
     <div class="upcoming-deadlines">
       <div class="upcoming-deadlines-card">
-        <div class="upcoming-deadlines-title">Create user flow for Finance App</div>
+        <div class="upcoming-deadlines-title">Create user flow for Finance App</div> <br>
         <div class = "upcoming-deadlines-info">on Mobile App</div>
        
         <div class="upcoming-deadlines-info">
@@ -352,7 +364,7 @@
       </div>
   
       <div class="upcoming-deadlines-card">
-        <div class="upcoming-deadlines-title">Create user flow for Finance App</div>
+        <div class="upcoming-deadlines-title">Create user flow for Finance App</div><br>
         <div class = "upcoming-deadlines-info">on Mobile App</div>
        
         <div class="upcoming-deadlines-info">
@@ -362,7 +374,7 @@
       </div>
 
       <div class="upcoming-deadlines-card">
-        <div class="upcoming-deadlines-title">Create user flow for Finance App</div>
+        <div class="upcoming-deadlines-title">Create user flow for Finance App</div><br>
         <div class = "upcoming-deadlines-info">on Mobile App</div>
        
         <div class="upcoming-deadlines-info">
@@ -372,7 +384,7 @@
       </div>
 
       <div class="upcoming-deadlines-card">
-        <div class="upcoming-deadlines-title">Create user flow for Finance App</div>
+        <div class="upcoming-deadlines-title">Create user flow for Finance App</div><br>
         <div class = "upcoming-deadlines-info">on Mobile App</div>
        
         <div class="upcoming-deadlines-info">
