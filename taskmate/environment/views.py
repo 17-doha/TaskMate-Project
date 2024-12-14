@@ -5,6 +5,7 @@ from task.models import Task
 import json
 from django.contrib.auth.decorators import login_required
 
+
 # Mapping for drag-and-drop functionality
 mapping = {
     'To Do': 'Pending',
@@ -143,9 +144,14 @@ def search_environment(request):
         2. If the request method is not POST:
             - Render the template with an empty context.
     """
+    user_id = request.session.get('user_id')
     if request.method == "POST":
+        # Logs
+        print("user_id", user_id)
+
+        # Retrieve the search term
         searched = request.POST['searched']
-        environments = Environment.objects.filter(label__contains=searched)
+        environments = Environment.objects.filter(label__contains=searched, admin_id=user_id)
         return render(request, 'search_environment.html', {'searched': searched, 'environments': environments})
     else:
         return render(request, 'search_environment.html', {})
