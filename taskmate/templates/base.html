@@ -9,9 +9,25 @@
   <!-- Link to External CSS -->
   <link rel="stylesheet" href="{% static 'base/css/base.css' %}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+  <!-- Inline CSS for quick responsiveness (can be moved to base.css) -->
+  <style>
+    @media (max-width: 768px) {
+      .sidebar {
+        display: none;
+      }
+      .dashboard {
+        flex-direction: column;
+      }
+      .menu-item.dropdown .submenu {
+        display: none;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="dashboard">
+    <!-- Sidebar -->
     <aside class="sidebar">
       <h1 class="logo">TaskMate</h1>
       <nav>
@@ -25,29 +41,39 @@
           <li class="menu-item dropdown">
             <i class="fas fa-folder"></i> Environments
             <ul class="submenu">
-              <li class="submenu-item">Mobile App</li>
-              <li class="submenu-item">Design System</li>
-              <li class="submenu-item">Website Redesign</li>
-              <li class="menu-item add-environment">
-                <i class="fas fa-plus"></i> Add Environment
+              {% for environment in environments %}
+                <li class="submenu-item">
+                  <a href="{% url 'environment:view_table_task' environment_id=environment.environment_id %}">
+                    {{ environment.label }}
+                  </a>
+                </li>
+              {% empty %}
+                <li class="submenu-item">No environments available</li>
+              {% endfor %}
+              <li class="submenu-item add-environment">
+                <button class="btn btn-secondary" disabled>
+                  <i class="fas fa-plus"></i> Add Environment
+                </button>
               </li>
             </ul>
-          </li>
+          </li>          
         </ul>
       </nav>
-    </aside>
+    </aside>    
 
+    <!-- Main Content -->
     <main class="main-content">
+      <!-- Navbar -->
       <header class="navbar">
         <div class="search-bar">
-          <form id="searchForm" method="POST" action="{% url 'task:search_task' %}" onsubmit="updateActionUrl()">
+          <form id="searchForm" method="POST" action="{% url 'task:search_task' %}">
             {% csrf_token %}
             <div class="search-bar-wrapper">
               <input type="text" id="searchInput" name="searched" placeholder="Search for a task or an environment...">
-              <button type="submit" formaction="{% url 'task:search_task' %}" class="search-btn">
+              <button type="submit" formaction="{% url 'task:search_task' %}" class="search-btn" aria-label="Search Tasks">
                 Search Tasks
               </button>
-              <button type="submit" formaction="{% url 'environment:search_environment' %}" class="search-btn">
+              <button type="submit" formaction="{% url 'environment:search_environment' %}" class="search-btn" aria-label="Search Environments">
                 Search Environments
               </button>
             </div>
@@ -56,9 +82,9 @@
         
         <div class="navbar-right">
           <div class="user-actions">
-            <i class="fas fa-adjust theme-toggle-icon"></i>
-            <i class="fas fa-bell notification-icon"></i>
-            <i class="fas fa-user-circle profile-icon"></i>
+            <i class="fas fa-adjust theme-toggle-icon" aria-label="Toggle Theme"></i>
+            <i class="fas fa-bell notification-icon" aria-label="Notifications"></i>
+            <i class="fas fa-user-circle profile-icon" aria-label="User Profile"></i>
           </div>
         </div>
       </header>
@@ -68,7 +94,6 @@
     </main>
   </div>
 
-  <!-- Link to External JS -->
   <script src="{% static 'base/js/base.js' %}"></script>
 </body>
 </html>

@@ -22,11 +22,11 @@ def index(request):
 
     Output:
         - Renders 'environment/index.html'.
-
-    Logic:
-        - Simply loads the HTML template for the homepage without any additional context.
+        - Context: Includes a list of all environments.
     """
-    return render(request, "environment/index.html")
+    environments = Environment.objects.all()
+    return render(request, "environment/index.html", {"environments": environments})
+
 
 
 def ViewTableTask(request, environment_id):
@@ -148,3 +148,33 @@ def search_environment(request):
         return render(request, 'search_environment.html', {'searched': searched, 'environments': environments})
     else:
         return render(request, 'search_environment.html', {})
+
+
+
+def ShowEnvironments(request):
+    """
+    Purpose:
+        Displays all environments in the database.
+
+    Input:
+        - HTTP Method: GET
+        - Query Parameters: None
+
+    Output:
+        - Renders 'environment/show_environments.html'.
+        - Context:
+            - environments: Queryset of all Environment objects.
+
+    Logic:
+        1. Query the database for all Environment objects.
+        2. Pass the environments to the template for rendering.
+    """
+    print("ShowEnvironments function triggered!")  # Debugging line
+    environments = Environment.objects.all()
+    print("Environments in database:", environments)  # Debugging line
+    return render(request, 'base.html', {'environments': environments})
+
+
+def show_test(request):
+    environments = Environment.objects.all()
+    return render(request, 'test.html', {'environments': environments})

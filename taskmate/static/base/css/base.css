@@ -92,7 +92,7 @@ body {
 }
 
 .menu-item.dropdown .submenu {
-    display: none;
+    display: none; /* Initially hidden */
     position: absolute;
     top: 100%;
     left: 0;
@@ -101,11 +101,13 @@ body {
     border-radius: 8px;
     padding: 10px 0;
     z-index: 10;
+    transition: opacity 0.3s ease;
 }
 
 .menu-item.dropdown.open .submenu {
     display: block;
 }
+
 
 .submenu li {
     padding: 8px 15px;
@@ -188,3 +190,5 @@ header.navbar {
 .user-actions i:hover {
     color: #6c63ff;
 }
+
+
