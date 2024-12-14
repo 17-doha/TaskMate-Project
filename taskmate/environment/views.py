@@ -169,12 +169,7 @@ def ShowEnvironments(request):
         1. Query the database for all Environment objects.
         2. Pass the environments to the template for rendering.
     """
-    print("ShowEnvironments function triggered!")  # Debugging line
     environments = Environment.objects.all()
-    print("Environments in database:", environments)  # Debugging line
     return render(request, 'base.html', {'environments': environments})
 
 
-def show_test(request):
-    environments = Environment.objects.all()
-    return render(request, 'test.html', {'environments': environments})

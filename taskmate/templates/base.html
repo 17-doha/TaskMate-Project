@@ -5,25 +5,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TaskMate Dashboard</title>
+  <style>
+    /* Styling for submenu items */
+.submenu-item {
+  padding: 5px 10px;
+  border-radius: 6px; /* Rounded corners */
+  transition: background 0.3s ease, transform 0.2s ease;
+}
 
+.submenu-item:hover {
+  transform: scale(1.02); /* Slightly enlarge the item */
+}
+
+/* Styling for the link inside submenu items */
+.submenu-link {
+  display: block; /* Make the link block-level for full clickable area */
+  color: #fff; /* Text color */
+  text-decoration: none; /* Remove underline */
+  font-size: 16px;
+  padding: 10px 10px; /* Padding for better click area */
+  border-radius: 6px; /* Rounded corners */
+  transition: background 0.3s ease, color 0.3s ease; /* Smooth transitions */
+}
+
+  </style>
   <!-- Link to External CSS -->
   <link rel="stylesheet" href="{% static 'base/css/base.css' %}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
   <!-- Inline CSS for quick responsiveness (can be moved to base.css) -->
-  <style>
-    @media (max-width: 768px) {
-      .sidebar {
-        display: none;
-      }
-      .dashboard {
-        flex-direction: column;
-      }
-      .menu-item.dropdown .submenu {
-        display: none;
-      }
-    }
-  </style>
 </head>
 <body>
   <div class="dashboard">
@@ -42,21 +52,19 @@
             <i class="fas fa-folder"></i> Environments
             <ul class="submenu">
               {% for environment in environments %}
-                <li class="submenu-item">
-                  <a href="{% url 'environment:view_table_task' environment_id=environment.environment_id %}">
-                    {{ environment.label }}
-                  </a>
-                </li>
+              <li class="submenu-item">
+                <a href="{% url 'environment:view_table_task' environment_id=environment.environment_id %}" class="submenu-link">
+                  {{ environment.label }}
+                </a>
+              </li>              
               {% empty %}
-                <li class="submenu-item">No environments available</li>
+              <li class="submenu-item">No environments available</li>
               {% endfor %}
-              <li class="submenu-item add-environment">
-                <button class="btn btn-secondary" disabled>
-                  <i class="fas fa-plus"></i> Add Environment
-                </button>
+              <li class="menu-item add-environment">
+                <i class="fas fa-plus"></i> Add Environment
               </li>
             </ul>
-          </li>          
+          </li>
         </ul>
       </nav>
     </aside>    
@@ -94,6 +102,7 @@
     </main>
   </div>
 
+  <!-- Link to External JS -->
   <script src="{% static 'base/js/base.js' %}"></script>
 </body>
 </html>
