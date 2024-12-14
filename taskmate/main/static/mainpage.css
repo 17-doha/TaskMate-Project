@@ -163,13 +163,14 @@
 
 
   .upcoming-deadlines {
-  position: absolute; /* Position relative to the page */
-  top: 570px; /* Align above other elements */
-  right: 40px; /* Align with the card-container */
-  display: flex; /* Arrange cards horizontally */
-  gap: 35px; /* Add spacing between cards */
-  z-index: 1; /* Ensure it overlaps other content */
-}
+    position: absolute; /* Maintain absolute positioning */
+    top: 570px; /* Adjust top value to align properly */
+    left: 270px; /* Use `left` instead of `right` to align to the left */
+    display: flex; /* Arrange cards horizontally */
+    gap: 35px; /* Add spacing between cards */
+    z-index: 1; /* Ensure it overlaps other content */
+  }
+  
 
 .upcoming-deadlines-card {
   background-color: #fff; /* White background for the card */

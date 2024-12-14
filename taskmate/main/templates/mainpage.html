@@ -99,43 +99,50 @@
     <!-- Card for To Do -->
     <div class="card todo">
       <div class="card-title">To Do</div>
-      <div class="card-count">10</div>
-      <div class="card-total">/ 20</div>
+      <div class="card-count">{{ task_counts.todo }}</div>
+      <div class="card-total">/ {{ task_counts.total }}</div>
     </div>
-
+  
     <!-- Card for In Progress -->
     <div class="card in-progress">
       <div class="card-title">In Progress</div>
-      <div class="card-count">5</div>
-      <div class="card-total">/ 20</div>
+      <div class="card-count">{{ task_counts.in_progress }}</div>
+      <div class="card-total">/ {{ task_counts.total }}</div>
     </div>
-
+  
     <!-- Card for Done -->
     <div class="card done">
       <div class="card-title">Done</div>
-      <div class="card-count">5</div>
-      <div class="card-total">/ 20</div>
+      <div class="card-count">{{ task_counts.done }}</div>
+      <div class="card-total">/ {{ task_counts.total }}</div>
     </div>
   </div>
-
+  
 
 
     <!-- Priority Task Section -->
     <h3 class="upcoming-deadlines-header">Upcoming Deadlines</h3>
-  
-  <div class="upcoming-deadlines">
-    {% for task in tasks %}
-      <div class="upcoming-deadlines-card">
-        <div class="upcoming-deadlines-title">{{ task.content }}</div><br>
-        <div class="upcoming-deadlines-info">on {{ task.table.label }}</div>
-        <div class="upcoming-deadlines-info">
-          <p>Due: {{ task.deadline|date:"F j, Y" }}</p>
+
+    <div class="upcoming-deadlines">
+      {% for item in tasks_with_environment %}
+        <div class="upcoming-deadlines-card">
+          <!-- Task Title -->
+          <div class="upcoming-deadlines-title">{{ item.task.content }}</div><br>
+          
+          <!-- Environment Name -->
+          <div class="upcoming-deadlines-info">on {{ item.environment_name|default:"No Environment" }}</div>
+
+          
+          <!-- Deadline -->
+          <div class="upcoming-deadlines-info">
+            <p>Due: {{ item.task.deadline|date:"F j, Y" }}</p>
+          </div>
         </div>
-      </div>
-    {% empty %}
-      <p>No upcoming deadlines</p>
-    {% endfor %}
-  </div>
+      {% empty %}
+        <p>No upcoming deadlines</p>
+      {% endfor %}
+    </div>
+    
 
 </body>
 </html>
