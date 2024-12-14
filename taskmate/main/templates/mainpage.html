@@ -1,244 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'mainpage.css' %}">
   <title>Small Chart with Cards</title>
-  <style>
 
-.chart-title {
-      text-align: right;
-      font-size: 1.5em;
-      font-weight: bold;
-      margin-bottom: -20px;
-      margin-right: 100px;
-    }
-    /* Container to position the chart */
-    .chart-container {
-      padding: -750px 1000px; /* Adjust padding (top-bottom and left-right) */
-      margin-left: 950px;
-    }
-
-    /* Ensure the canvas is contained properly */
-    #chart {
-      max-width: 350px;
-      max-height: 350px;
-    }
-
-    /* Card container styling */
-    .card-container {
-      display: flex;
-      gap: 20px;
-      justify-content: right;
-      margin-top: -500px;
-      margin-right: 360px;
-    }
-
-    .card {
-      background-color: #f8f9fa; /* Light gray background for a modern look */
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* More pronounced shadow */
-      padding: 20px;
-      width: 250px; /* Slightly wider for better proportion */
-      text-align: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
-    }
-
-    .card:hover {
-      transform: translateY(-10px); /* Lifts the card on hover */
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* More intense shadow for hover effect */
-    }
-
-    .card h3 {
-      color: #343a40; /* Darker text color for better contrast */
-    }
-
-    .card p {
-      color: #6c757d; /* Subtle gray text for a balanced look */
-    }
-
-    .card img {
-      width: 24px;
-      margin-bottom: 10px;
-    }
-
-    .card-title {
-      font-size: 1.2em;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .card-count {
-      font-size: 2em;
-    }
-
-    .card-total {
-      font-size: 0.9em;
-      color: #666;
-    }
-
-    .todo {
-      background-color: #ffcccc;
-    }
-
-    .in-progress {
-      background-color: #fff8b3;
-    }
-
-    .done {
-      background-color: #ccffcc;
-    }
-
-    /* Priority Task Section */
-    .priority-task-container {
-  position: absolute; /* Make it absolute */
-  top: 310px; /* Adjust to move above the card-container */
-  right: 360px; /* Align with the card-container */
-  display: flex;
-  gap: 50px;
-  z-index: 1; /* Ensure it overlaps other elements if necessary */
-}
-
-
-.card-container {
-  margin-top: -300px; /* Add space below the priority tasks */
-}
-
-    .task-card {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 390px; /* Adjust the width as needed */
-    text-align: left; /* Align text to the left */
-    position: relative; /* Required for absolute positioning of priority */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .task-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  }
-
-  /* Title styling */
-  .task-card .title {
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-
-  /* Priority label in the top right */
-  .task-card .priority {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 5px 10px;
-    border-radius: 10px;
-    font-weight: bold;
-  }
-
-  .task-card .high-priority {
-    background-color: white; /* White background */
-    color: #ff4d4d; /* Yellow text */
-    border: 2px solid #ff4d4d; /* Yellow border */
-  }
-
-  /* Updated styling for medium priority */
-  .task-card .medium-priority {
-    background-color: white; /* White background */
-    color: #ffcc00; /* Yellow text */
-    border: 2px solid #ffcc00; /* Yellow border */
-  }
-
-  /* Progress bar styling */
-  .progress-bar {
-    width: 100%;
-    background-color: #e0e0e0;
-    border-radius: 5px;
-    margin: 10px 0;
-  }
-
-  .progress-bar div {
-    height: 8px;
-    border-radius: 5px;
-  }
-
-  .progress-bar .done {
-    background-color: #28a745;
-    width: 50%; /* This should be dynamic based on the task's progress */
-  }
-
-
-  .upcoming-deadlines {
-  position: absolute; /* Position relative to the page */
-  top: 570px; /* Align above other elements */
-  right: 40px; /* Align with the card-container */
-  display: flex; /* Arrange cards horizontally */
-  gap: 35px; /* Add spacing between cards */
-  z-index: 1; /* Ensure it overlaps other content */
-}
-
-.upcoming-deadlines-card {
-  background-color: #fff; /* White background for the card */
-  border-radius: 10px; /* Rounded corners for smoother edges */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
-  padding: 15px; /* Add internal padding for content */
-  width: 250px; /* Set width to fit content */
-  text-align: left; /* Align text to the left */
-  position: relative; /* Enable child positioning */
-  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effects */
-}
-
-.upcoming-deadlines-card:hover {
-  transform: translateY(-5px); /* Lift card on hover */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
-}
-
-/* Title Styling */
-.upcoming-deadlines-title {
-  font-size: 1.1em; /* Slightly smaller font */
-  font-weight: bold; /* Emphasize the title */
-  color: #333; /* Dark text for better visibility */
-  margin-bottom: 5px; /* Spacing below the title */
-}
-
-/* Subheading Styling */
-.upcoming-deadlines-info {
-  font-size: 0.9em; /* Slightly smaller for a subtitle */
-  color: #777; /* Light gray for less emphasis */
-  margin-bottom: 10px; /* Add spacing below the subheading */
-  text-decoration: underline; /* Add underline to the text */
-}
-
-
-/* Due Date Styling */
-.upcoming-deadlines-info p {
-  background-color: #ffe5e5; /* Light red background */
-  color: #ff6b6b; /* Dark red text */
-  font-weight: bold; /* Bold text */
-  padding: 5px 10px; /* Add padding for emphasis */
-  border-radius: 5px; /* Rounded edges for the label */
-  display: inline-block; /* Inline block to match content */
-  margin: 0; /* Reset margin */
-}
-
-/* Upcoming Deadlines Title Styling */
-.upcoming-deadlines-header {
-  font-size: 1.5em; /* Adjust font size */
-  font-weight: bold; /* Make it bold */
-  color: #333; /* Darker color for better contrast */
-  margin-bottom: 105px; /* Space below the title */
-  margin-top: 250px;
-  text-align: left; /* Align text to the left */
-  margin-left: 35px; /* Align to match the container */
-}
-
-
-
-  </style>
 </head>
 <body>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
@@ -352,47 +122,20 @@
 
     <!-- Priority Task Section -->
     <h3 class="upcoming-deadlines-header">Upcoming Deadlines</h3>
-    <div class="upcoming-deadlines">
-      <div class="upcoming-deadlines-card">
-        <div class="upcoming-deadlines-title">Create user flow for Finance App</div> <br>
-        <div class = "upcoming-deadlines-info">on Mobile App</div>
-       
-        <div class="upcoming-deadlines-info">
-          
-          <p>Due: December 15th, 2023</p>
-        </div>
-      </div>
   
+  <div class="upcoming-deadlines">
+    {% for task in tasks %}
       <div class="upcoming-deadlines-card">
-        <div class="upcoming-deadlines-title">Create user flow for Finance App</div><br>
-        <div class = "upcoming-deadlines-info">on Mobile App</div>
-       
+        <div class="upcoming-deadlines-title">{{ task.content }}</div><br>
+        <div class="upcoming-deadlines-info">on {{ task.table.label }}</div>
         <div class="upcoming-deadlines-info">
-          
-          <p>Due: December 15th, 2023</p>
+          <p>Due: {{ task.deadline|date:"F j, Y" }}</p>
         </div>
       </div>
-
-      <div class="upcoming-deadlines-card">
-        <div class="upcoming-deadlines-title">Create user flow for Finance App</div><br>
-        <div class = "upcoming-deadlines-info">on Mobile App</div>
-       
-        <div class="upcoming-deadlines-info">
-          
-          <p>Due: December 15th, 2023</p>
-        </div>
-      </div>
-
-      <div class="upcoming-deadlines-card">
-        <div class="upcoming-deadlines-title">Create user flow for Finance App</div><br>
-        <div class = "upcoming-deadlines-info">on Mobile App</div>
-       
-        <div class="upcoming-deadlines-info">
-          
-          <p>Due: December 15th, 2023</p>
-        </div>
-      </div>
-    </div>
+    {% empty %}
+      <p>No upcoming deadlines</p>
+    {% endfor %}
+  </div>
 
 </body>
 </html>
