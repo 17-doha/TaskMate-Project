@@ -50,4 +50,6 @@ urlpatterns = [
          ), 
         name='password_reset_confirm'),
     path('Invitation/', include('Invitation.urls')),
-]
+    path('Notification/', include('Notification.urls')),
+
+]   
