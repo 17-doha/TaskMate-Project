@@ -1,9 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import render,  redirect
 from django.utils.timezone import now
 from django.db.models import Q, Count
 from task.models import Task
 
 def mainpage(request, user_id):
+    session_user_id = request.session.get('user_id')
+    if not session_user_id:
+        return redirect('/login/')  # Redirect to login page if not logged in
+
+    # Enforce the user to access only their own page
+    if int(user_id) != session_user_id:
+        return redirect(f'/main/{session_user_id}/')
     current_datetime = now()
 
     # Fetch tasks for the user with future deadlines, ordered by nearest deadline
