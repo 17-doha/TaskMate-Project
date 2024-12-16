@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google', 
     'task',
     'signup',
-    '_profile'
+    '_profile',
+    'badge'
 ]
 SOCIALACCOUNT_LOGIN_ON_GET=True
 
