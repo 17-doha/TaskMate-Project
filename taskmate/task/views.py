@@ -1,9 +1,11 @@
 from django.shortcuts import render,get_object_or_404, redirect
-from .models import Task, Environment
+from .models import Task, Environment, User
+from environment.models import SearchHistory
 from .forms import TaskEditForm, TaskCreateForm
 from signup.models import User
 from environment.models import Environment
 from django.contrib import messages
+from django.db.models import Q
 
 
 # A view to show all tasks with the edit and delete buttons for testing
@@ -131,11 +133,10 @@ def CreateTask(request):
     })
 
 
-# A view to search for tasks based on content
 def search_task(request):
     """
     Purpose:
-    - Search for tasks based on content.
+    - Search for tasks based on content and store the search term in the search history.
 
     Logic:
     - If POST, filters Task objects matching the search term.
@@ -152,18 +153,30 @@ def search_task(request):
     - Else:
       - Renders 'search_environment.html' with no context.
     """
+    user_id = request.session.get('user_id')
     if request.method == "POST":
+        # Logs
+        print("user_id", user_id)
+
+        # Retrieve the search term
         searched = request.POST['searched']
-        print(f"Search Term: {searched}")  # Debugging line
-        tasks = Task.objects.filter(content__contains=searched)
         
-        # Debugging: Print task IDs to check if they're valid
-        for task in tasks:
-            print(f"Task ID: {task.task_id}, Content: {task.content}")
+        # Query tasks based on the search term and user ID
+        tasks = Task.objects.filter(
+            Q(content__contains=searched, created_by_id=user_id) | Q(content__contains=searched, assigned_to_id=user_id)
+        )
+        
+        # Retrieve the User instance based on the user_id
+        user = User.objects.get(id=user_id)
+
+        # Store the search term in SearchHistory if it's not already there
+        if not SearchHistory.objects.filter(content=searched, user_id=user).exists():
+            SearchHistory.objects.create(content=searched, user_id=user)
         
         return render(request, 'search_environment.html', {'searched': searched, 'tasks': tasks})
     else:
         return render(request, 'search_environment.html', {})
+
 
 
 # A view to redirect to the environment page of a task

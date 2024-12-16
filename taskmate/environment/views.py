@@ -1,9 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
-from .models import Environment, Table
+from .models import Environment, Table, SearchHistory
 from task.models import Task
 import json
 from django.contrib.auth.decorators import login_required
+
 
 
 # Mapping for drag-and-drop functionality
@@ -27,7 +28,8 @@ def index(request):
         - Renders 'environment/index.html'.
         - Context: Includes a list of all environments.
     """
-    environments = Environment.objects.all()
+    user_id = request.session.get('user_id')
+    environments = Environment.objects.filter(admin_id=user_id)
     return render(request, "environment/index.html", {"environments": environments})
 
 
@@ -119,10 +121,14 @@ def dragAndDrop(request, environment_id):
     return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
 
 
+
+
+from .models import SearchHistory, User
+
 def search_environment(request):
     """
     Purpose:
-        Implements search functionality to find environments by their label.
+        Implements search functionality to find environments by their label and store the search term in the search history.
 
     Input:
         - HTTP Method: POST
@@ -141,6 +147,7 @@ def search_environment(request):
         1. If the request method is POST:
             - Retrieve the search term from the form.
             - Query the database for environments whose labels contain the search term.
+            - Add the search term to the SearchHistory table.
             - Pass the search results to the template.
         2. If the request method is not POST:
             - Render the template with an empty context.
@@ -152,33 +159,21 @@ def search_environment(request):
 
         # Retrieve the search term
         searched = request.POST['searched']
+        
+        # Query environments based on the search term
         environments = Environment.objects.filter(label__contains=searched, admin_id=user_id)
+        
+        # Retrieve the User instance based on the user_id
+        user = User.objects.get(id=user_id)
+
+        # Store the search term in SearchHistory if it's not already there
+        if not SearchHistory.objects.filter(content=searched, user_id=user).exists():
+            SearchHistory.objects.create(content=searched, user_id=user)
+        
         return render(request, 'search_environment.html', {'searched': searched, 'environments': environments})
     else:
         return render(request, 'search_environment.html', {})
 
-
-
-def ShowEnvironments(request):
-    """
-    Purpose:
-        Displays all environments in the database.
-
-    Input:
-        - HTTP Method: GET
-        - Query Parameters: None
-
-    Output:
-        - Renders 'environment/show_environments.html'.
-        - Context:
-            - environments: Queryset of all Environment objects.
-
-    Logic:
-        1. Query the database for all Environment objects.
-        2. Pass the environments to the template for rendering.
-    """
-    environments = Environment.objects.all()
-    return render(request, 'base.html', {'environments': environments})
 
 @login_required   #Not ready yet
 def add_environment(request):
