@@ -1,7 +1,84 @@
-
 {%extends 'base.html'%}
 {% block content %}
 {% load static %}
+
+
+<style>
+/* Title Styling */
+h1 {
+  font-size: 35px;
+  font-weight: bold;
+  display: inline-block;
+  margin: 0;
+  padding-left: 0px;
+  text-align: left;
+  word-wrap: break-word;
+}
+
+/* Container Styling */
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 20px 30px; /* Added padding on top and sides */
+  box-sizing: border-box;
+}
+
+/* Buttons Wrapper */
+.buttons {
+  display: flex;
+  gap: 15px; /* Space between buttons */
+}
+
+/* Common Button Styling */
+.invite-btn,
+.participants-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f5; /* Light background */
+  color: #6c5ce7; /* Purple text */
+  border: none; /* Remove the border */
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.3s ease; /* Smooth transition */
+}
+
+/* Icon inside buttons */
+.invite-btn .icon,
+.participants-btn .icon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+/* Specific Styling for Invite Button */
+.invite-btn {
+  background-color: #ffffff; /* White background */
+  color: #6c5ce7; /* Purple text */
+}
+
+.invite-btn:hover {
+  background-color: #c6c6ff; /* Slightly darker blue on hover */
+}
+
+/* Styling for Participants Button */
+.participants-btn {
+  background-color: white;
+  color: #616163; /* Grey text */
+  border: 1px solid #d6d6e1; /* Grey border */
+}
+
+.participants-btn:hover {
+  background-color: #f2f2f2; /* Slightly grey background on hover */
+}
+
+
+</style>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,6 +93,22 @@
 </head>
 <body>
   <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+  <!-- env title and invite button -->
+  <link
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+  <div class="container">
+    <h1>{{ environment.label }}</h1>
+    <div class="buttons">
+      <button id="inviteButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#inviteModal">
+        Invite User
+    </button>
+      <button class="participants-btn">
+        <i class="fa fa-users icon"></i> Participants
+      </button>
+    </div>
+  </div>
+
+  
 
   <!-- Main Content -->
   <main class="main-content">
@@ -71,6 +164,7 @@
         <div class="column" id="medium" ondrop="drop(event)" ondragover="allowDrop(event)">
           <div class="column-header">
             <h3>In Progress</h3>
+            <p>{{ user_id }}</p>
           </div>
           <div class="column-bar medium"></div>
           {% for task in inprogress_tasks %}
@@ -185,6 +279,67 @@
   <script src="{% static 'environment/js/environment.js' %}"></script>
   <!-- pop up -->
   <script src="{% static 'environment/js/pop_up.js' %}"></script>
+  <div class="modal fade" id="inviteModal" tabindex="-1" aria-labelledby="inviteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inviteModalLabel">Invite a User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="inviteForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Invitee's Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter the invitee's email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="environmentLabel" class="form-label">Environment Name</label>
+                        <input type="text" class="form-control" id="environmentLabel" name="environment_label" placeholder="Enter environment name" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="sendInviteButton" class="btn btn-primary">Send Invitation</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById("sendInviteButton").addEventListener("click", function () {
+        const email = document.getElementById("email").value; // Get email from the form
+        const environmentLabel = document.getElementById("environmentLabel").value; // Get environment name from the form
+
+        fetch("{% url 'invitation' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+            },
+            body: new URLSearchParams({
+                email: email,
+                environment_label: environmentLabel
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                alert("Invitation sent successfully!");
+            } else {
+                alert("Error: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Failed to send invitation.");
+        });
+    });
+
+</script>
 
 
 </body>

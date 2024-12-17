@@ -39,8 +39,13 @@ SITE_ID = 1
 
 INSTALLED_APPS = [
     'channels',
+<<<<<<< HEAD
     'Notification.apps.NotificationConfig',
     'Invitation.apps.InvitationConfig',
+=======
+    'Invitation.apps.InvitationConfig',
+    'Notifications.apps.NotificationsConfig',
+>>>>>>> LastMerge
     'password_reset',
     'environment.apps.EnvironmentConfig',
     'django.contrib.admin',
@@ -57,7 +62,15 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google', 
     'task',
     'signup',
+    'main',
 ]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
+
 SOCIALACCOUNT_LOGIN_ON_GET=True
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -79,6 +92,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
    
 ]
 
@@ -95,7 +109,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-
+                
             ],
         },
     },
@@ -104,12 +118,15 @@ TEMPLATES = [
 WSGI_APPLICATION = 'taskmate.wsgi.application'
 ASGI_APPLICATION = 'taskmate.asgi.application'
 
+<<<<<<< HEAD
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
     },
 }
 
+=======
+>>>>>>> LastMerge
 
 #Update the settings.py file Allowed host list which was empty
 ALLOWED_HOSTS = ['127.0.0.1','localhost']
@@ -127,6 +144,7 @@ AUTH_USER_MODEL = 'signup.User'
 
 # DATABASES = {
 #     'default': {
+<<<<<<< HEAD
 #         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'Taskmate', 
 #         'USER': 'SarahElsayed2003',
@@ -140,6 +158,17 @@ AUTH_USER_MODEL = 'signup.User'
 # }
 
 
+=======
+#         'ENGINE': 'mssql',
+#         'NAME': 'Taskmate',
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 17 for SQL Server',
+#             'trusted_connection': 'yes',
+#         },
+#     },
+# }
+
+>>>>>>> LastMerge
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -164,6 +193,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 
 # Internationalization

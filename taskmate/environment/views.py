@@ -1,8 +1,10 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
 from .models import Environment, Table
 from task.models import Task
 import json
+from django.contrib.auth.decorators import login_required
+
 
 # Mapping for drag-and-drop functionality
 mapping = {
@@ -12,6 +14,7 @@ mapping = {
 }
 
 def index(request):
+    # user_id = request.session.get('user_id') "Hash this to access the user_id in any other view"
     """
     Purpose:
         Renders the homepage for the environment application.
@@ -22,11 +25,11 @@ def index(request):
 
     Output:
         - Renders 'environment/index.html'.
-
-    Logic:
-        - Simply loads the HTML template for the homepage without any additional context.
+        - Context: Includes a list of all environments.
     """
-    return render(request, "environment/index.html")
+    environments = Environment.objects.all()
+    return render(request, "environment/index.html", {"environments": environments})
+
 
 
 def ViewTableTask(request, environment_id):
@@ -142,9 +145,49 @@ def search_environment(request):
         2. If the request method is not POST:
             - Render the template with an empty context.
     """
+    user_id = request.session.get('user_id')
     if request.method == "POST":
+        # Logs
+        print("user_id", user_id)
+
+        # Retrieve the search term
         searched = request.POST['searched']
-        environments = Environment.objects.filter(label__contains=searched)
+        environments = Environment.objects.filter(label__contains=searched, admin_id=user_id)
         return render(request, 'search_environment.html', {'searched': searched, 'environments': environments})
     else:
         return render(request, 'search_environment.html', {})
+
+
+
+def ShowEnvironments(request):
+    """
+    Purpose:
+        Displays all environments in the database.
+
+    Input:
+        - HTTP Method: GET
+        - Query Parameters: None
+
+    Output:
+        - Renders 'environment/show_environments.html'.
+        - Context:
+            - environments: Queryset of all Environment objects.
+
+    Logic:
+        1. Query the database for all Environment objects.
+        2. Pass the environments to the template for rendering.
+    """
+    environments = Environment.objects.all()
+    return render(request, 'base.html', {'environments': environments})
+
+@login_required   #Not ready yet
+def add_environment(request):
+    if request.method == "POST":
+        label = request.POST['label']
+        is_private = 'is_private' in request.POST
+        environment = Environment.objects.create(
+            label=label,
+            is_private=is_private,
+            admin=request.user
+        )
+    return render(request, 'base.html', {'environment': environment})

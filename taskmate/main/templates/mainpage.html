@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'mainpage.css' %}">
+  <title>Small Chart with Cards</title>
+
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+
+
+  <div class="chart-title">Progress Overview</div>
+  <div class="chart-container">
+    
+    <canvas id="chart" width="350" height="350"></canvas>
+  </div>
+
+  <script>
+    let ctx = document.getElementById("chart").getContext("2d");
+
+    let chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Mobile App", "Design System", "Website Redesign"],
+        datasets: [
+          {
+            label: "Progress %",
+            backgroundColor: "#a18dfb",
+            borderColor: "#e0e0e0",
+            data: [36 / 50, 24 / 40, 310 / 350]
+          }
+        ]
+      },
+      options: {
+        responsive: true, // Disable responsive resizing
+        maintainAspectRatio: false, // Allow chart size customization
+        indexAxis: "y",
+        plugins: {
+          legend: { display: false }, // Hide the legend for compact size
+          tooltip: { enabled: true }, // Disable tooltips for simplicity
+        },
+        scales: {
+          x: {
+            grid: {
+              display: false // Hide grid lines on the x-axis
+            },
+            display: false
+          },
+          y: {
+            grid: {
+              display: false // Hide grid lines on the y-axis
+            },
+            display: true
+          }
+        }
+      }
+    });
+  </script>
+
+  <!-- Priority Task Section -->
+  <div class="priority-task-container">
+    <div class="task-card">
+      <div class="priority high-priority">High Priority</div>
+      <div class="task-title">Create user flow for Finance App</div> <br>
+      <div class = "upcoming-deadlines-info">on Mobile App</div>
+      <p>50% done</p>
+      <div class="progress-bar">
+        <div class="done"></div>
+      </div>
+      <div class="task-info">
+        
+        <p>Due: December 15th, 2023</p>
+      </div>
+    </div>
+
+    <div class="task-card">
+      <div class="priority medium-priority">Med Priority</div>
+      <div class="task-title">Create user flow for Finance App</div> <br>
+      <div class = "upcoming-deadlines-info">on Mobile App</div>
+      <p>50% done</p>
+      <div class="progress-bar">
+        <div class="done"></div>
+      </div>
+      <div class="task-info">
+        
+        <p>Due: December 15th, 2023</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card section -->
+ 
+  <div class="card-container">
+    <!-- Card for To Do -->
+    <div class="card todo">
+      <div class="card-title">To Do</div>
+      <div class="card-count">10</div>
+      <div class="card-total">/ 20</div>
+    </div>
+
+    <!-- Card for In Progress -->
+    <div class="card in-progress">
+      <div class="card-title">In Progress</div>
+      <div class="card-count">5</div>
+      <div class="card-total">/ 20</div>
+    </div>
+
+    <!-- Card for Done -->
+    <div class="card done">
+      <div class="card-title">Done</div>
+      <div class="card-count">5</div>
+      <div class="card-total">/ 20</div>
+    </div>
+  </div>
+
+
+
+    <!-- Priority Task Section -->
+    <h3 class="upcoming-deadlines-header">Upcoming Deadlines</h3>
+  
+  <div class="upcoming-deadlines">
+    {% for task in tasks %}
+      <div class="upcoming-deadlines-card">
+        <div class="upcoming-deadlines-title">{{ task.content }}</div><br>
+        <div class="upcoming-deadlines-info">on {{ task.table.label }}</div>
+        <div class="upcoming-deadlines-info">
+          <p>Due: {{ task.deadline|date:"F j, Y" }}</p>
+        </div>
+      </div>
+    {% empty %}
+      <p>No upcoming deadlines</p>
+    {% endfor %}
+  </div>
+
+</body>
+</html>
+
+{% endblock %}

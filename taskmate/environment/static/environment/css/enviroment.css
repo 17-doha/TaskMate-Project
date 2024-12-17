@@ -35,9 +35,11 @@ body {
     background: #f7f7f8;
     border-radius: 8px;
     flex: 1;
-    padding: 20px;
+    padding: 10px;
     position: relative;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-width: 250px;
+    box-sizing: border-box;
 }
 
 .column:hover {
@@ -229,3 +231,11 @@ body {
 .dropdown:hover .dropdown-menu {
     display: block;
 }
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+

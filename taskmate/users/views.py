@@ -1,30 +1,18 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import logout, login
 from signup.models import User
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import PBKDF2SHA1PasswordHasher
-
-# The password to hash
-
-
-
+from django.contrib.auth import login, logout
 
 def login_user(request):
     '''
     Handles the login process for local users.
-
-    Logic:
-    - Retrieves the user's email and password from the POST request.
-    - Validates the email and checks if it exists in the database.
-    - Compares the provided password with the hashed password stored in the database.
-    - Redirects to the main page on success.
-    - Displays error messages for incorrect credentials or non-existent users.
+    Stores the user's ID in the session upon successful login.
 
     Inputs:
     - request: HttpRequest object containing login credentials.
@@ -34,25 +22,34 @@ def login_user(request):
     - On failure: Renders the login page with error messages.
     '''
 
+    if 'user_id' in request.session:
+        return redirect('Profile')
+
     if request.method == 'POST':
         # Get email and password from the POST request
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-
         # Perform the exact match query for the email
         try:
             user = User.objects.get(email=email)
 
-            #Comparing both hashed passwords
-            if  check_password(password, user.password):
-                return redirect('main')
+            # Comparing both hashed passwords
+            if check_password(password, user.password):
+                # Save the user's ID in the session
+                request.session['user_id'] = user.id
+
+                # Optional: Save additional user data if needed
+                request.session['user_email'] = user.email
+
+                print(user.id, "in the login")
+                return redirect('main')  # Redirect to the main page
             else:
                 messages.error(request, "Incorrect password. Please try again.")
         
         except User.DoesNotExist:
             messages.error(request, "Email not correct. Please check your input.")
-
+ 
     return render(request, 'authentication/login.html')
 
 
@@ -73,6 +70,12 @@ def main(request):
     - Renders the 'main.html' template.
     """
     return render(request, 'main.html')
+
+
+
+
+def Profile(request):
+    return render(request, "Profile.html")
 
 
 
@@ -117,6 +120,13 @@ def google_sign_in_callback(request):
 
     return redirect("login")
 
+
+def logout_user(request):
+    """
+    Logs out the currently authenticated user and redirects to the login page.
+    """
+    logout(request)  
+    return redirect('login') 
 
 
 

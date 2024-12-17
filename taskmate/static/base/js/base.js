@@ -1,25 +1,29 @@
-const searchInput = document.getElementById('searchInput');
-const searchForm = document.getElementById('searchForm');
+// Dropdown toggle functionality
+const dropdownMenu = document.querySelector('.menu-item.dropdown');
+const submenu = dropdownMenu.querySelector('.submenu');
 
-searchInput.addEventListener('keydown', function(event) {
-  if (event.key === 'Enter') {
-    searchForm.submit();
-  }
-});
+dropdownMenu.addEventListener('click', function (event) {
+  event.stopPropagation(); // Prevent click from bubbling up
+  const isOpen = dropdownMenu.classList.contains('open');
 
-const searchBtn = document.querySelector('.search-btn');
-searchBtn.addEventListener('click', function(event) {
-  event.preventDefault();
-  searchForm.submit();
-});
+  // Close all other dropdowns (optional, if there are multiple dropdowns)
+  document.querySelectorAll('.menu-item.dropdown').forEach(item => {
+    item.classList.remove('open');
+    item.querySelector('.submenu').style.display = 'none';
+  });
 
-function updateActionUrl() {
-  const searchInput = document.getElementById('searchInput').value.trim().toLowerCase();
-  const form = document.getElementById('searchForm');
-
-  if (searchInput.includes("task") || !isNaN(searchInput)) {
-    form.action = "{% url 'task:search_task' %}";
+  // Toggle the current dropdown
+  if (!isOpen) {
+    dropdownMenu.classList.add('open');
+    submenu.style.display = 'block';
   } else {
-    form.action = "{% url 'environment:search_environment' %}";
+    dropdownMenu.classList.remove('open');
+    submenu.style.display = 'none';
   }
-}
+});
+
+// Close dropdown if clicked outside
+document.addEventListener('click', function () {
+  dropdownMenu.classList.remove('open');
+  submenu.style.display = 'none';
+});
