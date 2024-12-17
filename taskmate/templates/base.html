@@ -144,8 +144,6 @@
     </main>
   </div>
 
-  <!-- Link to External JS -->
-  <script src="{% static 'base/js/base.js' %}"></script>
 
   <script>
     // Function to open the "Add Environment" modal
@@ -158,6 +156,32 @@
       document.getElementById('add-environment-modal').style.display = 'none';
     }
   </script>
+  <script>
+    const userId = "{{ user.id }}";  // Retrieve current logged-in user's ID
+    console.log("WebSocket connection for user ID:", userId);
+
+    if (userId) {
+        const socket = new WebSocket(`ws://127.0.0.1:8000/ws/Notifications/${userId}/`);
+
+        socket.onopen = function () {
+            console.log("WebSocket connected successfully for user:", userId);
+        };
+
+        socket.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            alert("Notification: " + data.message);  // Display the alert for the receiver
+        };
+
+        socket.onerror = function (error) {
+            console.error("WebSocket error:", error);
+        };
+
+        socket.onclose = function () {
+            console.warn("WebSocket closed unexpectedly.");
+        };
+    }
+</script>
+
 
 </body>
 </html>
