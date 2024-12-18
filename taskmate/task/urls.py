@@ -10,5 +10,5 @@ urlpatterns = [
     path('create/', views.CreateTask, name='create_task'),
     path('search_task/', views.search_task, name='search_task'),
     path('<int:task_id>/', views.View_Task, name='view_task'),
-    
+    # path("send-reminders/", views.send_deadline_notifications, name="send_deadline_notifications"),
 ]

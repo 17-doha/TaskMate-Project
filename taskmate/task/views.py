@@ -6,6 +6,10 @@ from signup.models import User
 from environment.models import Environment
 from django.contrib import messages
 from django.db.models import Q
+from django.core.mail import send_mail
+from django.utils import timezone
+from datetime import timedelta 
+from django.http import JsonResponse
 
 
 # A view to show all tasks with the edit and delete buttons for testing
@@ -203,3 +207,36 @@ def View_Task(request, task_id):
     environment_url = f"/environment/{environment_id}/"
 
     return redirect(environment_url)
+ 
+# approaching deadlines Notifications
+
+# def send_deadline_notifications(request):
+#     today = timezone.now().date()  #today's date
+#     next_day = today + timedelta(days=1)  # Tomorrow's date
+#     # b filter data in the database
+#     tasks = Task.objects.filter(deadline__date=next_day)
+
+#     print(tasks)
+#     for task in tasks:
+#         if task.assigned_to:  # Ensure the task has an assigned user
+#             subject = "Task Deadline Reminder"
+#             message = f"""
+#             Dear {task.assigned_to.username},
+            
+#             This is a friendly reminder that the task '{task.content}' is due on {task.deadline.strftime('%Y-%m-%d')}.
+
+#             Please make sure to complete it before the deadline.
+
+#             Best regards,
+#             TaskMate Team
+#             """
+#             send_mail(
+#                 subject=subject,
+#                 message=message,
+#                 from_email="noreply@taskmate.com",
+#                 recipient_list=[task.assigned_to.email],
+#                 fail_silently=False,
+#             )
+#             print(f"Reminder sent to {task.assigned_to.email} for task: {task.content}")
+
+#     return JsonResponse({"status": "success", "message": "Deadline reminders sent!"})
