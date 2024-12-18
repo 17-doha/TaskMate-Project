@@ -50,11 +50,5 @@ urlpatterns = [
          ), 
         name='password_reset_confirm'),
     path('Invitation/', include('Invitation.urls')),
-<<<<<<< HEAD
-    path('Notification/', include('Notification.urls')),
-
-]   
-=======
     # path('notifications/', include('Notifications.urls')), 
 ]
->>>>>>> LastMerge

@@ -55,8 +55,9 @@
   </style>
 
   <!-- Link to External CSS -->
-  <link rel="stylesheet" href="{% static 'base/css/base.css' %}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'base/css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'environment/css/environment.css' %}">
 
 </head>
 <body>
@@ -156,8 +157,9 @@
       document.getElementById('add-environment-modal').style.display = 'none';
     }
   </script>
+
   <script>
-    const userId = "{{ user.id }}";  // Retrieve current logged-in user's ID
+    const userId = 1;  // Retrieve current logged-in user's ID
     console.log("WebSocket connection for user ID:", userId);
 
     if (userId) {

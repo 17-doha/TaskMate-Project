@@ -39,13 +39,8 @@ SITE_ID = 1
 
 INSTALLED_APPS = [
     'channels',
-<<<<<<< HEAD
-    'Notification.apps.NotificationConfig',
-    'Invitation.apps.InvitationConfig',
-=======
-    'Invitation.apps.InvitationConfig',
     'Notifications.apps.NotificationsConfig',
->>>>>>> LastMerge
+    'Invitation.apps.InvitationConfig',
     'password_reset',
     'environment.apps.EnvironmentConfig',
     'django.contrib.admin',
@@ -83,17 +78,16 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+MIDDLEWARE = [    
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-   
 ]
 
 ROOT_URLCONF = 'taskmate.urls'
@@ -109,7 +103,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                
             ],
         },
     },
@@ -118,15 +111,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'taskmate.wsgi.application'
 ASGI_APPLICATION = 'taskmate.asgi.application'
 
-<<<<<<< HEAD
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
-    },
-}
-
-=======
->>>>>>> LastMerge
 
 #Update the settings.py file Allowed host list which was empty
 ALLOWED_HOSTS = ['127.0.0.1','localhost']
@@ -144,31 +128,7 @@ AUTH_USER_MODEL = 'signup.User'
 
 # DATABASES = {
 #     'default': {
-<<<<<<< HEAD
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'Taskmate', 
-#         'USER': 'SarahElsayed2003',
-#         'PASSWORD': '123456789@Sql',
-#         'HOST': '127.0.0.1',
-#         'PORT': '1433', 
-#         # 'OPTIONS': {
-#         #     'driver': 'ODBC Driver 17 for SQL Server',
-#         # },
-#     }
-# }
 
-
-=======
-#         'ENGINE': 'mssql',
-#         'NAME': 'Taskmate',
-#         'OPTIONS': {
-#             'driver': 'ODBC Driver 17 for SQL Server',
-#             'trusted_connection': 'yes',
-#         },
-#     },
-# }
-
->>>>>>> LastMerge
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -219,6 +179,9 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+# Root directory for collectstatic command (used in production)
+# STATIC_ROOT = os.path.join('C:\\Software\\yarab\\TaskMate-Project', 'static')
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
