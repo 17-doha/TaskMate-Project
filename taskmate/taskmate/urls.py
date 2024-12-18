@@ -26,11 +26,11 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', views.login_user, name='login'),
     path('login/', include('django.contrib.auth.urls')),
-    path('main/', views.main, name='main'),
     path('accounts/', include('allauth.urls')),
     path("", include("users.urls")),
     # redirection to environment app urls
     path("environment/", include("environment.urls")),
+    path("main/", include("main.urls")),
     path("task/", include("task.urls")),
 
 
@@ -49,5 +49,6 @@ urlpatterns = [
          success_url=reverse_lazy('login')
          ), 
         name='password_reset_confirm'),
-
+    path('Invitation/', include('Invitation.urls')),
+    # path('notifications/', include('Notifications.urls')), 
 ]
