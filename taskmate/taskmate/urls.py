@@ -32,7 +32,7 @@ urlpatterns = [
     path("environment/", include("environment.urls")),
     path("main/", include("main.urls")),
     path("task/", include("task.urls")),
-
+    path("Invitation/", include("Invitation.urls")),
 
     #Signup urls
     path('signup/', signup, name='signup'),
@@ -49,5 +49,6 @@ urlpatterns = [
          success_url=reverse_lazy('login')
          ), 
         name='password_reset_confirm'),
+
 
 ]

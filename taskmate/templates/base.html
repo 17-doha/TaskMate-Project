@@ -1,164 +1,163 @@
-<!DOCTYPE html>
-{% load static %}
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TaskMate Dashboard</title>
-  <style>
-    /* Styling for submenu items */
-    .submenu-item {
-      padding: 5px 10px;
-      border-radius: 6px; /* Rounded corners */
-      transition: background 0.3s ease, transform 0.2s ease;
-    }
+  <!DOCTYPE html>
+  {% load static %}
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskMate Dashboard</title>
+    <style>
+      /* Styling for submenu items */
+      .submenu-item {
+        padding: 5px 10px;
+        border-radius: 6px; /* Rounded corners */
+        transition: background 0.3s ease, transform 0.2s ease;
+      }
 
-    .submenu-item:hover {
-      transform: scale(1.02); /* Slightly enlarge the item */
-    }
+      .submenu-item:hover {
+        transform: scale(1.02); /* Slightly enlarge the item */
+      }
 
-    /* Styling for the link inside submenu items */
-    .submenu-link {
-      display: block; /* Make the link block-level for full clickable area */
-      color: #fff; /* Text color */
-      text-decoration: none; /* Remove underline */
-      font-size: 16px;
-      padding: 10px 10px; /* Padding for better click area */
-      border-radius: 6px; /* Rounded corners */
-      transition: background 0.3s ease, color 0.3s ease; /* Smooth transitions */
-    }
+      /* Styling for the link inside submenu items */
+      .submenu-link {
+        display: block; /* Make the link block-level for full clickable area */
+        color: #fff; /* Text color */
+        text-decoration: none; /* Remove underline */
+        font-size: 16px;
+        padding: 10px 10px; /* Padding for better click area */
+        border-radius: 6px; /* Rounded corners */
+        transition: background 0.3s ease, color 0.3s ease; /* Smooth transitions */
+      }
 
-    /* Modal popup */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
+      /* Modal popup */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
 
-    .modal-content {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      width: 400px;
-    }
+      .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        width: 400px;
+      }
 
-    .modal button {
-      margin-top: 10px;
-    }
-  </style>
+      .modal button {
+        margin-top: 10px;
+      }
+    </style>
 
-  <!-- Link to External CSS -->
-  <link rel="stylesheet" href="{% static 'base/css/base.css' %}">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Link to External CSS -->
+    <link rel="stylesheet" href="{% static 'base/css/base.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
-</head>
-<body>
-  <div class="dashboard">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <h1 class="logo">TaskMate</h1>
-      <nav>
-        <ul class="menu">
-          <li class="menu-item active">
-            <i class="fas fa-th-large"></i> Home
-          </li>
-          <li class="menu-item">
-            <i class="fas fa-user"></i> Profile
-          </li>
-          <li class="menu-item dropdown">
-            <i class="fas fa-folder"></i> Environments
-            <ul class="submenu">
-              {% for environment in environments %}
-              <li class="submenu-item">
-                <a href="{% url 'environment:view_table_task' environment_id=environment.environment_id %}" class="submenu-link">
-                  {{ environment.label }}
-                </a>
-              </li>
-              {% empty %}
-              <li class="submenu-item">No environments available</li>
-              {% endfor %}
-              <li class="menu-item add-environment" onclick="openAddEnvironmentModal()">
-                <i class="fas fa-plus"></i> Add Environment
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </nav>
-    </aside>
-    
+  </head>
+  <body>
+    <div class="dashboard">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <h1 class="logo">TaskMate</h1>
+        <nav>
+          <ul class="menu">
+            <li class="menu-item active">
+              <i class="fas fa-th-large"></i> Home
+            </li>
+            <li class="menu-item">
+              <i class="fas fa-user"></i> Profile
+            </li>
+            <li class="menu-item dropdown">
+              <i class="fas fa-folder"></i> Environments
+              <ul class="submenu">
+                {% for environment in environments %}
+                <li class="submenu-item">
+                  <a href="{% url 'environment:view_table_task' environment_id=environment.environment_id %}" class="submenu-link">
+                    {{ environment.label }}
+                  </a>
+                </li>
+                {% empty %}
+                <li class="submenu-item">No environments available</li>
+                {% endfor %}
+                <li class="menu-item add-environment" onclick="openAddEnvironmentModal()">
+                  <i class="fas fa-plus"></i> Add Environment
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </aside>
 
-    <!-- Modal HTML -->
-    <div id="add-environment-modal" class="modal">
-      <div class="modal-content">
-        <h4>Add New Environment</h4>
-        <form id="add-environment-form" method="POST" action="{% url 'environment:add_environment' %}">
-          {% csrf_token %}
-          <label for="label">Environment Label:</label>
-          <input type="text" id="label" name="label" required>
+      <!-- Modal HTML -->
+      <div id="add-environment-modal" class="modal">
+        <div class="modal-content">
+          <h4>Add New Environment</h4>
+          <form id="add-environment-form" method="POST" action="{% url 'environment:add_environment' %}">
+            {% csrf_token %}
+            <label for="label">Environment Label:</label>
+            <input type="text" id="label" name="label" required>
 
-          <label for="is_private">Private:</label>
-          <input type="checkbox" id="is_private" name="is_private">
+            <label for="is_private">Private:</label>
+            <input type="checkbox" id="is_private" name="is_private">
 
-          <button type="submit">Add Environment</button>
-        </form>
-        <button type="button" onclick="closeAddEnvironmentModal()">Close</button>
+            <button type="submit">Add Environment</button>
+          </form>
+          <button type="button" onclick="closeAddEnvironmentModal()">Close</button>
+        </div>
       </div>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Navbar -->
+        <header class="navbar">
+          <div class="search-bar">
+            <form id="searchForm" method="POST" action="{% url 'task:search_task' %}">
+              {% csrf_token %}
+              <div class="search-bar-wrapper">
+                <input type="text" id="searchInput" name="searched" placeholder="Search for a task or an environment...">
+                <button type="submit" formaction="{% url 'task:search_task' %}" class="search-btn" aria-label="Search Tasks">
+                  Search Tasks
+                </button>
+                <button type="submit" formaction="{% url 'environment:search_environment' %}" class="search-btn" aria-label="Search Environments">
+                  Search Environments
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="navbar-right">
+            <div class="user-actions">
+              <i class="fas fa-adjust theme-toggle-icon" aria-label="Toggle Theme"></i>
+              <i class="fas fa-bell notification-icon" aria-label="Notifications"></i>
+              <i class="fas fa-user-circle profile-icon" aria-label="User Profile"></i>
+            </div>
+          </div>
+        </header>
+
+        {% block content %}
+        {% endblock %}
+      </main>
     </div>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <!-- Navbar -->
-      <header class="navbar">
-        <div class="search-bar">
-          <form id="searchForm" method="POST" action="{% url 'task:search_task' %}">
-            {% csrf_token %}
-            <div class="search-bar-wrapper">
-              <input type="text" id="searchInput" name="searched" placeholder="Search for a task or an environment...">
-              <button type="submit" formaction="{% url 'task:search_task' %}" class="search-btn" aria-label="Search Tasks">
-                Search Tasks
-              </button>
-              <button type="submit" formaction="{% url 'environment:search_environment' %}" class="search-btn" aria-label="Search Environments">
-                Search Environments
-              </button>
-            </div>
-          </form>
-        </div>
 
-        <div class="navbar-right">
-          <div class="user-actions">
-            <i class="fas fa-adjust theme-toggle-icon" aria-label="Toggle Theme"></i>
-            <i class="fas fa-bell notification-icon" aria-label="Notifications"></i>
-            <i class="fas fa-user-circle profile-icon" aria-label="User Profile"></i>
-          </div>
-        </div>
-      </header>
+    <script>
+      // Function to open the "Add Environment" modal
+      function openAddEnvironmentModal() {
+        document.getElementById('add-environment-modal').style.display = 'flex';
+      }
 
-      {% block content %}
-      {% endblock %}
-    </main>
-  </div>
+      // Function to close the modal
+      function closeAddEnvironmentModal() {
+        document.getElementById('add-environment-modal').style.display = 'none';
+      }
+    </script>
 
-  <!-- Link to External JS -->
-  <script src="{% static 'base/js/base.js' %}"></script>
 
-  <script>
-    // Function to open the "Add Environment" modal
-    function openAddEnvironmentModal() {
-      document.getElementById('add-environment-modal').style.display = 'flex';
-    }
 
-    // Function to close the modal
-    function closeAddEnvironmentModal() {
-      document.getElementById('add-environment-modal').style.display = 'none';
-    }
-  </script>
-
-</body>
-</html>
+  </body>
+  </html>
