@@ -32,7 +32,7 @@ class Task(models.Model):
     start_date = models.DateTimeField(default=datetime.date.today)  
     deadline = models.DateTimeField()  
     priority = models.CharField(max_length=20, choices=PRIORITY_CHOICES, default=MEDIUM)
-    table = models.ForeignKey(Table, on_delete=models.CASCADE, default=1)   # refrence Table when created un hash
+    table = models.ForeignKey(Table, on_delete=models.CASCADE)   # refrence Table default for now
     created_by = models.ForeignKey(User, related_name='created_tasks', on_delete=models.CASCADE) # refrence User
     assigned_to = models.ForeignKey(User, related_name='assigned_tasks', on_delete=models.CASCADE, null=True, blank=True) # refrence User
     environment_id = models.ForeignKey(Environment, related_name='tasks', on_delete=models.CASCADE, null=True, blank=True) # refrence Environment

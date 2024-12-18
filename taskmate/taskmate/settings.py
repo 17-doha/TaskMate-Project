@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'task',
     'signup',
     '_profile',
-    'badge'
+    'badge',
+    
 ]
 SOCIALACCOUNT_LOGIN_ON_GET=True
 

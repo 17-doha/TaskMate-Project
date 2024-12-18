@@ -3,7 +3,7 @@ from .forms import UserProfileForm
 from signup.models import User
 
 
-user_id = 7
+user_id = 1
 # Create your views here.
 # def profilepage(request):
 #     return render(request, "_profile/profile.html")

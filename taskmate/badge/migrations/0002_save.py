@@ -17,7 +17,9 @@ def load_badges(apps, schema_editor):
         "Task Overlord",
         "Ultimate Performer"
     ]
+
     task_num=[1,10,30,50,100,150,200,300,400]
+    
     for idx, image_name in enumerate(os.listdir(image_folder)):
         if image_name.endswith('.png'):
             if idx < len(badge_names):  # Prevent index out of range errors

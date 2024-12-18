@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from task.models import Task
 import json
 
+
+env_id = 1
 # used in dragAndDrop function
 mapping = {
     'To Do' : 'Pending',
@@ -11,8 +13,11 @@ mapping = {
     'Done': 'Completed'
 }
 
-def index(request):
-    return render(request, "environment/index.html")    
+def index(request, id=None):
+    if id is not None:
+        return render(request, "environment/index.html", {"environment_id": id})
+    else:
+        return render(request, "environment/index.html")
 
 
 def ViewTableTask(request, environment_id):

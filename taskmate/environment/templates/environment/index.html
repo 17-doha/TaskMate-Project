@@ -172,7 +172,8 @@
   <!-- needed vars -->
   <script>
     const environment_id = "{{ environment.environment_id }}";
-    const taskCreateUrl = "{% url 'task:create_task' %}";
+    const taskCreateUrl = "{% url 'task:create_task' env_id=environment.environment_id %}";
+    console.log(taskCreateUrl); 
   </script>
 
   <!-- styles -->

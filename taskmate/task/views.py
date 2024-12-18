@@ -4,7 +4,11 @@ from .forms import TaskEditForm, TaskCreateForm
 from signup.models import User
 from environment.models import Environment
 from django.contrib import messages
+from environment.models import Table
 
+
+
+user_id = 1
 
 # A view to show all tasks with the edit and delete buttons for testing
 def ViewAllTasks(request):
@@ -59,7 +63,8 @@ def EditTask(request, id):
         form = TaskEditForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
-            return redirect('task:view_all_tasks')
+            env_id = task.environment_id_id
+            return  redirect(f'/environment/{env_id}/')
     else:
         form = TaskEditForm(instance=task)
 
@@ -84,15 +89,16 @@ def DeleteTask(request, id):
     - Redirects to 'view_all_tasks'.
     """
     task = get_object_or_404(Task, task_id=id)
+    env_id = task.environment_id_id
     task.delete()
-    return redirect('task:view_all_tasks')
+    return  redirect(f'/environment/{env_id}/')
 
 
 # A view to create a new task
-def CreateTask(request):
+def CreateTask(request,env_id):
     """
     Purpose:
-    - Create a new task.
+    - Create a new  task.
 
     Logic:
     - If POST, validates form data and creates a task with default user and environment.
@@ -110,22 +116,24 @@ def CreateTask(request):
     """
     if request.method == "POST":
         form = TaskCreateForm(request.POST)
-        
         if form.is_valid():
             task = form.save(commit=False)
-            task.created_by = User.objects.get(id=1)  # Default user for now
-            task.environment_id = Environment.objects.get(environment_id=2)  # Default environment
+            task.created_by = User.objects.get(id=user_id)  # Default user for now
+            task.environment_id = Environment.objects.get(environment_id=env_id)  
+            table = get_object_or_404(Table, environment_id=env_id, label="To Do")
+            task.table = table
             task.save()
             messages.success(request, 'Task created successfully!')
-            return redirect('environment:index')
+            return redirect(f'/environment/{env_id}/')
         else:
             messages.error(request, 'There was an error creating the task. Please try again.')
 
-    # Get all users to choose from
+    # Get all users to choose from ###### note will be chamged when the user can access env model is made
     users = User.objects.all()
 
     return render(request, 'task/create_task.html', {
         'users': users,
+        'environment_id': env_id,
     })
 
 
