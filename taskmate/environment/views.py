@@ -94,8 +94,8 @@ def ViewTableTask(request, environment_id):
     # make a list for each type 
     todo_tasks = tasks.filter(status='PENDING')
     # print(todo_tasks[0].priority)
-    inprogress_tasks = tasks.filter(status='In Progress')
-    done_tasks = tasks.filter(status='Completed')
+    inprogress_tasks = tasks.filter(status='IN PROGRESS')
+    done_tasks = tasks.filter(status='COMPLETED')
 
     context = {
         "environment": environment,
