@@ -6,6 +6,7 @@ from environment.models import Environment
 from django.contrib import messages
 from environment.models import Table
 from django.core.mail import send_mail
+from Notification.models import Notification
 
 
 
@@ -271,6 +272,11 @@ def send_task_assignment_email(task, assigned_to_username):
             [recipient_email],  # Recipient's email
             fail_silently=False,
         )
+        Notification.objects.create(
+            content=f"You have been assigned a new task: {task.content}",
+            receiver=assigned_to_user,
+            status="UNREAD"
+        )
         print("Email sent successfully.")
     except User.DoesNotExist:
         print(f"User with username {assigned_to_username} does not exist.")
@@ -311,10 +317,12 @@ def send_task_completion_email(task):
             [recipient_email],  # Recipient's email
             fail_silently=False,
         )
+
+        Notification.objects.create(
+            content=f"The task '{task.content}' has been marked as completed.",
+            receiver=environment_admin,
+            status="UNREAD"
+        )
         print("Completion email sent successfully.")
-    except ValueError as ve:
-        print(f"ValueError: {ve}")
     except User.DoesNotExist:
         print("Admin user does not exist.")
-    except Exception as e:
-        print(f"An error occurred while sending completion email: {e}")

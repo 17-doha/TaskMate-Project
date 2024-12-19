@@ -6,29 +6,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TaskMate Dashboard</title>
   <style>
-    /* Styling for submenu items */
+    /* Sidebar submenu items */
     .submenu-item {
       padding: 5px 10px;
-      border-radius: 6px; /* Rounded corners */
+      border-radius: 6px;
       transition: background 0.3s ease, transform 0.2s ease;
     }
 
     .submenu-item:hover {
-      transform: scale(1.02); /* Slightly enlarge the item */
+      transform: scale(1.02);
     }
 
-    /* Styling for the link inside submenu items */
     .submenu-link {
-      display: block; /* Make the link block-level for full clickable area */
-      color: #fff; /* Text color */
-      text-decoration: none; /* Remove underline */
+      display: block;
+      color: #fff;
+      text-decoration: none;
       font-size: 16px;
-      padding: 10px 10px; /* Padding for better click area */
-      border-radius: 6px; /* Rounded corners */
-      transition: background 0.3s ease, color 0.3s ease; /* Smooth transitions */
+      padding: 10px;
+      border-radius: 6px;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
-    /* Modal popup */
+    /* Modal */
     .modal {
       display: none;
       position: fixed;
@@ -51,6 +50,67 @@
 
     .modal button {
       margin-top: 10px;
+    }
+
+    /* Notifications container */
+    #notifications-container {
+      position: absolute;
+      top: 50px;
+      right: 20px;
+      background: #f8f9fa;
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      max-height: 400px;
+      overflow-y: auto;
+      width: 300px;
+    }
+
+    #notifications-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .notification-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      background: #007bff; /* Blue background color */
+      color: white; /* White text for contrast */
+      width: 100%;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+    }
+
+    .notification-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .notification-card.read {
+      background: white; /* White background for read notifications */
+      color: #333; /* Darker text color for contrast */
+      border: 1px solid #ccc;
+    }
+
+    /* Notification popup */
+    #notification-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 2000;
+      width: 300px;
     }
   </style>
 
@@ -92,9 +152,8 @@
         </ul>
       </nav>
     </aside>
-    
 
-    <!-- Modal HTML -->
+    <!-- Modal -->
     <div id="add-environment-modal" class="modal">
       <div class="modal-content">
         <h4>Add New Environment</h4>
@@ -121,12 +180,8 @@
             {% csrf_token %}
             <div class="search-bar-wrapper">
               <input type="text" id="searchInput" name="searched" placeholder="Search for a task or an environment...">
-              <button type="submit" formaction="{% url 'task:search_task' %}" class="search-btn" aria-label="Search Tasks">
-                Search Tasks
-              </button>
-              <button type="submit" formaction="{% url 'environment:search_environment' %}" class="search-btn" aria-label="Search Environments">
-                Search Environments
-              </button>
+              <button type="submit" formaction="{% url 'task:search_task' %}" class="search-btn">Search Tasks</button>
+              <button type="submit" formaction="{% url 'environment:search_environment' %}" class="search-btn">Search Environments</button>
             </div>
           </form>
         </div>
@@ -134,12 +189,8 @@
         <div class="navbar-right">
           <div class="user-actions">
             <i class="fas fa-adjust theme-toggle-icon" aria-label="Toggle Theme"></i>
-            <i class="fas fa-bell notification-icon" aria-label="Notifications"></i>
-            <i class="fas fa-user-circle profile-icon" aria-label="User Profile"></i>
-            <a href="{% url '_profile:profile_view'%}">
-              <i class="fas fa-user-circle profile-icon"></i>
-            </a>
-
+            <i class="fas fa-bell ring-icon" aria-label="Notifications"></i>
+            <a href="{% url '_profile:profile_view' %}"><i class="fas fa-user-circle profile-icon"></i></a>
           </div>
         </div>
       </header>
@@ -149,20 +200,68 @@
     </main>
   </div>
 
-  <!-- Link to External JS -->
-  <script src="{% static 'base/js/base.js' %}"></script>
-
   <script>
-    // Function to open the "Add Environment" modal
-    function openAddEnvironmentModal() {
-      document.getElementById('add-environment-modal').style.display = 'flex';
+    function fetchNotifications() {
+      fetch("{% url 'Notification:fetch_notifications' %}", {
+        method: 'GET',
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Remove existing notifications container if it exists
+        const existingContainer = document.getElementById('notifications-container');
+        if (existingContainer) existingContainer.remove();
+
+        // Create the notifications container
+        const container = document.createElement('div');
+        container.id = 'notifications-container';
+        container.innerHTML = '<h4>Notifications</h4>';
+        const list = document.createElement('div');
+        list.id = 'notifications-list';
+        container.append(list);
+
+        // Populate notifications
+        data.notifications.forEach(n => {
+          const card = document.createElement('div');
+          card.classList.add('notification-card');
+          card.textContent = n.content;
+
+          // Add event listener for click to mark as read and change background
+          card.addEventListener('click', () => {
+            card.classList.add('read'); // Add the "read" class to change color
+            showNotificationDetails(n.content); // Display notification details
+          });
+
+          list.append(card);
+        });
+
+        document.body.append(container);
+      });
     }
 
-    // Function to close the modal
-    function closeAddEnvironmentModal() {
-      document.getElementById('add-environment-modal').style.display = 'none';
+    function showNotificationDetails(content) {
+      // Create or update a popup to show notification details
+      let popup = document.getElementById('notification-popup');
+      if (!popup) {
+        popup = document.createElement('div');
+        popup.id = 'notification-popup';
+        document.body.appendChild(popup);
+      }
+
+      popup.innerHTML = `
+        <h4>Notification Details</h4>
+        <p>${content}</p>
+        <button onclick="closeNotificationPopup()">Close</button>
+      `;
+      popup.style.display = 'block';
     }
+
+    function closeNotificationPopup() {
+      const popup = document.getElementById('notification-popup');
+      if (popup) popup.style.display = 'none';
+    }
+
+    document.querySelector('.ring-icon').addEventListener('click', fetchNotifications);
   </script>
-
 </body>
 </html>
