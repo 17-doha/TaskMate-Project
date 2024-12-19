@@ -28,6 +28,7 @@ $(document).ready(function () {
 
                 // Insert the fetched content into the modal
                 $('#createTaskModalContent').html(data);
+                $('#env_id').val(environment_id);
 
                 // Show the modal using Bootstrap
                 showModal('createTaskModal');

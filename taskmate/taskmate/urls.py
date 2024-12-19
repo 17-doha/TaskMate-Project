@@ -34,6 +34,7 @@ urlpatterns = [
     path("task/", include("task.urls")),
 
 
+
     #Signup urls
     path('signup/', signup, name='signup'),
     path('activate/<uidb64>/<token>/', activate_mail, name = "activate"),
@@ -49,5 +50,9 @@ urlpatterns = [
          success_url=reverse_lazy('login')
          ), 
         name='password_reset_confirm'),
+
+
+    # profile urls
+    path("profile/", include("_profile.urls")),
 
 ]

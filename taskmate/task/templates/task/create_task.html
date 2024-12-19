@@ -20,7 +20,7 @@
 <body>
 
     <!-- Create Task Modal -->
-    <form method="POST" action="{% url 'task:create_task' %}">
+    <form method="POST" action="{% url 'task:create_task' env_id=environment_id %}">
         {% csrf_token %}
         <div class="modal-header">
             <h5 class="modal-title" id="createTaskModalLabel">Create Task</h5>
