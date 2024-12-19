@@ -30,7 +30,7 @@
     color: #6c757d;
     font-size: 12px;
   }
-  .email-section a.add-email {
+  .badge-progress-container a.add-email {
     display: inline-block;
     color: #6c63ff; /* Blue color for the link */
     font-size: 14px;
@@ -38,13 +38,13 @@
     margin-top: 10px;
     border: 1px solid #6c63ff;
     border-radius: 5px;
-    padding: 9px 12px;
+    padding: 9px 5px;
     transition: 0.3s;
     background-color: #c2bffc;
     border: none;
   }
   
-  .email-section a.add-email:hover {
+  .badge-progress-container a.add-email:hover {
     background-color:  #6c63ff;
     color: white;
   }
@@ -62,11 +62,19 @@
   
   .progress-bar {
     position: relative;
-    width: 80%; /* Full width of the container */
     height: 20px; /* Height of the progress bar */
-    background: linear-gradient(to right,  #6c63ff,  #b8a1c7); /* Gradient */
+    background:  #a18dec;/* Gradient */
     border-radius: 20px;
     overflow: hidden;
+  }
+  .complete-bar {
+    position: relative;
+    width: 100%; /* Full width of the container */
+    height: 20px; /* Height of the progress bar */
+    background:  #e1dae6; /* Gradient */
+    border-radius: 20px;
+    overflow: hidden;
+    border-color: #6c63ff;
   }
   
   .progress-bar-indicator {
@@ -81,18 +89,82 @@
     border-radius: 20px;
   }
   
-  .badge-icon {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: gold; /* Badge color */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 14px;
-    color: white;
+
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color:transparent;;
+    padding: 20px;
+    border-radius: 8px;
+
+    z-index: 1;
+    width: 200px; /* Adjust as needed */
+    text-align: center;
+    font-size: 18px;
     font-weight: bold;
   }
   
+  .add-email {
+    font-size: 16px;
+    color: #6c63ff;
+    text-decoration: none;
+    cursor: pointer;
+  }
   
+  .add-email:hover {
+    text-decoration: underline;
+  }
   
+  .dropdown-content p {
+    margin: 0;
+  }
+  
+  .dropdown-content.show {
+    display: block;
+  }
+  .no-badges-message {
+    font-size: 14px;
+    color: #6c63ff; /* Red color to indicate alert */
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #e5dee9; /* Light yellow background */
+    border: 1px solid #d1c5d9; /* Light red border */
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    font-family: 'Courier New', Courier, monospace;
+  }
+
+  .badge-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: flex-start;
+}
+
+.badge-item {
+    display: inline-block;
+    text-align: center;
+    width: 45%;  /* Adjust size to make badges smaller */
+    margin-bottom: 10px;
+}
+
+.badge-icon {
+    width: 40px;  /* Set the size of the icon to make it smaller */
+    height: 40px;
+    margin-bottom: 5px;
+}
+
+.no-badges-message {
+    font-size: 14px;
+    text-align: center;
+}
+
+    

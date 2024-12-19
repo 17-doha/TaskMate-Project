@@ -1,6 +1,10 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import UserProfileForm
 from signup.models import User
+from badge.models import UserBadge, Badge
+from task.models import Task
+from django.db.models import Q
+import base64
 
 
 user_id = 1
@@ -14,8 +18,39 @@ def profile_view(request):
     # Get the user profile by ID
     user_profile = get_object_or_404(User, id=user_id) #default for now
     
+    completed_tasks_count = Task.objects.filter(
+    assigned_to=user_profile, 
+    status='Done').count()
+
+    all_tasks_count = Task.objects.filter(assigned_to=user_profile).count()
+    persentage = (completed_tasks_count / all_tasks_count) * 100
+    badges = Badge.objects.filter(num_of_tasks__lte=completed_tasks_count)
+
+    # Update UserBadge table
+    for badge in badges:
+        UserBadge.objects.get_or_create(user=user_profile, badge=badge)
+
+    # Fetch all earned badges for the user
+    earned_badges = UserBadge.objects.filter(user=user_profile).select_related('badge')
+
+    # Prepare data for the template
+    badges = [
+        {
+            'name': ub.badge.badge_name,
+            'icon': base64.b64encode(ub.badge.icon).decode('utf-8') if ub.badge.icon else None,
+        }
+        for ub in earned_badges
+    ]
+    if(badges == None):
+        print("No badges")
+    else:
+        render(request, '_profile/profile.html', {'user_profile': user_profile,'badges': None,'completed':completed_tasks_count,
+        "all":all_tasks_count,"percentage":persentage})
+
     # Pass the user profile to the template
-    return render(request, '_profile/profile.html', {'user_profile': user_profile})
+    return render(request, '_profile/profile.html', {'user_profile': user_profile,'badges': badges,'completed':completed_tasks_count,"all":all_tasks_count,"percentage":persentage})
+
+
 
 # View to edit the profile
 def profile_edit(request):

@@ -27,6 +27,7 @@ class Table(models.Model):
     class Meta:
         db_table = 'table'  
 
+
 # Search environment history
 class SearchHistory(models.Model):
     search_history_id = models.AutoField(primary_key=True) 
@@ -39,6 +40,7 @@ class SearchHistory(models.Model):
 
     class Meta:
         db_table = 'search_history'
+
 
 
 class UserCanAccess(models.Model):

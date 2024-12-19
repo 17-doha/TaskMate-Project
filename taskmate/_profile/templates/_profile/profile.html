@@ -40,6 +40,14 @@
           <label for="lastName">Last Name</label>
           <input type="text" name="last_name" value="{{ user_profile.last_name }}" id="lastName" readonly>
         </div>
+        <div>
+          <label for="phone_number">phone_number</label>
+          <input type="text" name="phone_number" value="{{ user_profile.phone_number }}" id="phone_number" readonly>
+        </div>
+        <div>
+          <label for="age">Age</label>
+          <input type="text" name="age" value="{{ user_profile.age }}" id="phone_number" readonly>
+        </div>
         <button class="save-button" id="saveBtn"style="display: none;" >Save Changes</button>
       </div>
     </form>
@@ -54,19 +62,45 @@
           </div>
         </div>
         <br>
-        <a class="add-email">Change Email Address</a>
+        
       </div>
       <div class="badge-progress-container">
         <h3>Badge Progress</h3>
-        <div class="badge-progress-label">Topic Completion: 60/60 Tasks</div>
-        <div class="progress-bar">
-          <div class="progress-bar-indicator">
-            <div class="badge-icon">✔</div>
+        <div class="badge-progress-label">Topic Completion: {{completed}}/{{all}} of your tasks done</div>
+        <div class="complete-bar" >
+          <!-- @ts-ignore -->
+            <div class="progress-bar " style="width: {{ percentage }}%;"></div>
+        </div>
+        <div class="dropdown">
+          <a id="showAllBtn" class="add-email">Show All <i class="fa-solid fa-medal"></i></a>
+          <div id="dropdownContent" class="dropdown-content">
+
+            <div class="badge-list">
+              {% if badges %}
+                  <div class="badge-container">
+                      {% for badge in badges %}
+                          <div class="badge-item">
+                              <img src="data:image/png;base64,{{ badge.icon }}" alt="{{ badge.name }}" class="badge-icon">
+                              <span style="font-size: 12px;">{{ badge.name }}</span>
+                          </div>
+                          {% if forloop.counter|divisibleby:2 %}
+                  </div>
+                  <div class="badge-container">
+                          {% endif %}
+                      {% endfor %}
+                  </div>
+                          {% else %}
+                  <p class="no-badges-message">No Badges...But you still can earn some <i class="fa-solid fa-face-smile-wink"></i> </p>
+              {% endif %}
+          </div>
+            
           </div>
         </div>
       </div>
     </div>
   </div>
+  
+  <!------------------------------------------------------- Model ------------------------------------------------------>
   <div id="confirmationModal" class="modal">
     <div class="modal-content">
       <span class="close-btn" id="closeBtn">&times;</span>
@@ -75,8 +109,10 @@
       <button id="cancelBtn" class="cancel-btn cancel-button">Cancel</button>
     </div>
   </div>
+  <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 </body>
+<script src="{% static '_profile/js/badges.js' %}"></script>
 <script src="{% static '_profile/js/edit.js' %}"></script>
 <script src="{% static '_profile/js/model.js' %}"></script>
 </html>

@@ -7,6 +7,9 @@ from environment.models import Environment
 from django.contrib import messages
 from environment.models import Table, UserCanAccess
 from django.db.models import Q
+from environment.models import Table
+from environment.models import UserCanAccess
+
 
 
 user_id = 1
@@ -70,7 +73,11 @@ def EditTask(request, id):
     else:
         form = TaskEditForm(instance=task)
 
-    users = User.objects.all()
+    users = User.objects.filter(
+        user_access__environment_id=task.environment_id,  
+        user_access__type_of_accessibility__in=['subadmin', 'Admin'],  
+        user_access__invitation_status='Accepted'  
+        )
     return render(request, 'task/edit_task.html', {'form': form, 'task': task, 'users': users})
 
 
@@ -131,8 +138,12 @@ def CreateTask(request,env_id):
         else:
             messages.error(request, 'There was an error creating the task. Please try again.')
 
-    # Get all users to choose from ###### note will be chamged when the user can access env model is made
-    users = User.objects.all()
+    # Get all users to choose from 
+    users = User.objects.filter(
+        user_access__environment_id=Environment.objects.get(environment_id=env_id)  ,  
+        user_access__type_of_accessibility__in=['subadmin', 'Admin'],  
+        user_access__invitation_status='Accepted'  
+    )
 
     return render(request, 'task/create_task.html', {
         'users': users,
