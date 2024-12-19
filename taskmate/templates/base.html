@@ -52,6 +52,36 @@
     .modal button {
       margin-top: 10px;
     }
+
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 400px;
+    text-align: center;
+  }
+
+  .modal-content input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .modal-content button {
+    font-size: 16px;
+  }
+
+  .modal-content .add-btn:hover {
+    background: #45a049;
+  }
+
+  .modal-content .cancel-btn:hover {
+    background: #e53935;
+  }
+
   </style>
 
   <!-- Link to External CSS -->
@@ -87,30 +117,13 @@
               <li class="menu-item add-environment" onclick="openAddEnvironmentModal()">
                 <i class="fas fa-plus"></i> Add Environment
               </li>
+              
             </ul>
           </li>
         </ul>
       </nav>
     </aside>
     
-
-    <!-- Modal HTML -->
-    <div id="add-environment-modal" class="modal">
-      <div class="modal-content">
-        <h4>Add New Environment</h4>
-        <form id="add-environment-form" method="POST" action="{% url 'environment:add_environment' %}">
-          {% csrf_token %}
-          <label for="label">Environment Label:</label>
-          <input type="text" id="label" name="label" required>
-
-          <label for="is_private">Private:</label>
-          <input type="checkbox" id="is_private" name="is_private">
-
-          <button type="submit">Add Environment</button>
-        </form>
-        <button type="button" onclick="closeAddEnvironmentModal()">Close</button>
-      </div>
-    </div>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -135,7 +148,6 @@
           <div class="user-actions">
             <i class="fas fa-adjust theme-toggle-icon" aria-label="Toggle Theme"></i>
             <i class="fas fa-bell notification-icon" aria-label="Notifications"></i>
-            <i class="fas fa-user-circle profile-icon" aria-label="User Profile"></i>
             <a href="{% url '_profile:profile_view'%}">
               <i class="fas fa-user-circle profile-icon"></i>
             </a>
@@ -148,6 +160,29 @@
       {% endblock %}
     </main>
   </div>
+  <!-- --------------------------------- Modals ------------------------------------------------- -->
+  <!-- <div id="add-environment-modal" class="modal">
+    <div class="modal-content">
+      <h4>Add New Environment</h4>
+      <form id="add-environment-form" method="POST" action="{% url 'environment:add_environment' %}">
+        {% csrf_token %}
+        <label for="label">Environment Label:</label>
+        <input type="text" id="label" name="label" placeholder="Enter environment label" required>
+
+        <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+          
+          <button type="submit" class="add-btn" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+            Add
+          </button>
+          <button type="button" onclick="closeAddEnvironmentModal()" class="cancel-btn" style="background: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div> -->
+
+  <!-- --------------------------------- Modals ------------------------------------------------- -->
 
   <!-- Link to External JS -->
   <script src="{% static 'base/js/base.js' %}"></script>
@@ -162,6 +197,14 @@
     function closeAddEnvironmentModal() {
       document.getElementById('add-environment-modal').style.display = 'none';
     }
+
+    // Close modal when clicking outside the modal content
+    window.onclick = function (event) {
+      const modal = document.getElementById('add-environment-modal');
+      if (event.target === modal) {
+        closeAddEnvironmentModal();
+      }
+    };
   </script>
 
 </body>

@@ -5,7 +5,7 @@ from .forms import TaskEditForm, TaskCreateForm
 from signup.models import User
 from environment.models import Environment
 from django.contrib import messages
-from environment.models import Table
+from environment.models import Table, UserCanAccess
 from django.db.models import Q
 
 

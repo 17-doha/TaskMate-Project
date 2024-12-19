@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
-from .models import Environment, Table, SearchHistory
+from .models import Environment, Table, SearchHistory, UserCanAccess
 from task.models import Task
 import json
 from django.contrib.auth.decorators import login_required
@@ -14,8 +14,10 @@ mapping = {
     'Done': 'Completed'
 }
 
-def index(request):
-    user_id = request.session.get('user_id') #"Hash this to access the user_id in any other view"
+
+def index(request, id = None):
+    # user_id = request.session.get('user_id') "Hash this to access the user_id in any other view"
+
     """
     Purpose:
         Renders the homepage for the environment application.
@@ -29,9 +31,14 @@ def index(request):
         - Context: Includes a list of all environments.
     """
 
-    user_id = request.session.get('user_id')
-    environments = Environment.objects.filter(admin_id=user_id)
-    return render(request, "environment/index.html", {"environments": environments})
+    
+    if id is not None:
+        return render(request, "environment/index.html", {"environment_id": id})
+    else:
+        user_id = request.session.get('user_id')
+        environments = Environment.objects.filter(admin_id=user_id)
+        return render(request, "environment/index.html", {"environments": environments})
+
 
 
 
@@ -82,11 +89,16 @@ def ViewTableTask(request, environment_id):
     inprogress_tasks = tasks.filter(status='In Progress')
     done_tasks = tasks.filter(status='Completed')
 
+    user_id = request.session.get('user_id')
+    environments = Environment.objects.filter(admin_id=user_id)
+    print('environments', environments)
     context = {
         "environment": environment,
-        "todo_tasks": todo_tasks,
-        "inprogress_tasks": inprogress_tasks,
-        "done_tasks": done_tasks,
+        "todo_tasks": tasks.filter(status='Pending'),
+        "inprogress_tasks": tasks.filter(status='In Progress'),
+        "done_tasks": tasks.filter(status='Completed'),
+        "environments": environments,
+
     }
     
     return render(request, 'environment/index.html', context)
@@ -171,8 +183,6 @@ def search_environment(request):
     """
     user_id = request.session.get('user_id')
     if request.method == "POST":
-        # Logs
-        print("user_id", user_id)
 
         # Retrieve the search term
         searched = request.POST['searched']
@@ -203,3 +213,36 @@ def add_environment(request):
             admin=request.user
         )
     return render(request, 'base.html', {'environment': environment})
+
+
+from django.shortcuts import get_object_or_404, render
+from .models import UserCanAccess, Environment
+
+from django.template.loader import render_to_string
+from django.http import JsonResponse
+
+def ShowParticipants(request, environment_id):
+    environment = get_object_or_404(Environment, environment_id=environment_id)
+
+    # Get participants
+    participants = UserCanAccess.objects.filter(
+        environment=environment,
+    )
+
+    participants_list = [user_access.user for user_access in participants]
+
+    # Prepare context
+    if participants_list:
+        participants_html = ''.join(
+            f'<p>{participant.username} ({participant.email})</p>'
+            for participant in participants_list
+        )
+    else:
+        participants_html = "<p>There are no participants.</p>"
+
+    # Check if the request is AJAX
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse({'html': participants_html})
+
+    # For full-page render (fallback)
+    return render(request, 'base.html', {'participants_html': participants_html})

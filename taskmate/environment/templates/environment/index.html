@@ -77,6 +77,32 @@ h1 {
   background-color: #f2f2f2; /* Slightly grey background on hover */
 }
 
+/* Modal Override Styles */
+/* Modal Override Styles */
+.modal-dialog-centered {
+  display: flex;
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  height: 100%; /* Ensure full-screen centering */
+}
+
+/* Fix for older browsers or custom styles interfering */
+.modal {
+  display: flex !important; /* Force modal display */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+}
+
+/* Adjust the modal backdrop opacity (background dimming) */
+.modal-backdrop {
+  opacity: 0.2 !important; /* Set a lower opacity value to make the backdrop less dark */
+}
+
+/* Optional: Change modal background color for the content to make it lighter */
+.modal-content {
+  background-color: white !important; /* Ensure modal content background is white */
+}
+
 
 </style>
 
@@ -102,9 +128,11 @@ h1 {
       <button class="invite-btn">
         <i class="fa fa-plus icon"></i> Invite
       </button>
-      <button class="participants-btn">
+      <!-- Button to trigger modal -->
+      <button class="btn btn-primary participants-btn" data-environment-id="{{ environment.environment_id }}" data-bs-toggle="modal" data-bs-target="#participantsModal">
         <i class="fa fa-users icon"></i> Participants
       </button>
+
     </div>
   </div>
 
@@ -259,8 +287,31 @@ h1 {
       </div>
     </div>
   </div>
+
+  <!-- Simple Participants Modal -->
+
+  <div class="modal fade" id="participantsModal" tabindex="-1" aria-labelledby="participantsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="participantsModalLabel">Participants</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="participantsList">
+                <!-- Content dynamically loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  
+  
   <!-- ------------------------------------------------------------------ -->
 
+  
 
 
   <!-- needed vars -->
@@ -268,6 +319,26 @@ h1 {
     const environment_id = "{{ environment.environment_id }}";
     const taskCreateUrl = "{% url 'task:create_task' env_id=environment.environment_id %}";
     console.log(taskCreateUrl); 
+
+    document.querySelectorAll('.participants-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const environmentId = this.getAttribute('data-environment-id');
+        const url = `/environment/show_participants/${environmentId}/`;
+
+        fetch(url, {
+            headers: {
+                'x-requested-with': 'XMLHttpRequest',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Inject the HTML content into the modal body
+            document.getElementById('participantsList').innerHTML = data.html;
+        })
+        .catch(error => console.error('Error fetching participants:', error));
+    });
+});
+
   </script>
 
   <!-- styles -->
