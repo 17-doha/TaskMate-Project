@@ -1,10 +1,15 @@
 from django.shortcuts import render,get_object_or_404, redirect
-from .models import Task, Environment
+from .models import Task, Environment, User
+from environment.models import SearchHistory
 from .forms import TaskEditForm, TaskCreateForm
 from signup.models import User
 from environment.models import Environment
 from django.contrib import messages
+from environment.models import Table
+from django.db.models import Q
 
+
+user_id = 1
 
 # A view to show all tasks with the edit and delete buttons for testing
 
@@ -60,7 +65,8 @@ def EditTask(request, id):
         form = TaskEditForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
-            return redirect('task:view_all_tasks')
+            env_id = task.environment_id_id
+            return  redirect(f'/environment/{env_id}/')
     else:
         form = TaskEditForm(instance=task)
 
@@ -85,15 +91,16 @@ def DeleteTask(request, id):
     - Redirects to 'view_all_tasks'.
     """
     task = get_object_or_404(Task, task_id=id)
+    env_id = task.environment_id_id
     task.delete()
-    return redirect('task:view_all_tasks')
+    return  redirect(f'/environment/{env_id}/')
 
 
 # A view to create a new task
-def CreateTask(request):
+def CreateTask(request,env_id):
     """
     Purpose:
-    - Create a new task.
+    - Create a new  task.
 
     Logic:
     - If POST, validates form data and creates a task with default user and environment.
@@ -111,31 +118,32 @@ def CreateTask(request):
     """
     if request.method == "POST":
         form = TaskCreateForm(request.POST)
-        
         if form.is_valid():
             task = form.save(commit=False)
-            task.created_by = User.objects.get(id=15)  # Default user for now
-            task.environment_id = Environment.objects.get(environment_id=6)  # Default environment
+            task.created_by = User.objects.get(id=user_id)  # Default user for now
+            task.environment_id = Environment.objects.get(environment_id=env_id)  
+            table = get_object_or_404(Table, environment_id=env_id, label="To Do")
+            task.table = table
 
             task.save()
             messages.success(request, 'Task created successfully!')
-            return redirect('environment:index')
+            return redirect(f'/environment/{env_id}/')
         else:
             messages.error(request, 'There was an error creating the task. Please try again.')
 
-    # Get all users to choose from
+    # Get all users to choose from ###### note will be chamged when the user can access env model is made
     users = User.objects.all()
 
     return render(request, 'task/create_task.html', {
         'users': users,
+        'environment_id': env_id,
     })
 
 
-# A view to search for tasks based on content
 def search_task(request):
     """
     Purpose:
-    - Search for tasks based on content.
+    - Search for tasks based on content and store the search term in the search history.
 
     Logic:
     - If POST, filters Task objects matching the search term.
@@ -152,18 +160,30 @@ def search_task(request):
     - Else:
       - Renders 'search_environment.html' with no context.
     """
+    user_id = request.session.get('user_id')
     if request.method == "POST":
+        # Logs
+        print("user_id", user_id)
+
+        # Retrieve the search term
         searched = request.POST['searched']
-        print(f"Search Term: {searched}")  # Debugging line
-        tasks = Task.objects.filter(content__contains=searched)
         
-        # Debugging: Print task IDs to check if they're valid
-        for task in tasks:
-            print(f"Task ID: {task.task_id}, Content: {task.content}")
+        # Query tasks based on the search term and user ID
+        tasks = Task.objects.filter(
+            Q(content__contains=searched, created_by_id=user_id) | Q(content__contains=searched, assigned_to_id=user_id)
+        )
+        
+        # Retrieve the User instance based on the user_id
+        user = User.objects.get(id=user_id)
+
+        # Store the search term in SearchHistory if it's not already there
+        if not SearchHistory.objects.filter(content=searched, user_id=user).exists():
+            SearchHistory.objects.create(content=searched, user_id=user)
         
         return render(request, 'search_environment.html', {'searched': searched, 'tasks': tasks})
     else:
         return render(request, 'search_environment.html', {})
+
 
 
 # A view to redirect to the environment page of a task

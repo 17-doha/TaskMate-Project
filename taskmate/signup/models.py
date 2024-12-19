@@ -25,6 +25,8 @@ class User(AbstractUser):
     phone_num = models.CharField(max_length=15, null=True, blank=True)
     theme_is_light = models.BooleanField(default=True)
     badge_name = models.CharField(max_length=255, null=True, blank=True)
+    # gender = models.CharField(max_length=10, null=True, blank=True)
+
 
 @receiver(post_save, sender=User)
 def send_activation_email(sender, instance, created, **kwargs):
