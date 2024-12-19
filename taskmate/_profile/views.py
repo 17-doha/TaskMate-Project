@@ -23,7 +23,11 @@ def profile_view(request):
     status='Done').count()
 
     all_tasks_count = Task.objects.filter(assigned_to=user_profile).count()
-    persentage = (completed_tasks_count / all_tasks_count) * 100
+    if(all_tasks_count == 0):
+        persentage = 0  
+    else:
+        persentage = (completed_tasks_count / all_tasks_count) * 100
+        
     badges = Badge.objects.filter(num_of_tasks__lte=completed_tasks_count)
 
     # Update UserBadge table

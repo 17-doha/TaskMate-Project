@@ -75,6 +75,8 @@ def EditTask(request, id):
         user_access__type_of_accessibility__in=['subadmin', 'Admin'],  
         user_access__invitation_status='Accepted'  
         )
+    user_queryset = User.objects.filter(id=user_id) 
+    users = users | user_queryset
     return render(request, 'task/edit_task.html', {'form': form, 'task': task, 'users': users})
 
 
@@ -140,6 +142,8 @@ def CreateTask(request,env_id):
         user_access__type_of_accessibility__in=['subadmin', 'Admin'],  
         user_access__invitation_status='Accepted'  
     )
+    user_queryset = User.objects.filter(id=user_id) 
+    users = users | user_queryset
 
     return render(request, 'task/create_task.html', {
         'users': users,
