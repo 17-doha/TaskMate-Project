@@ -8,6 +8,7 @@ from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import PBKDF2SHA1PasswordHasher
 from django.contrib.auth import login, logout
+from _profile.views import profile_view
 
 def login_user(request):
     '''
@@ -23,7 +24,7 @@ def login_user(request):
     '''
 
     if 'user_id' in request.session:
-        return redirect('Profile')
+        return redirect('_profile:profile_view')
 
     if request.method == 'POST':
         # Get email and password from the POST request
@@ -83,9 +84,6 @@ def main(request):
 
 
 
-
-def Profile(request):
-    return render(request, "Profile.html")
 
 
 

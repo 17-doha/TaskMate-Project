@@ -7,7 +7,7 @@ from django.db.models import Q
 import base64
 
 
-user_id = 1
+
 # Create your views here.
 # def profilepage(request):
 #     return render(request, "_profile/profile.html")
@@ -15,6 +15,8 @@ user_id = 1
 
 # View to display the profile
 def profile_view(request):
+    user_id = request.session.get('user_id')
+    print("print", user_id)
     # Get the user profile by ID
     user_profile = get_object_or_404(User, id=user_id) #default for now
     
@@ -54,6 +56,7 @@ def profile_view(request):
 
 # View to edit the profile
 def profile_edit(request):
+    user_id = request.session.get('user_id')
     user_profile = User.objects.get(id=user_id) #default fro now
 
     if request.method == 'POST':
@@ -70,6 +73,7 @@ def profile_edit(request):
 
 
 def profile_delete(request):
+    user_id = request.session.get('user_id')
     user = get_object_or_404(User, id = user_id) #default for now
     user.delete()   
     return redirect('/')
