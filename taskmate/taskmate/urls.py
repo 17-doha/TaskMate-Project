@@ -49,6 +49,6 @@ urlpatterns = [
          success_url=reverse_lazy('login')
          ), 
         name='password_reset_confirm'),
-
+    path("profile/", include("_profile.urls")),
 
 ]

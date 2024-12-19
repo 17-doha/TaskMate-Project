@@ -1,19 +1,17 @@
 from django.shortcuts import render,get_object_or_404, redirect
-from .models import Task, Environment, User
-from environment.models import SearchHistory
+from .models import Task, Environment
 from .forms import TaskEditForm, TaskCreateForm
 from signup.models import User
 from environment.models import Environment
 from django.contrib import messages
-from django.db.models import Q
+from environment.models import Table
 from django.core.mail import send_mail
-from django.utils import timezone
-from datetime import timedelta 
-from django.http import JsonResponse
 
+
+
+user_id = 1
 
 # A view to show all tasks with the edit and delete buttons for testing
-
 def ViewAllTasks(request):
     """
     Purpose:
@@ -31,11 +29,11 @@ def ViewAllTasks(request):
       - 'tasks': Queryset of all Task objects.
     """
     queryset = Task.objects.all()
-    print(len(queryset))
-    context={
+    print(len(queryset))  # Debugging: Print the number of tasks
+    context = {
         "tasks": queryset,
     }
-    return render(request,'task/view_all.html',context)
+    return render(request, 'task/view_all.html', context)
 
 
 # A view to allow editing a task on another page
@@ -66,7 +64,8 @@ def EditTask(request, id):
         form = TaskEditForm(request.POST, instance=task)
         if form.is_valid():
             form.save()
-            return redirect('task:view_all_tasks')
+            env_id = task.environment_id_id
+            return  redirect(f'/environment/{env_id}/')
     else:
         form = TaskEditForm(instance=task)
 
@@ -91,15 +90,16 @@ def DeleteTask(request, id):
     - Redirects to 'view_all_tasks'.
     """
     task = get_object_or_404(Task, task_id=id)
+    env_id = task.environment_id_id
     task.delete()
-    return redirect('task:view_all_tasks')
+    return  redirect(f'/environment/{env_id}/')
 
 
 # A view to create a new task
-def CreateTask(request):
+def CreateTask(request,env_id):
     """
     Purpose:
-    - Create a new task.
+    - Create a new  task.
 
     Logic:
     - If POST, validates form data and creates a task with default user and environment.
@@ -117,30 +117,40 @@ def CreateTask(request):
     """
     if request.method == "POST":
         form = TaskCreateForm(request.POST)
-        
         if form.is_valid():
             task = form.save(commit=False)
-            task.created_by = User.objects.get(id=1)  # Default user for now
-            task.environment_id = Environment.objects.get(environment_id=1)  # Default environment
-
+            task.created_by = User.objects.get(id=user_id)  # Default user for now
+            task.environment_id = Environment.objects.get(environment_id=env_id)  
+            table = get_object_or_404(Table, environment_id=env_id, label="To Do")
+            task.table = table
             task.save()
+            
+            if task.assigned_to:
+                try:
+                    send_task_assignment_email(task, task.assigned_to.username)
+                except Exception as e:
+                    print(f"Error sending email: {e}")
+                    messages.error(request, "Task created, but the email could not be sent.")
+
             messages.success(request, 'Task created successfully!')
-            return redirect('environment:index')
+            return redirect(f'/environment/{env_id}/')
         else:
             messages.error(request, 'There was an error creating the task. Please try again.')
 
-    # Get all users to choose from
+    # Get all users to choose from ###### note will be chamged when the user can access env model is made
     users = User.objects.all()
 
     return render(request, 'task/create_task.html', {
         'users': users,
+        'environment_id': env_id,
     })
 
 
+# A view to search for tasks based on content
 def search_task(request):
     """
     Purpose:
-    - Search for tasks based on content and store the search term in the search history.
+    - Search for tasks based on content.
 
     Logic:
     - If POST, filters Task objects matching the search term.
@@ -157,30 +167,18 @@ def search_task(request):
     - Else:
       - Renders 'search_environment.html' with no context.
     """
-    user_id = request.session.get('user_id')
     if request.method == "POST":
-        # Logs
-        print("user_id", user_id)
-
-        # Retrieve the search term
         searched = request.POST['searched']
+        print(f"Search Term: {searched}")  # Debugging line
+        tasks = Task.objects.filter(content__contains=searched)
         
-        # Query tasks based on the search term and user ID
-        tasks = Task.objects.filter(
-            Q(content__contains=searched, created_by_id=user_id) | Q(content__contains=searched, assigned_to_id=user_id)
-        )
-        
-        # Retrieve the User instance based on the user_id
-        user = User.objects.get(id=user_id)
-
-        # Store the search term in SearchHistory if it's not already there
-        if not SearchHistory.objects.filter(content=searched, user_id=user).exists():
-            SearchHistory.objects.create(content=searched, user_id=user)
+        # Debugging: Print task IDs to check if they're valid
+        for task in tasks:
+            print(f"Task ID: {task.task_id}, Content: {task.content}")
         
         return render(request, 'search_environment.html', {'searched': searched, 'tasks': tasks})
     else:
         return render(request, 'search_environment.html', {})
-
 
 
 # A view to redirect to the environment page of a task
@@ -207,39 +205,6 @@ def View_Task(request, task_id):
     environment_url = f"/environment/{environment_id}/"
 
     return redirect(environment_url)
- 
-# approaching deadlines Notifications
-
-# def send_deadline_notifications(request):
-#     today = timezone.now().date()  #today's date
-#     next_day = today + timedelta(days=1)  # Tomorrow's date
-#     # b filter data in the database
-#     tasks = Task.objects.filter(deadline__date=next_day)
-
-#     print(tasks)
-#     for task in tasks:
-#         if task.assigned_to:  # Ensure the task has an assigned user
-#             subject = "Task Deadline Reminder"
-#             message = f"""
-#             Dear {task.assigned_to.username},
-            
-#             This is a friendly reminder that the task '{task.content}' is due on {task.deadline.strftime('%Y-%m-%d')}.
-
-#             Please make sure to complete it before the deadline.
-
-#             Best regards,
-#             TaskMate Team
-#             """
-#             send_mail(
-#                 subject=subject,
-#                 message=message,
-#                 from_email="noreply@taskmate.com",
-#                 recipient_list=[task.assigned_to.email],
-#                 fail_silently=False,
-#             )
-#             print(f"Reminder sent to {task.assigned_to.email} for task: {task.content}")
-
-#     return JsonResponse({"status": "success", "message": "Deadline reminders sent!"})
 
 
 # def send_task_assignment_email(task, assigned_to_username):
@@ -247,12 +212,11 @@ def View_Task(request, task_id):
 #         assigned_to_user = User.objects.get(username=assigned_to_username)
 #         recipient_email = assigned_to_user.email
         
-#         subject = f"New Task Assigned: {task.title}"
+#         subject = f"New Task Assigned: {task.assigned_to_id.username}"
 #         message = (
 #             f"Hello {assigned_to_user.username},\n\n"
 #             f"You have been assigned a new task:\n\n"
-#             f"Task: {task.title}\n"
-#             f"Description: {task.content}\n\n"
+#             f"Task: {task.content}\n"
 #             "Please log in to your account to view more details.\n\n"
 #             "Best regards,Your Task Management System"
 #         )
@@ -268,3 +232,33 @@ def View_Task(request, task_id):
 #         print(f"User with username {assigned_to_username} does not exist.")
 #     except Exception as e:
 #         print(f"An error occurred: {e}")
+
+
+
+def send_task_assignment_email(task, assigned_to_username):
+    try:
+        assigned_to_user = User.objects.get(username=assigned_to_username)
+        recipient_email = assigned_to_user.email
+        
+        print(f"Sending email to: {recipient_email}")  # Debugging
+        
+        subject = f"New Task Assigned: {task.assigned_to.username}"
+        message = (
+            f"Hello {assigned_to_user.username},\n\n"
+            f"You have been assigned a new task:\n\n"
+            f"Task: {task.content}\n"
+            "Please log in to your account to view more details.\n\n"
+            "Best regards,Your Task Management System"
+        )
+        send_mail(
+            subject,
+            message,
+            'noreply@taskmate.com',  # Sender's email
+            [recipient_email],  # Recipient's email
+            fail_silently=False,
+        )
+        print("Email sent successfully.")
+    except User.DoesNotExist:
+        print(f"User with username {assigned_to_username} does not exist.")
+    except Exception as e:
+        print(f"An error occurred while sending email: {e}")

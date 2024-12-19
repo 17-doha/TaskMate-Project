@@ -1,0 +1,98 @@
+
+/* Email Section */
+.email-section {
+    width: 45%; /* Take up half of the container */
+  }
+  
+  .email-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .email-item i {
+    background-color:  #6c63ff;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+  }
+  
+  .email-item p {
+    margin: 0;
+  }
+  
+  .email-item p:last-child {
+    color: #6c757d;
+    font-size: 12px;
+  }
+  .email-section a.add-email {
+    display: inline-block;
+    color: #6c63ff; /* Blue color for the link */
+    font-size: 14px;
+    text-decoration: none;
+    margin-top: 10px;
+    border: 1px solid #6c63ff;
+    border-radius: 5px;
+    padding: 9px 12px;
+    transition: 0.3s;
+    background-color: #c2bffc;
+    border: none;
+  }
+  
+  .email-section a.add-email:hover {
+    background-color:  #6c63ff;
+    color: white;
+  }
+  
+  /* Badge Progress Section */
+  .badge-progress-container {
+    width: 45%; /* Take up half of the container */
+  }
+  
+  .badge-progress-label {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 5px;
+  }
+  
+  .progress-bar {
+    position: relative;
+    width: 80%; /* Full width of the container */
+    height: 20px; /* Height of the progress bar */
+    background: linear-gradient(to right,  #6c63ff,  #b8a1c7); /* Gradient */
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  
+  .progress-bar-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%; /* Full width for completed progress */
+    display: flex;
+    justify-content: flex-end; /* Badge icon at the end */
+    align-items: center;
+    border-radius: 20px;
+  }
+  
+  .badge-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: gold; /* Badge color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: white;
+    font-weight: bold;
+  }
+  
+  
+  

@@ -7,32 +7,62 @@ from django.contrib.auth.decorators import login_required
 
 
 
-# Mapping for drag-and-drop functionality
+
+env_id = 1
+# used in dragAndDrop function
 mapping = {
     'To Do': 'Pending',
     'In Progress': 'In Progress',
     'Done': 'Completed'
 }
 
-def index(request):
-    # user_id = request.session.get('user_id') "Hash this to access the user_id in any other view"
-    """
-    Purpose:
-        Renders the homepage for the environment application.
-
-    Input:
-        - HTTP Method: GET
-        - Query Parameters: None.
-
-    Output:
-        - Renders 'environment/index.html'.
-        - Context: Includes a list of all environments.
-    """
-    user_id = request.session.get('user_id')
-    environments = Environment.objects.filter(admin_id=user_id)
-    return render(request, "environment/index.html", {"environments": environments})
+def index(request, id=None):
+    if id is not None:
+        return render(request, "environment/index.html", {"environment_id": id})
+    else:
+        return render(request, "environment/index.html")
 
 
+# def ViewTableTask(request, environment_id):
+#     """
+#     Purpose:
+#         Displays tasks associated with a specific environment, grouped by their status.
+
+#     Input:
+#         - HTTP Method: GET
+#         - Path Parameters:
+#             - environment_id: The ID of the environment.
+#         - Query Parameters: None.
+
+#     Output:
+#         - Renders 'environment/index.html'.
+#         - Context:
+#             - environment: The requested Environment object.
+#             - todo_tasks: Tasks with a status of 'Pending'.
+#             - inprogress_tasks: Tasks with a status of 'In Progress'.
+#             - done_tasks: Tasks with a status of 'Completed'.
+
+#     Logic:
+#         1. Retrieve the specified environment by `environment_id`.
+#         2. Query for tasks associated with this environment and filter them by status.
+#         3. Pass the environment and tasks to the template for rendering.
+#     """
+#     environment = get_object_or_404(Environment, environment_id=environment_id)
+#     tasks = Task.objects.filter(environment_id=environment)
+#     print(tasks)
+#     # make a list for each type 
+#     todo_tasks = tasks.filter(status='Pending')
+#     # print(todo_tasks[0].priority)
+#     inprogress_tasks = tasks.filter(status='In Progress')
+#     done_tasks = tasks.filter(status='Completed')
+
+#     context = {
+#         "environment": environment,
+#         "todo_tasks": tasks.filter(status='Pending'),
+#         "inprogress_tasks": tasks.filter(status='In Progress'),
+#         "done_tasks": tasks.filter(status='Completed'),
+#     }
+#     return render(request, 'environment/index.html', context)
 
 def ViewTableTask(request, environment_id):
     """
@@ -54,27 +84,27 @@ def ViewTableTask(request, environment_id):
             - done_tasks: Tasks with a status of 'Completed'.
 
     Logic:
-        1. Retrieve the specified environment by `environment_id`.
+        1. Retrieve the specified environment by environment_id.
         2. Query for tasks associated with this environment and filter them by status.
         3. Pass the environment and tasks to the template for rendering.
     """
     environment = get_object_or_404(Environment, environment_id=environment_id)
     tasks = Task.objects.filter(environment_id=environment)
-    
+
     # make a list for each type 
-    todo_tasks = tasks.filter(status='Pending')
+    todo_tasks = tasks.filter(status='PENDING')
     # print(todo_tasks[0].priority)
     inprogress_tasks = tasks.filter(status='In Progress')
     done_tasks = tasks.filter(status='Completed')
 
     context = {
         "environment": environment,
-        "todo_tasks": tasks.filter(status='Pending'),
-        "inprogress_tasks": tasks.filter(status='In Progress'),
-        "done_tasks": tasks.filter(status='Completed'),
+        "todo_tasks": todo_tasks,
+        "inprogress_tasks": inprogress_tasks,
+        "done_tasks": done_tasks,
     }
+    print(context)
     return render(request, 'environment/index.html', context)
-
 
 def dragAndDrop(request, environment_id):
     """

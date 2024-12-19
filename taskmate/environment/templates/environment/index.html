@@ -117,7 +117,7 @@ h1 {
     <section class="board">
       <div class="columns">
 
-        <!-- To do Column -->
+        <!-- To do Column --><!-- To do Column -->
         <div class="column" id="low" ondrop="drop(event)" ondragover="allowDrop(event)">
           <div class="column-header">
             <h3>To Do</h3>
@@ -158,8 +158,6 @@ h1 {
         {% endfor %}
 
         </div>
-
-
         <!-- In progress Column -->
         <div class="column" id="medium" ondrop="drop(event)" ondragover="allowDrop(event)">
           <div class="column-header">
@@ -266,7 +264,8 @@ h1 {
   <!-- needed vars -->
   <script>
     const environment_id = "{{ environment.environment_id }}";
-    const taskCreateUrl = "{% url 'task:create_task' %}";
+    const taskCreateUrl = "{% url 'task:create_task' env_id=environment.environment_id %}";
+    console.log(taskCreateUrl); 
   </script>
 
   <!-- styles -->
