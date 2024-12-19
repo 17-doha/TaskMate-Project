@@ -81,32 +81,30 @@
     .done {
       background-color: #ccffcc;
     }
-
-    /* Priority Task Section */
-    .priority-task-container {
-  position: absolute; /* Make it absolute */
-  top: 310px; /* Adjust to move above the card-container */
-  right: 360px; /* Align with the card-container */
-  display: flex;
-  gap: 50px;
-  z-index: 1; /* Ensure it overlaps other elements if necessary */
-}
-
-
+    
 .card-container {
   margin-top: -300px; /* Add space below the priority tasks */
 }
 
+    /* Priority Task Section */
+    .priority-task-container {
+      position: absolute; /* Maintain absolute positioning */
+        top: 310px; /* Adjust top value to align properly */
+        left: 270px; /* Use `left` instead of `right` to align to the left */
+        display: flex; /* Arrange cards horizontally */
+        gap: 35px; /* Add spacing between cards */
+        z-index: 1; /* Ensure it overlaps other content */
+    }
     .task-card {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    width: 390px; /* Adjust the width as needed */
-    text-align: left; /* Align text to the left */
-    position: relative; /* Required for absolute positioning of priority */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
+      background-color: #fff; /* White background for the card */
+      border-radius: 10px; /* Rounded corners for smoother edges */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+      padding: 15px; /* Add internal padding for content */
+      width: 390px; /* Set width to fit content */
+      text-align: left; /* Align text to the left */
+      position: relative; /* Enable child positioning */
+      transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effects */
+      }
 
   .task-card:hover {
     transform: translateY(-10px);
@@ -132,15 +130,21 @@
 
   .task-card .high-priority {
     background-color: white; /* White background */
-    color: #ff4d4d; /* Yellow text */
-    border: 2px solid #ff4d4d; /* Yellow border */
+    color: #ef4444; /* Yellow text */
+    border: 2px solid #ef4444; /* Yellow border */
   }
 
   /* Updated styling for medium priority */
   .task-card .medium-priority {
     background-color: white; /* White background */
-    color: #ffcc00; /* Yellow text */
-    border: 2px solid #ffcc00; /* Yellow border */
+    color: #f59e0b; /* Yellow text */
+    border: 2px solid #f59e0b; /* Yellow border */
+  }
+
+  .task-card .low-priority {
+    background-color: white; /* White background */
+    color: #10b981; /* Yellow text */
+    border: 2px solid #10b981; /* Yellow border */
   }
 
   /* Progress bar styling */
@@ -227,3 +231,71 @@
   margin-left: 35px; /* Align to match the container */
 }
 
+/* Styles for "No Deadlines" Message */
+.no-deadlines {
+  text-align: center;
+  margin-top: 20px;
+  color: #6c63ff; /* Green to indicate positivity */
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.no-deadlines-message {
+  margin-bottom: 20px;
+}
+
+.no-deadlines-animation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Character Animation */
+.character {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  animation: bounce 2s infinite;
+}
+
+.face {
+  width: 100px;
+  height: 100px;
+  background: #ffeb3b;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.eyes {
+  display: flex;
+  gap: 10px;
+}
+
+.eye {
+  width: 15px;
+  height: 15px;
+  background: #333;
+  border-radius: 50%;
+}
+
+.mouth {
+  position: absolute;
+  bottom: 20px;
+  width: 30px;
+  height: 15px;
+  background: #e57373;
+  border-radius: 50%;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}

@@ -54,22 +54,32 @@ def login_user(request):
 
 
 
+from django.shortcuts import render, redirect
+
 def main(request):
-    # This is the page to redirect to after login
     """
     Renders the main dashboard page after a successful login.
-
+    
     Logic:
     - Displays the main page for authenticated users.
     - Redirects here after both local and Google sign-ins.
-
+    
     Inputs:
     - request: HttpRequest object.
-
+    
     Outputs:
-    - Renders the 'main.html' template.
+    - Renders the 'main.html' template or redirects to 'main/user_id' if user_id is in the session.
     """
+    
+    # Check if 'user_id' is stored in session
+    if 'user_id' in request.session:
+        user_id = request.session['user_id']
+        # Redirect to 'main/user_id' if user_id exists in session
+        return redirect(f'/main/{user_id}/')
+    
+    # If no user_id in session, just render the main page
     return render(request, 'main.html')
+
 
 
 

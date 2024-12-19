@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from django.http import JsonResponse
 from .models import Environment, Table
 from task.models import Task
@@ -12,7 +12,7 @@ mapping = {
 }
 
 def index(request):
-    # user_id = request.session.get('user_id') "Hash this to access the user_id in any other view"
+    user_id = request.session.get('user_id') #"Hash this to access the user_id in any other view"
     """
     Purpose:
         Renders the homepage for the environment application.
@@ -27,8 +27,14 @@ def index(request):
     Logic:
         - Simply loads the HTML template for the homepage without any additional context.
     """
+    
     # print(user_id, "in the environment")
     return render(request, "environment/index.html")
+
+
+from django.shortcuts import get_object_or_404, render
+from django.http import Http404
+
 
 
 def ViewTableTask(request, environment_id):
@@ -43,34 +49,44 @@ def ViewTableTask(request, environment_id):
         - Query Parameters: None.
 
     Output:
-        - Renders 'environment/index.html'.
-        - Context:
-            - environment: The requested Environment object.
-            - todo_tasks: Tasks with a status of 'Pending'.
-            - inprogress_tasks: Tasks with a status of 'In Progress'.
-            - done_tasks: Tasks with a status of 'Completed'.
-
-    Logic:
-        1. Retrieve the specified environment by `environment_id`.
-        2. Query for tasks associated with this environment and filter them by status.
-        3. Pass the environment and tasks to the template for rendering.
+        - Renders 'environment/index.html' with tasks grouped by their status.
+        - Redirects to the new environment if necessary.
     """
-    environment = get_object_or_404(Environment, environment_id=environment_id)
-    tasks = Task.objects.filter(environment_id=environment)
+    user_id = request.session.get('user_id')
+    # Ensure the user is logged in
+    if user_id == "None":
+        raise Http404("User is not authenticated.")
     
-    # make a list for each type 
+    # Try to retrieve the environment
+    try:
+        environment = Environment.objects.get(environment_id=environment_id, admin=user_id)
+    except Environment.DoesNotExist:
+        # If the environment is not found or doesn't belong to the logged-in user, get the first environment that belongs to the user
+        environment = Environment.objects.filter(admin=user_id).first()
+
+        if environment is None:
+            raise Http404("No environment found for this user.")
+        
+        # Redirect to the new environment's page
+        return redirect('environment:view_table_task', environment_id=environment.environment_id)
+
+    # Now that we have the correct environment, fetch the tasks for it
+    tasks = Task.objects.filter(environment_id=environment.environment_id)  # Change environment to environment_id
+    
+    # Group tasks by their status
     todo_tasks = tasks.filter(status='Pending')
-    # print(todo_tasks[0].priority)
     inprogress_tasks = tasks.filter(status='In Progress')
     done_tasks = tasks.filter(status='Completed')
 
     context = {
         "environment": environment,
-        "todo_tasks": tasks.filter(status='Pending'),
-        "inprogress_tasks": tasks.filter(status='In Progress'),
-        "done_tasks": tasks.filter(status='Completed'),
+        "todo_tasks": todo_tasks,
+        "inprogress_tasks": inprogress_tasks,
+        "done_tasks": done_tasks,
     }
+    
     return render(request, 'environment/index.html', context)
+
 
 
 def dragAndDrop(request, environment_id):
