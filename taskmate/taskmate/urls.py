@@ -55,4 +55,7 @@ urlpatterns = [
     # profile urls
     path("profile/", include("_profile.urls")),
 
+    #badge url
+    path("badge/", include("badge.urls")),
+
 ]
