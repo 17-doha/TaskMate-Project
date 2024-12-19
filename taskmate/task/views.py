@@ -12,11 +12,12 @@ from environment.models import UserCanAccess
 
 
 
-user_id = 1
+
 
 # A view to show all tasks with the edit and delete buttons for testing
 
 def ViewAllTasks(request):
+    
     """
     Purpose:
     - Display all tasks with edit and delete options for testing.
@@ -42,6 +43,7 @@ def ViewAllTasks(request):
 
 # A view to allow editing a task on another page
 def EditTask(request, id):
+    user_id = request.session.get('user_id')
     """
     Purpose:
     - Allow editing of a specific task.
@@ -85,6 +87,7 @@ def EditTask(request, id):
 
 # A view to delete tasks on click
 def DeleteTask(request, id):
+    user_id = request.session.get('user_id')
     """
     Purpose:
     - Delete a specific task.
@@ -107,6 +110,7 @@ def DeleteTask(request, id):
 
 # A view to create a new task
 def CreateTask(request,env_id):
+    user_id = request.session.get('user_id')
     """
     Purpose:
     - Create a new  task.
@@ -156,6 +160,7 @@ def CreateTask(request,env_id):
 
 
 def search_task(request):
+    user_id = request.session.get('user_id')
     """
     Purpose:
     - Search for tasks based on content and store the search term in the search history.
@@ -203,6 +208,7 @@ def search_task(request):
 
 # A view to redirect to the environment page of a task
 def View_Task(request, task_id):
+    user_id = request.session.get('user_id')
     """
     Purpose:
     - Redirect to the environment page of a specific task.
