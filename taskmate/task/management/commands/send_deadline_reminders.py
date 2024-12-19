@@ -3,12 +3,15 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 from django.core.mail import send_mail
 from task.models import Task 
+from Notification.models import Notification
+from signup.models import User
 
 class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         today = timezone.now().date()  #today's date
         next_day = today + timedelta(days=1)  # Tomorrow's date
+        print(next_day)
     # b filter data in the database
         tasks = Task.objects.filter(deadline__date=next_day)
 
@@ -26,6 +29,12 @@ class Command(BaseCommand):
                 Best regards,
                 TaskMate Team
                 """
+                user_object = User.objects.get(username=task.assigned_to.username)
+                Notification.objects.create(
+                    content=f"{task.assigned_to.username}, This is reminder for {task.content} task",
+                    receiver=user_object,
+                    status="UNREAD"
+                )
                 send_mail(
                     subject=subject,
                     message=message,
