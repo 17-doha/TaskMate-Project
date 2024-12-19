@@ -6,7 +6,6 @@ import json
 from django.contrib.auth.decorators import login_required
 
 
-
 # Mapping for drag-and-drop functionality
 mapping = {
     'To Do': 'Pending',
@@ -194,34 +193,45 @@ def add_environment(request):
     return render(request, 'base.html', {'environment': environment})
 
 
-from django.shortcuts import get_object_or_404, render
-from .models import UserCanAccess, Environment
-
-from django.template.loader import render_to_string
-from django.http import JsonResponse
-
 def ShowParticipants(request, environment_id):
     environment = get_object_or_404(Environment, environment_id=environment_id)
+    participants = UserCanAccess.objects.filter(environment=environment)
 
-    # Get participants
-    participants = UserCanAccess.objects.filter(
-        environment=environment,
-    )
-
-    participants_list = [user_access.user for user_access in participants]
-
-    # Prepare context
-    if participants_list:
-        participants_html = ''.join(
-            f'<p>{participant.username} ({participant.email})</p>'
-            for participant in participants_list
-        )
-    else:
-        participants_html = "<p>There are no participants.</p>"
-
-    # Check if the request is AJAX
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        return JsonResponse({'html': participants_html})
+        # Create the participant HTML dynamically
+        participants_html = ''
+        for participant in participants:
+            participants_html += f'''
+                <div class="participant-item" data-participant-id="{participant.id}">
+                    <p>{participant.user.username} 
+                        <select class="form-select accessibility-select">
+                            <option value="read" {'selected' if participant.type_of_accessibility == 'Participant' else ''}>Participant</option>
+                            <option value="write" {'selected' if participant.type_of_accessibility == 'subadmin' else ''}>subadmin</option>
+                            <option value="admin" {'selected' if participant.type_of_accessibility == 'Admin' else ''}>Admin</option>
+                        </select>
+                    </p>
+                </div>
+            '''
 
-    # For full-page render (fallback)
-    return render(request, 'base.html', {'participants_html': participants_html})
+        # if no participants
+        if not participants.exists():
+            participants_html = "<p>There are no participants.</p>"
+
+        return JsonResponse({'html': participants_html})
+    return render(request, 'base.html', {'participants': participants})
+
+def save_participant_accessibility(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        changes = data.get('changes', [])
+
+        for change in changes:
+            participant_id = change.get('participantId')
+            new_access = change.get('newAccess')
+
+            # Find the participant and update their accessibility
+            participant = get_object_or_404(UserCanAccess, id=participant_id)
+            participant.type_of_accessibility = new_access
+            participant.save()
+
+        return JsonResponse({'success': True, 'message': 'Changes saved successfully.'})

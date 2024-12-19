@@ -5,6 +5,7 @@
 
 <style>
 /* Title Styling */
+
 h1 {
   font-size: 35px;
   font-weight: bold;
@@ -87,21 +88,98 @@ h1 {
 }
 
 /* Fix for older browsers or custom styles interfering */
+/* Modal styling */
 .modal {
-  display: flex !important; /* Force modal display */
-  align-items: center; /* Center vertically */
-  justify-content: center; /* Center horizontally */
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Adjust the modal backdrop opacity (background dimming) */
 .modal-backdrop {
-  opacity: 0.2 !important; /* Set a lower opacity value to make the backdrop less dark */
+  opacity: 0.2 !important;
 }
 
-/* Optional: Change modal background color for the content to make it lighter */
 .modal-content {
-  background-color: white !important; /* Ensure modal content background is white */
+  background-color: white !important;
+  padding: 20px;
+  border-radius: 8px;
 }
+
+/* Modal Header Styling */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 20px;
+}
+
+/* Modal Footer */
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+}
+
+/* Participant Item */
+.participant-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: transparent; /* Removed gray background */
+  border-radius: 5px;
+}
+
+.participant-item p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Accessibility Select Dropdown */
+.accessibility-select {
+  width: 150px;
+  padding: 8px;
+  margin-left: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Save Button Styling */
+#saveChangesBtn {
+  background-color: #6c5ce7;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#saveChangesBtn:hover {
+  background-color: #6c5ce7;
+}
+
+/* Normal Gray Close Button Styling */
+
+.btn-close {
+  background-color: #9e9b9b;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-block !important; /* Ensure it's always visible */
+  opacity: 1; /* Ensure full opacity */
+  visibility: visible; /* Ensure it's not hidden */
+}
+
+/* Optional: Remove hover effect so the button stays gray */
+.btn-close:hover {
+  background-color: #6c757d; /* Keep the same gray color when hovered */
+}
+
+
+
 
 
 </style>
@@ -129,7 +207,7 @@ h1 {
         <i class="fa fa-plus icon"></i> Invite
       </button>
       <!-- Button to trigger modal -->
-      <button class="btn btn-primary participants-btn" data-environment-id="{{ environment.environment_id }}" data-bs-toggle="modal" data-bs-target="#participantsModal">
+      <button class="participants-btn" data-environment-id="{{ environment.environment_id }}" data-bs-toggle="modal" data-bs-target="#participantsModal">
         <i class="fa fa-users icon"></i> Participants
       </button>
 
@@ -290,22 +368,27 @@ h1 {
 
   <!-- Simple Participants Modal -->
 
-  <div class="modal fade" id="participantsModal" tabindex="-1" aria-labelledby="participantsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="participantsModalLabel">Participants</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="participantsList">
-                <!-- Content dynamically loaded here -->
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
+    <!-- Modal HTML -->
+    <div class="modal fade" id="participantsModal" tabindex="-1" aria-labelledby="participantsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content participants-modal-content">
+              <div class="modal-header participants-modal-header">
+                  <h5 class="modal-title" id="participantsModalLabel">Participants</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body participants-modal-body" id="participantsList">
+                  <!-- Content dynamically loaded here -->
+              </div>
+              <div class="modal-footer participants-modal-footer">
+                  <button type="button" class="btn-close" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+              </div>
+          </div>
+      </div>
   </div>
+
+
+
 
   
   
@@ -315,29 +398,64 @@ h1 {
 
 
   <!-- needed vars -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
   <script>
     const environment_id = "{{ environment.environment_id }}";
     const taskCreateUrl = "{% url 'task:create_task' env_id=environment.environment_id %}";
     console.log(taskCreateUrl); 
 
     document.querySelectorAll('.participants-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        const environmentId = this.getAttribute('data-environment-id');
-        const url = `/environment/show_participants/${environmentId}/`;
+            button.addEventListener('click', function() {
+                const environmentId = this.getAttribute('data-environment-id');
+                const url = `/environment/show_participants/${environmentId}/`;
 
-        fetch(url, {
-            headers: {
-                'x-requested-with': 'XMLHttpRequest',
+                fetch(url, {
+                    headers: {
+                        'x-requested-with': 'XMLHttpRequest',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Inject the HTML content into the modal body
+                    document.getElementById('participantsList').innerHTML = data.html;
+                })
+                .catch(error => console.error('Error fetching participants:', error));
+            });
+        });
+
+        document.getElementById('saveChangesBtn').addEventListener('click', function() {
+            const participants = document.querySelectorAll('.participant-item');
+            let changes = [];
+
+            participants.forEach(participant => {
+                const participantId = participant.dataset.participantId;
+                const selectElement = participant.querySelector('.accessibility-select');
+                const newAccess = selectElement.value;
+
+                changes.push({ participantId, newAccess });
+            });
+
+            // Send changes to the backend
+            if (changes.length > 0) {
+                fetch('/save_participant_accessibility/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ changes }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Changes saved:', data);
+                    $('#participantsModal').modal('hide');
+                })
+                .catch(error => console.error('Error saving changes:', error));
             }
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Inject the HTML content into the modal body
-            document.getElementById('participantsList').innerHTML = data.html;
-        })
-        .catch(error => console.error('Error fetching participants:', error));
-    });
-});
+        });
+
+
+
 
   </script>
 
