@@ -22,7 +22,7 @@ class Command(BaseCommand):
                 message = f"""
                 Dear {task.assigned_to.username},
                 
-                This is a friendly reminder that the task '{task.content}' is due on {task.deadline.strftime('%Y-%m-%d')}.
+                This is a friendly reminder that the task '{task.content}' is due to {task.deadline.strftime('%Y-%m-%d')}.
 
                 Please make sure to complete it before the deadline.
 

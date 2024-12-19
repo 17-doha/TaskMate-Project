@@ -120,8 +120,8 @@ def CreateTask(request):
         
         if form.is_valid():
             task = form.save(commit=False)
-            task.created_by = User.objects.get(id=15)  # Default user for now
-            task.environment_id = Environment.objects.get(environment_id=6)  # Default environment
+            task.created_by = User.objects.get(id=1)  # Default user for now
+            task.environment_id = Environment.objects.get(environment_id=1)  # Default environment
 
             task.save()
             messages.success(request, 'Task created successfully!')
@@ -240,3 +240,31 @@ def View_Task(request, task_id):
 #             print(f"Reminder sent to {task.assigned_to.email} for task: {task.content}")
 
 #     return JsonResponse({"status": "success", "message": "Deadline reminders sent!"})
+
+
+# def send_task_assignment_email(task, assigned_to_username):
+#     try:
+#         assigned_to_user = User.objects.get(username=assigned_to_username)
+#         recipient_email = assigned_to_user.email
+        
+#         subject = f"New Task Assigned: {task.title}"
+#         message = (
+#             f"Hello {assigned_to_user.username},\n\n"
+#             f"You have been assigned a new task:\n\n"
+#             f"Task: {task.title}\n"
+#             f"Description: {task.content}\n\n"
+#             "Please log in to your account to view more details.\n\n"
+#             "Best regards,Your Task Management System"
+#         )
+#         send_mail(
+#             subject,
+#             message,
+#             'noreply@taskmate.com',  # Sender's email
+#             [recipient_email],  # Recipient's email
+#             fail_silently=False,
+#         )
+#         print("Email sent successfully.")
+#     except User.DoesNotExist:
+#         print(f"User with username {assigned_to_username} does not exist.")
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
