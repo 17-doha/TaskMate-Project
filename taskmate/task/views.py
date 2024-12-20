@@ -14,7 +14,7 @@ from environment.models import UserCanAccess
 
 
 
-# A view to show all tasks with the edit and delete buttons for testing
+# A view to show all tasks with the edit and delete buttons for testing not an actual ui 
 
 def ViewAllTasks(request):
     
@@ -34,7 +34,7 @@ def ViewAllTasks(request):
       - 'tasks': Queryset of all Task objects.
     """
     queryset = Task.objects.all()
-    print(len(queryset))
+
     context={
         "tasks": queryset,
     }
@@ -182,8 +182,7 @@ def search_task(request):
     """
     user_id = request.session.get('user_id')
     if request.method == "POST":
-        # Logs
-        print("user_id", user_id)
+
 
         # Retrieve the search term
         searched = request.POST['searched']
@@ -231,3 +230,5 @@ def View_Task(request, task_id):
     environment_url = f"/environment/{environment_id}/"
 
     return redirect(environment_url)
+
+    
