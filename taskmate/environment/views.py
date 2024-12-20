@@ -4,6 +4,7 @@ from .models import Environment, Table, SearchHistory, UserCanAccess
 from task.models import Task
 import json
 from django.contrib.auth.decorators import login_required
+from signup.models import User
 
 
 # Mapping for drag-and-drop functionality
@@ -13,21 +14,29 @@ mapping = {
     'Done': 'Completed'
 }
 
-def index(request, id = None):
-    # user_id = request.session.get('user_id') "Hash this to access the user_id in any other view"
+def index(request, id=None):
     """
     Purpose:
         Renders the homepage for the environment application.
+        If an `id` is provided, it will display a specific environment;
+        otherwise, it will show all environments for the current user.
 
     Input:
         - HTTP Method: GET
-        - Query Parameters: None.
+        - Path Parameter: 
+            - id: Optional, an environment ID to display a specific environment.
 
     Output:
-        - Renders 'environment/index.html'.
-        - Context: Includes a list of all environments.
+        - Renders 'environment/index.html' template.
+        - Context:
+            - If `id` is provided: A single environment object.
+            - If `id` is not provided: A list of all environments belonging to the current user.
+
+    Logic:
+        1. If an `id` is provided, render the page with that specific environment ID.
+        2. If no `id` is provided, fetch all environments associated with the logged-in user using their `user_id`.
+        3. Render the `index.html` page with either the selected environment or a list of environments.
     """
-    
     if id is not None:
         return render(request, "environment/index.html", {"environment_id": id})
     else:
@@ -36,48 +45,49 @@ def index(request, id = None):
         return render(request, "environment/index.html", {"environments": environments})
 
 
-
 def ViewTableTask(request, environment_id):
     """
     Purpose:
-        Displays tasks associated with a specific environment, grouped by their status.
+        Displays tasks associated with a specific environment, grouped by their status
+        (Pending, In Progress, Completed).
 
     Input:
         - HTTP Method: GET
-        - Path Parameters:
-            - environment_id: The ID of the environment.
+        - Path Parameter:
+            - environment_id: The ID of the environment to filter tasks by.
         - Query Parameters: None.
 
     Output:
-        - Renders 'environment/index.html'.
+        - Renders 'environment/index.html' template.
         - Context:
             - environment: The requested Environment object.
             - todo_tasks: Tasks with a status of 'Pending'.
             - inprogress_tasks: Tasks with a status of 'In Progress'.
             - done_tasks: Tasks with a status of 'Completed'.
-
+        
     Logic:
-        1. Retrieve the specified environment by `environment_id`.
-        2. Query for tasks associated with this environment and filter them by status.
-        3. Pass the environment and tasks to the template for rendering.
+        1. Retrieve the specified environment using `environment_id`.
+        2. Query the database for tasks related to this environment.
+        3. Filter tasks based on their status (Pending, In Progress, Completed).
+        4. Render the 'index.html' page with the filtered tasks.
     """
     environment = get_object_or_404(Environment, environment_id=environment_id)
     tasks = Task.objects.filter(environment_id=environment)
     
-    # make a list for each type 
+    # make a list for each task type 
     todo_tasks = tasks.filter(status='Pending')
-    # print(todo_tasks[0].priority)
     inprogress_tasks = tasks.filter(status='In Progress')
     done_tasks = tasks.filter(status='Completed')
 
     user_id = request.session.get('user_id')
+    print('user_id', user_id)
     environments = Environment.objects.filter(admin_id=user_id)
-    print('environments', environments)
+    
     context = {
         "environment": environment,
-        "todo_tasks": tasks.filter(status='Pending'),
-        "inprogress_tasks": tasks.filter(status='In Progress'),
-        "done_tasks": tasks.filter(status='Completed'),
+        "todo_tasks": todo_tasks,
+        "inprogress_tasks": inprogress_tasks,
+        "done_tasks": done_tasks,
         "environments": environments,
     }
     return render(request, 'environment/index.html', context)
@@ -90,8 +100,8 @@ def dragAndDrop(request, environment_id):
 
     Input:
         - HTTP Method: POST
-        - Path Parameters:
-            - environment_id: The ID of the environment.
+        - Path Parameter:
+            - environment_id: The ID of the environment to move tasks within.
         - JSON Body:
             - task_id: The ID of the task to be moved.
             - target_table: The name of the target table (e.g., 'To Do', 'In Progress', 'Done').
@@ -99,15 +109,14 @@ def dragAndDrop(request, environment_id):
     Output:
         - JSON Response:
             - Success: {'status': 'success', 'message': 'Task moved successfully'}
-            - Error: {'status': 'error', 'message': 'Invalid request'}
+            - Error: {'status': 'error', 'message': 'Invalid request.'}
 
     Logic:
         1. Parse the request body to get the task ID and target table name.
-        2. Retrieve the specified task and its environment.
-        3. Retrieve the target table for the task within the same environment.
-        4. Update the task's table and status based on the mapping.
-        5. Save the updated task and return a success response.
-        6. Return an error response for invalid methods or missing data.
+        2. Retrieve the task using its ID.
+        3. Get the target table and update the task's table and status based on the mapping.
+        4. Save the task and return a success response.
+        5. Return an error response for invalid methods or missing data.
     """
     if request.method == "POST":
         data = json.loads(request.body)
@@ -127,10 +136,6 @@ def dragAndDrop(request, environment_id):
 
     return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
 
-
-
-
-from .models import SearchHistory, User
 
 def search_environment(request):
     """
@@ -177,23 +182,29 @@ def search_environment(request):
         
         return render(request, 'search_environment.html', {'searched': searched, 'environments': environments})
     else:
-        return render(request, 'search_environment.html', {})
-
-
-@login_required   #Not ready yet
-def add_environment(request):
-    if request.method == "POST":
-        label = request.POST['label']
-        is_private = 'is_private' in request.POST
-        environment = Environment.objects.create(
-            label=label,
-            is_private=is_private,
-            admin=request.user
-        )
-    return render(request, 'base.html', {'environment': environment})
+        return render(request, 'search_environment.html', {})   
 
 
 def ShowParticipants(request, environment_id):
+    """
+    Purpose:
+        Displays the list of participants who have access to the environment.
+
+    Input:
+        - HTTP Method: GET
+        - Path Parameter:
+            - environment_id: The ID of the environment whose participants to display.
+
+    Output:
+        - JSON Response:
+            - Success: A JSON containing dynamically generated HTML for participants.
+            - Error: If the request was not an AJAX request, returns the full page.
+
+    Logic:
+        1. Retrieve the environment and its participants from the UserCanAccess table.
+        2. If the request is AJAX, return the participants as HTML.
+        3. Otherwise, render the full page with the participants.
+    """
     environment = get_object_or_404(Environment, environment_id=environment_id)
     participants = UserCanAccess.objects.filter(environment=environment)
 
@@ -220,18 +231,39 @@ def ShowParticipants(request, environment_id):
         return JsonResponse({'html': participants_html})
     return render(request, 'base.html', {'participants': participants})
 
-def save_participant_accessibility(request):
+
+def save_participant_accessibility(request):  # Not ready yet
+    """
+    Purpose:
+        Updates the accessibility type of participants in the environment.
+
+    Input:
+        - HTTP Method: POST
+        - JSON Body:
+            - changes: A list of changes made to participant accessibilities.
+            - Each change includes participantId and newAccess.
+
+    Output:
+        - JSON Response:
+            - Success: {'success': True, 'message': 'Changes saved successfully.'}
+            - Error: {'success': False, 'message': 'Failed to save changes.'}
+
+    Logic:
+        1. Parse the changes from the request body.
+        2. For each change, update the participant's accessibility.
+        3. Return a success response after all changes are saved.
+    """
     if request.method == 'POST':
         data = json.loads(request.body)
         changes = data.get('changes', [])
-
         for change in changes:
             participant_id = change.get('participantId')
             new_access = change.get('newAccess')
 
-            # Find the participant and update their accessibility
             participant = get_object_or_404(UserCanAccess, id=participant_id)
             participant.type_of_accessibility = new_access
             participant.save()
 
         return JsonResponse({'success': True, 'message': 'Changes saved successfully.'})
+
+    return JsonResponse({'success': False, 'message': 'Failed to save changes.'})

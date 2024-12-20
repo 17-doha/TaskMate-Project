@@ -191,4 +191,23 @@ header.navbar {
     color: #6c63ff;
 }
 
+.submenu-item {
+    padding: 5px 10px;
+    border-radius: 6px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.submenu-item:hover {
+transform:   scale(1.02);
+}
+
+.submenu-link {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 10px 10px;
+    border-radius: 6px;
+    transition: background 0.3s ease, color 0.3s ease;
+}
 

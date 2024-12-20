@@ -57,3 +57,50 @@ function drop(ev) {
     .then(response => response.json())
 
 }
+
+const environment_id = "{{ environment.environment_id }}";
+const taskCreateUrl = "{% url 'task:create_task' env_id=environment.environment_id %}";
+console.log(taskCreateUrl); 
+
+document.querySelectorAll('.participants-btn').forEach(button => {
+  button.addEventListener('click', function() {
+    const environmentId = this.getAttribute('data-environment-id');
+    const url = `/environment/show_participants/${environmentId}/`;
+
+    fetch(url, {
+      headers: { 'x-requested-with': 'XMLHttpRequest' }
+    })
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('participantsList').innerHTML = data.html;
+    })
+    .catch(error => console.error('Error fetching participants:', error));
+  });
+});
+
+document.getElementById('saveChangesBtn').addEventListener('click', function() {
+  const participants = document.querySelectorAll('.participant-item');
+  let changes = [];
+
+  participants.forEach(participant => {
+    const participantId = participant.dataset.participantId;
+    const selectElement = participant.querySelector('.accessibility-select');
+    const newAccess = selectElement.value;
+
+    changes.push({ participantId, newAccess });
+  });
+
+  if (changes.length > 0) {
+    fetch('/save_participant_accessibility/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ changes })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Changes saved:', data);
+      $('#participantsModal').modal('hide');
+    })
+    .catch(error => console.error('Error saving changes:', error));
+  }
+});
