@@ -5,13 +5,67 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TaskMate Dashboard</title>
+  <style>
+    .submenu {
+  display: none;
+}
+
+/* Show the submenu when the "show" class is added */
+.submenu.show {
+  display: block;
+}
+    /* Styling for submenu items */
+    .submenu-item {
+      padding: 5px 10px;
+      border-radius: 6px; /* Rounded corners */
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .submenu-item:hover {
+      transform: scale(1.02); /* Slightly enlarge the item */
+    }
+
+    /* Styling for the link inside submenu items */
+    .submenu-link {
+      display: block; /* Make the link block-level for full clickable area */
+      color: #fff; /* Text color */
+      text-decoration: none; /* Remove underline */
+      font-size: 16px;
+      padding: 10px 10px; /* Padding for better click area */
+      border-radius: 6px; /* Rounded corners */
+      transition: background 0.3s ease, color 0.3s ease; /* Smooth transitions */
+    }
+
+    /* Modal popup */
+   /* Modal popup */
+   .modalyy {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .modalyy-content {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 400px;
+      text-align: center;
+    }
+  </style>
 
   <!-- Link to External CSS -->
   <link rel="stylesheet" href="{% static 'base/css/base.css' %}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"rel="stylesheet"/>
-</head>
 
+</head>
 <body>
   <div class="dashboard">
     <!-- Sidebar -->
@@ -29,22 +83,24 @@
             <i class="fas fa-folder"></i> Environments
             <ul class="submenu">
               {% for environment in environments %}
-                <li class="submenu-item">
-                  <a href="{% url 'environment:view_table_task' environment_id=environment.environment_id %}" class="submenu-link">
-                    {{ environment.label }}
-                  </a>
-                </li>
+              <li class="submenu-item">
+                <a href="{% url 'environment:view_table_task' environment_id=environment.environment_id %}" class="submenu-link">
+                  {{ environment.label }}
+                </a>
+              </li>
               {% empty %}
-                <li class="submenu-item">No environments available</li>
+              <li class="submenu-item">No environments available</li>
               {% endfor %}
-              <li class="menu-item add-environment">
+              <li class="menu-item add-environment" onclick="openAddEnvironmentModal()">
                 <i class="fas fa-plus"></i> Add Environment
               </li>
+              
             </ul>
           </li>
         </ul>
       </nav>
     </aside>
+    
 
     <!-- Main Content -->
     <main class="main-content">
@@ -73,20 +129,63 @@
 
             <i class="fas fa-adjust theme-toggle-icon" aria-label="Toggle Theme"></i>
             <i class="fas fa-bell notification-icon" aria-label="Notifications"></i>
-            <a href="{% url '_profile:profile_view' %}">
+            <a href="{% url '_profile:profile_view'%}">
               <i class="fas fa-user-circle profile-icon"></i>
             </a>
+
           </div>
         </div>
       </header>
 
       {% block content %}
-      <!-- try modal here -->
       {% endblock %}
     </main>
   </div>
+  <!-- --------------------------------- Modals ------------------------------------------------- -->
+<!-- Modal for Add Environment -->
+<div id="add-environment-modal" class="modalyy">
+  <div class="modalyy-content">
+    <h4>Add New Environment</h4>
+    <form id="add-environment-form" method="POST" action="{% url 'environment:add_environment' %}">
+      {% csrf_token %}
+      <label for="label">Environment Label:</label>
+      <input type="text" id="label" name="label" placeholder="Enter environment label" required>
+      <button type="submit" class="add-btn">Add</button>
+      <button type="button" onclick="closeAddEnvironmentModal()" class="cancel-btn">Cancel</button>
+    </form>
+  </div>
+</div>
+
+  <!-- --------------------------------- Modals ------------------------------------------------- -->
 
   <!-- Link to External JS -->
   <script src="{% static 'base/js/base.js' %}"></script>
+
+  <script>
+    console.log("Script loaded");
+
+    function openAddEnvironmentModal() {
+      console.log("Opening modal");
+      const modal = document.getElementById('add-environment-modal');
+      modal.style.display = 'flex';
+    }
+
+    function closeAddEnvironmentModal() {
+      console.log("Closing modal");
+      const modal = document.getElementById('add-environment-modal');
+      modal.style.display = 'none';
+    }
+
+    window.addEventListener('click', function(event) {
+      const modal = document.getElementById('add-environment-modal');
+      console.log("Window clicked");
+      if (event.target === modal) {
+        console.log("Closing modal from window click");
+        closeAddEnvironmentModal();
+      }
+    });
+  </script>
+
+
 </body>
 </html>

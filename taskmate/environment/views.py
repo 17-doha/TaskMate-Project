@@ -340,3 +340,7 @@ def save_participant_accessibility(request):  # Not ready yet
         return JsonResponse({'success': True, 'message': 'Changes saved successfully.'})
 
     return JsonResponse({'success': False, 'message': 'Failed to save changes.'})
+
+
+def add_environment(request):
+    pass
