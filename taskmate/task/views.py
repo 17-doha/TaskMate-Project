@@ -249,15 +249,16 @@ def View_Task(request, task_id):
     return redirect(environment_url)
 
 
-
+#send email for the assigned user
 def send_task_assignment_email(task, assigned_to_username):
     try:
         assigned_to_user = User.objects.get(username=assigned_to_username)
         recipient_email = assigned_to_user.email
         
-        print(f"Sending email to: {recipient_email}")  # Debugging
+        print(f"Sending email to: {recipient_email}")  
         
         subject = f"New Task Assigned: {task.assigned_to.username}"
+        #preparing mail 
         message = (
             f"Hello {assigned_to_user.username},\n\n"
             f"You have been assigned a new task:\n\n"
@@ -268,10 +269,11 @@ def send_task_assignment_email(task, assigned_to_username):
         send_mail(
             subject,
             message,
-            'noreply@taskmate.com',  # Sender's email
-            [recipient_email],  # Recipient's email
+            'noreply@taskmate.com',   #the application is the sender
+            [recipient_email], 
             fail_silently=False,
-        )
+        ) 
+        #b7ot record fel notification database
         Notification.objects.create(
             content=f"You have been assigned a new task: {task.content}",
             receiver=assigned_to_user,
@@ -281,26 +283,25 @@ def send_task_assignment_email(task, assigned_to_username):
     except User.DoesNotExist:
         print(f"User with username {assigned_to_username} does not exist.")
     except Exception as e:
-        print(f"An error occurred while sending email: {e}")
+        print(f"There is an error through sending the email: {e}")
 
 
 def send_task_completion_email(task):
     try:
-        # Access the environment through the foreign key
-        environment = task.environment_id  # Assuming `environment_id` is the ForeignKey in the Task model
+        # baged id of the environment nm el foreign key elly fel task model
+        environment = task.environment_id
 
         if not environment:
-            raise ValueError("Task is not associated with any environment.")
+            raise ValueError("Task is not exists in this environment.")
 
-        # Access the admin of the environment
+        #baged el admin 3lshan ab3tlo en el task 5lst
         environment_admin = environment.admin
         if not environment_admin:
-            raise ValueError("The environment does not have an admin assigned.")
+            raise ValueError("The environment does not have an admin")
 
         recipient_email = environment_admin.email
-        print(f"Admin fetched: {environment_admin.username}, Email: {recipient_email}")  # Debugging
 
-        # Prepare and send the email
+        #preparing mail
         subject = f"Task Completed: {task.content}"
         message = (
             f"Hello {environment_admin.username},\n\n"
@@ -309,7 +310,7 @@ def send_task_completion_email(task):
             "Please log in to view the task details.\n\n"
             "Best regards,\nTask Management System"
         )
-
+        #bb3at el mail
         send_mail(
             subject,
             message,
@@ -317,7 +318,7 @@ def send_task_completion_email(task):
             [recipient_email],  # Recipient's email
             fail_silently=False,
         )
-
+        #b7ot record in database
         Notification.objects.create(
             content=f"The task '{task.content}' has been marked as completed.",
             receiver=environment_admin,
@@ -325,4 +326,4 @@ def send_task_completion_email(task):
         )
         print("Completion email sent successfully.")
     except User.DoesNotExist:
-        print("Admin user does not exist.")
+        print("There is an error through sending the email")

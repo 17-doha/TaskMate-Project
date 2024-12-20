@@ -2,7 +2,9 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 class NotificationConsumer(AsyncWebsocketConsumer):
+        #btfta7 websocket connection between server and user(here the user is the reciever)
     async def connect(self):
+                #mn el routing url 
         self.user_id = self.scope["url_route"]["kwargs"]["user_id"]
         self.group_name = f"user_{self.user_id}"
 
@@ -31,3 +33,4 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         print(f"User {self.user_id} disconnected from WebSocket group {self.group_name}")
+

@@ -6,6 +6,7 @@ from task.models import Task
 from Notification.models import Notification
 from signup.models import User
 
+#fe haga f django b t run el command da mn el terminal bas lazem tkon b nafs el structure files da
 class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
@@ -30,11 +31,12 @@ class Command(BaseCommand):
                 TaskMate Team
                 """
                 user_object = User.objects.get(username=task.assigned_to.username)
+                #b7ot record fel notification database
                 Notification.objects.create(
                     content=f"{task.assigned_to.username}, This is reminder for {task.content} task",
                     receiver=user_object,
                     status="UNREAD"
-                )
+                ) #sending mail
                 send_mail(
                     subject=subject,
                     message=message,
@@ -44,4 +46,4 @@ class Command(BaseCommand):
                 )
                 print(f"Reminder sent to {task.assigned_to.email} for task: {task.content}")
 
-        print("Deadline reminders completed successfully.")
+        print("Deadline reminders are sent successfully.")
