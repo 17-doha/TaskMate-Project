@@ -9,6 +9,8 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import PBKDF2SHA1PasswordHasher
 from django.contrib.auth import login, logout
 from _profile.views import profile_view
+from allauth.socialaccount.models import SocialAccount
+from django.contrib.auth import get_user_model
 
 def login_user(request):
     '''
@@ -54,9 +56,6 @@ def login_user(request):
     return render(request, 'authentication/login.html')
 
 
-
-from django.shortcuts import render, redirect
-
 def main(request):
     """
     Renders the main dashboard page after a successful login.
@@ -81,15 +80,6 @@ def main(request):
     # If no user_id in session, just render the main page
     return render(request, 'main.html')
 
-
-
-
-
-
-
-from django.contrib.auth import get_user_model
-from allauth.socialaccount.models import SocialAccount
-from django.shortcuts import redirect
 
 # Get the custom User model
 User = get_user_model()

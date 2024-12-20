@@ -1,66 +1,54 @@
 from django.shortcuts import render, redirect
 from django.utils.timezone import now
-from django.db.models import Q, Count
+from django.db.models import Q, Count, F
 from task.models import Task
 import json
-from django.db.models import F
+
 
 def mainpage(request, user_id):
+    """
+    Handles the main page for a user, displaying their tasks and task statistics.
+
+    If the user is not logged in, redirects to the login page.
+    If the user_id in the session does not match the user_id in the URL path, redirects to the main page with the session user_id.
+
+    Queries the task table to get the tasks for the user, grouped by environment and ordered by deadline.
+    Queries the task table to get the priority tasks for the user, grouped by environment and ordered by deadline.
+    Queries the task table to get the count of tasks for the user, grouped by status.
+    Queries the environment table to get environment statistics for the user.
+    
+    Renders the mainpage.html template with the context containing the tasks, task counts, total tasks, and environment statistics.
+    """
     session_user_id = request.session.get('user_id')
     if not session_user_id:
-        return redirect('/login/')  # Redirect to login page if not logged in
-
-    # Enforce the user to access only their own page
+        return redirect('/login/')
     if int(user_id) != session_user_id:
         return redirect(f'/main/{session_user_id}/')
 
     current_datetime = now()
 
-    # First set of filtered tasks: Tasks for the user with future deadlines, ordered by nearest deadline
-    tasks = Task.objects.filter(
-        Q(assigned_to=user_id) | Q(created_by=user_id),  ~Q(status="Completed"),
-        deadline__gt=current_datetime
-    ).order_by('deadline')[:4]
+    tasks_with_environment = get_tasks_with_environment(user_id, current_datetime)
+    priority_tasks_with_environment = get_priority_tasks_with_environment(user_id, current_datetime)
+    task_counts, total_tasks = get_task_counts(user_id)
+    environment_stats_json = get_environment_stats(user_id)
 
-    # Add environment details to the first set of tasks
-    tasks_with_environment = [
-        {
-            'task': task,
-            'environment_name': task.environment_id.label if task.environment_id else "No Environment"
-        }
-        for task in tasks
-    ]
-
-    # Second filtered task set: Tasks sorted by priority and nearest deadline, limit to 2
-    priority_order = {
-        'high': 1,
-        'mid': 2,
-        'low': 3
+    context = {
+        'tasks_with_environment': tasks_with_environment,
+        'priority_tasks': priority_tasks_with_environment,
+        'task_counts': {
+            'todo': task_counts.get('todo_count', 0),
+            'in_progress': task_counts.get('in_progress_count', 0),
+            'done': task_counts.get('done_count', 0),
+            'total': total_tasks,
+        },
+        'total_tasks': total_tasks,
+        'environment_stats': environment_stats_json,
     }
-    priority_tasks = Task.objects.filter(
-        Q(assigned_to=user_id) | Q(created_by=user_id),  ~Q(status="Completed") ,
-        deadline__gt=current_datetime,
-       
-    ).annotate(
-        priority_order=F('priority')  # Replace 'priority' with the actual priority field name
-    ).order_by(
-        'priority_order',  # Sort by priority order (high -> mid -> low)
-        'deadline'         # Then by nearest deadline
-    )[:2]
-    
 
-    priority_tasks_with_environment = [
-        {
-            'task': task,
-            'environment_name': task.environment_id.label if task.environment_id else "No Environment",
-            'due_date': task.deadline,
-            'priority': task.priority
-        }
-        for task in priority_tasks
-    ]
-    print(priority_tasks_with_environment)
+    return render(request, 'mainpage.html', context)
 
-    # Aggregate task counts by status
+def get_task_counts(user_id):
+    """Aggregate task counts by status."""
     task_counts = Task.objects.filter(
         Q(assigned_to=user_id) | Q(created_by=user_id)
     ).aggregate(
@@ -69,12 +57,61 @@ def mainpage(request, user_id):
         done_count=Count('pk', filter=Q(status=Task.COMPLETED)),
     )
 
-    # Calculate total tasks
     total_tasks = sum(
         task_counts.get(key, 0) for key in ['todo_count', 'in_progress_count', 'done_count']
     )
 
-    # Calculate task counts and done ratios by environment
+    return task_counts, total_tasks
+
+
+def get_priority_tasks_with_environment(user_id, current_datetime):
+    """Fetch tasks prioritized by priority and nearest deadline, with environment details."""
+    priority_tasks = Task.objects.filter(
+        Q(assigned_to=user_id) | Q(created_by=user_id),
+        ~Q(status="Completed"),
+        deadline__gt=current_datetime,
+    ).annotate(
+        priority_order=F('priority')  
+    ).order_by(
+        'priority_order', 
+        'deadline'
+    )[:2]
+
+    return [
+        {
+            'task': task,
+            'environment_name': task.environment_id.label if task.environment_id else "No Environment",
+            'due_date': task.deadline,
+            'priority': task.priority
+        }
+        for task in priority_tasks
+    ]
+
+
+
+
+def get_tasks_with_environment(user_id, current_datetime):
+    """Fetch tasks with future deadlines and include environment details."""
+    tasks = Task.objects.filter(
+        Q(assigned_to=user_id) | Q(created_by=user_id),
+        ~Q(status="Completed"),
+        deadline__gt=current_datetime
+    ).order_by('deadline')[:4]
+
+    return [
+        {
+            'task': task,
+            'environment_name': task.environment_id.label if task.environment_id else "No Environment"
+        }
+        for task in tasks
+    ]
+
+
+
+
+
+def get_environment_stats(user_id):
+    """Calculate task counts and done ratios by environment and return as JSON."""
     environment_stats = Task.objects.filter(
         Q(assigned_to=user_id) | Q(created_by=user_id)
     ).values('environment_id__label').annotate(
@@ -83,22 +120,4 @@ def mainpage(request, user_id):
         done_ratio=F('done_tasks') * 1.0 / F('total_tasks')
     ).order_by('-done_ratio')[:3]
 
-    # Serialize environment_stats to JSON
-    environment_stats_json = json.dumps(list(environment_stats))
-
-    # Pass context to the template
-    context = {
-        'tasks_with_environment': tasks_with_environment,  # First filtered tasks
-        'priority_tasks': priority_tasks_with_environment,                 # Second filtered tasks
-        'task_counts': {
-            'todo': task_counts.get('todo_count', 0),
-            'in_progress': task_counts.get('in_progress_count', 0),
-            'done': task_counts.get('done_count', 0),
-            'total': total_tasks,
-        },
-        'total_tasks': total_tasks,
-        'environment_stats': environment_stats_json,  # Add environment_stats to the context
-    }
-
-    # print(environment_stats_json)  # Debugging output
-    return render(request, 'mainpage.html', context)
+    return json.dumps(list(environment_stats))
