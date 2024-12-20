@@ -16,7 +16,6 @@ import base64
 # View to display the profile
 def profile_view(request):
     user_id = request.session.get('user_id')
-    print("print", user_id)
     # Get the user profile by ID
     user_profile = get_object_or_404(User, id=user_id) #default for now
     
@@ -61,7 +60,7 @@ def profile_view(request):
 # View to edit the profile
 def profile_edit(request):
     user_id = request.session.get('user_id')
-    user_profile = User.objects.get(id=user_id) #default fro now
+    user_profile = User.objects.get(id=user_id)
 
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=user_profile) 
