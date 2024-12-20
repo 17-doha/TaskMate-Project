@@ -7,78 +7,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{% static 'mainpage.css' %}">
-  <title>Small Chart with Cards</title>
+  <link rel="stylesheet" href="{% static '/main/css/mainpage.css' %}">
+ 
 
 </head>
 
 
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+  
 
   <div class="chart-title" id = "chart-title">Progress Overview</div>
   <div class="chart-container" id="chart-container">
     <canvas id="chart" width="350" height="350"></canvas>
   </div>
 
-  <script>
-    console.log('first')
-    // Parse environmentStats safely
-    const environmentStats = JSON.parse('{{ environment_stats|escapejs }}') || [];
-
-    // Log parsed data for debugging
-    console.log(environmentStats);
-
-    // Extract labels and data dynamically
-    const labels = environmentStats.map(stat => stat.environment_id__label || "No Environment");
-    const progressData = environmentStats.map(stat => (stat.done_ratio * 100).toFixed(2)); // Convert to percentage
-
-    // Check if the chart should be displayed
-    if (environmentStats.length === 0 || (environmentStats.length > 0 && environmentStats[0]['done_tasks'] === 0)) {
-      console.error("No data available for chart.");
-      document.getElementById("chart-title").style.display = "none";
-    } else {
-      // Initialize chart if data is available
-      let ctx = document.getElementById("chart").getContext("2d");
-      let chart = new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: labels,
-          datasets: [
-            {
-              label: "Progress %",
-              backgroundColor: "#a18dfb",
-              borderColor: "#e0e0e0",
-              data: progressData
-            }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          indexAxis: "y",
-          plugins: {
-            legend: { display: false }, // Hide legend
-            tooltip: { enabled: true } // Enable/disable tooltips as desired
-          },
-          scales: {
-            x: {
-              grid: { display: false },
-              display: false
-            },
-            y: {
-              grid: { display: false },
-              display: true
-            }
-          }
-        }
-      });
-    }
-  </script>
+ 
 
 
 
   <!-- Priority Task Section -->
+ 
   <div class="priority-task-container">
     {% for task_with_env in priority_tasks %}
     <div class="task-card">
@@ -105,7 +53,7 @@
 
 
   <!-- Card section -->
-
+  
   <div class="card-container">
     <!-- Card for To Do -->
     <div class="card todo">
@@ -170,7 +118,9 @@
     </div>
     {% endfor %}
   </div>
-
+  <script>const environmentStats = JSON.parse('{{ environment_stats|escapejs }}') || [];</script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+  <script src="{% static 'main/js/main.js' %}"></script>
 
 
 </body>
