@@ -39,8 +39,7 @@ class TaskViewsTestCase(TestCase):
 
         # Create a task
         start_date = timezone.now()
-        deadline = timezone.now() + timedelta(days=1)  # Adding one day to the current time
-
+        deadline = timezone.now() + timedelta(days=1) 
         self.task = Task.objects.create(
             content="Test Task",
             status=Task.PENDING,
