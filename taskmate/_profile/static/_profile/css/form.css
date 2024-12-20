@@ -88,3 +88,9 @@ input[readonly] {
     cursor: pointer;
    
   }
+  .error {
+    color: #ff4d4d;
+    font-size: 14px;
+    /* margin-top: -5px; */
+    margin-bottom: 10px;
+}
