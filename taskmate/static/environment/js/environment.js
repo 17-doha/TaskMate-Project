@@ -58,10 +58,6 @@ function drop(ev) {
 
 }
 
-const environment_id = "{{ environment.environment_id }}";
-const taskCreateUrl = "{% url 'task:create_task' env_id=environment.environment_id %}";
-console.log(taskCreateUrl); 
-
 document.querySelectorAll('.participants-btn').forEach(button => {
   button.addEventListener('click', function() {
     const environmentId = this.getAttribute('data-environment-id');

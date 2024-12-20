@@ -105,7 +105,6 @@ def ViewTableTask(request, environment_id):
     done_tasks = tasks.filter(status='Completed')
 
     user_id = request.session.get('user_id')
-    print('user_id', user_id)
     environments = Environment.objects.filter(admin_id=user_id)
     
     context = {
@@ -341,3 +340,7 @@ def save_participant_accessibility(request):  # Not ready yet
         return JsonResponse({'success': True, 'message': 'Changes saved successfully.'})
 
     return JsonResponse({'success': False, 'message': 'Failed to save changes.'})
+
+
+def add_environment(request):
+    pass
