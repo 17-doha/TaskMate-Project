@@ -10,13 +10,13 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
         print(self.channel_layer.__dict__)
         print('/n/n')
-        if self.user_id not in self.channel_layer.groups:
-            await self.channel_layer.group_add(
-                self.group_name,
-                self.channel_name
-            )
-            await self.accept()
-            print(f"User {self.user_id} connected to WebSocket group {self.group_name}")
+        # if self.group_name not in self.channel_layer.groups:
+        await self.channel_layer.group_add(
+            self.group_name,
+            self.channel_name
+        )
+        await self.accept()
+        print(f"User {self.user_id} connected to WebSocket group {self.group_name}")
 
 
     async def send_notification(self, event):
@@ -25,7 +25,6 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'message': message
         }))
-        self.channel_layer.channels = {self.channel_layer.channels[0]}
 
     async def disconnect(self, close_code):
         # Remove the user from the WebSocket group
