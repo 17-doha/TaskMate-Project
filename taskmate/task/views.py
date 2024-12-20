@@ -7,13 +7,17 @@ from environment.models import Environment
 from django.contrib import messages
 from environment.models import Table, UserCanAccess
 from django.db.models import Q
+from environment.models import Table
+from environment.models import UserCanAccess
 
 
-user_id = 1
+
+
 
 # A view to show all tasks with the edit and delete buttons for testing
 
 def ViewAllTasks(request):
+    
     """
     Purpose:
     - Display all tasks with edit and delete options for testing.
@@ -39,6 +43,7 @@ def ViewAllTasks(request):
 
 # A view to allow editing a task on another page
 def EditTask(request, id):
+    user_id = request.session.get('user_id')
     """
     Purpose:
     - Allow editing of a specific task.
@@ -70,12 +75,19 @@ def EditTask(request, id):
     else:
         form = TaskEditForm(instance=task)
 
-    users = User.objects.all()
+    users = User.objects.filter(
+        user_access__environment_id=task.environment_id,  
+        user_access__type_of_accessibility__in=['subadmin', 'Admin'],  
+        user_access__invitation_status='Accepted'  
+        )
+    user_queryset = User.objects.filter(id=user_id) 
+    users = users | user_queryset
     return render(request, 'task/edit_task.html', {'form': form, 'task': task, 'users': users})
 
 
 # A view to delete tasks on click
 def DeleteTask(request, id):
+    user_id = request.session.get('user_id')
     """
     Purpose:
     - Delete a specific task.
@@ -98,6 +110,7 @@ def DeleteTask(request, id):
 
 # A view to create a new task
 def CreateTask(request,env_id):
+    user_id = request.session.get('user_id')
     """
     Purpose:
     - Create a new  task.
@@ -131,8 +144,14 @@ def CreateTask(request,env_id):
         else:
             messages.error(request, 'There was an error creating the task. Please try again.')
 
-    # Get all users to choose from ###### note will be chamged when the user can access env model is made
-    users = User.objects.all()
+    # Get all users to choose from 
+    users = User.objects.filter(
+        user_access__environment_id=Environment.objects.get(environment_id=env_id)  ,  
+        user_access__type_of_accessibility__in=['subadmin', 'Admin'],  
+        user_access__invitation_status='Accepted'  
+    )
+    user_queryset = User.objects.filter(id=user_id) 
+    users = users | user_queryset
 
     return render(request, 'task/create_task.html', {
         'users': users,
@@ -141,6 +160,7 @@ def CreateTask(request,env_id):
 
 
 def search_task(request):
+    user_id = request.session.get('user_id')
     """
     Purpose:
     - Search for tasks based on content and store the search term in the search history.
@@ -188,6 +208,7 @@ def search_task(request):
 
 # A view to redirect to the environment page of a task
 def View_Task(request, task_id):
+    user_id = request.session.get('user_id')
     """
     Purpose:
     - Redirect to the environment page of a specific task.
