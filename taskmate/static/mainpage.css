@@ -8,8 +8,9 @@
     }
     /* Container to position the chart */
     .chart-container {
-      padding: -750px 1000 px; /* Adjust padding (top-bottom and left-right) */
+      margin-top: 30px;
       margin-left: 950px;
+  
     }
 
     /* Ensure the canvas is contained properly */
@@ -23,8 +24,9 @@
       display: flex;
       gap: 20px;
       justify-content: right;
-      margin-top: -500px;
+      margin-top: -330px;
       margin-right: 360px;
+     
     }
 
     .card {
@@ -35,6 +37,7 @@
       width: 250px; /* Slightly wider for better proportion */
       text-align: center;
       transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+      
     }
 
     .card:hover {
@@ -82,9 +85,7 @@
       background-color: #ccffcc;
     }
     
-.card-container {
-  margin-top: -300px; /* Add space below the priority tasks */
-}
+
 
     /* Priority Task Section */
     .priority-task-container {
