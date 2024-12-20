@@ -105,7 +105,6 @@ def ViewTableTask(request, environment_id):
     done_tasks = tasks.filter(status='Completed')
 
     user_id = request.session.get('user_id')
-    print('user_id', user_id)
     environments = Environment.objects.filter(admin_id=user_id)
     
     context = {

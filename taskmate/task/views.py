@@ -34,7 +34,6 @@ def ViewAllTasks(request):
       - 'tasks': Queryset of all Task objects.
     """
     queryset = Task.objects.all()
-    print(len(queryset))
     context={
         "tasks": queryset,
     }
@@ -182,21 +181,12 @@ def search_task(request):
     """
     user_id = request.session.get('user_id')
     if request.method == "POST":
-        # Logs
-        print("user_id", user_id)
-
-        # Retrieve the search term
         searched = request.POST['searched']
-        
-        # Query tasks based on the search term and user ID
         tasks = Task.objects.filter(
             Q(content__contains=searched, created_by_id=user_id) | Q(content__contains=searched, assigned_to_id=user_id)
         )
         
-        # Retrieve the User instance based on the user_id
         user = User.objects.get(id=user_id)
-
-        # Store the search term in SearchHistory if it's not already there
         if not SearchHistory.objects.filter(content=searched, user_id=user).exists():
             SearchHistory.objects.create(content=searched, user_id=user)
         
