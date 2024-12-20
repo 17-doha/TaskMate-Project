@@ -87,6 +87,13 @@ def main(request):
 
 
 
+from django.contrib.auth import get_user_model
+from allauth.socialaccount.models import SocialAccount
+from django.shortcuts import redirect
+
+# Get the custom User model
+User = get_user_model()
+
 def google_sign_in_callback(request):
     """
     Handles Google OAuth sign-in and user registration if not already registered.
@@ -107,26 +114,34 @@ def google_sign_in_callback(request):
     """
 
     if request.user.is_authenticated:
-        # Check if user exists in the custom User model
+        # Check if user has a linked Google account
         social_account = SocialAccount.objects.filter(user=request.user, provider="google").first()
-       
-        
+
         if social_account:
             email = social_account.extra_data.get("email")
 
             try:
-                User.objects.get(email=email)
+                # Check if the user already exists
+                user = User.objects.get(email=email)
                 print("User already exists")
             except User.DoesNotExist:
-                User.objects.create(
+                # Create a new user if it doesn't exist
+                user = User.objects.create(
                     email=email,
                     username=request.user.username,
                     password="",  # Leave password empty as this is Google sign-in
                 )
+                print("New user created")
 
-        return redirect("main")
+            # Save the user ID to the session
+            request.session["user_id"] = user.id
+            user_id = user.id  # Set user_id for redirect
 
+            return redirect(f"/main/{user_id}/")
+
+    # If not authenticated, redirect to the login page
     return redirect("login")
+
 
 
 def logout_user(request):

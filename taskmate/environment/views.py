@@ -4,6 +4,10 @@ from .models import Environment, Table, SearchHistory, UserCanAccess
 from task.models import Task
 import json
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from django.http import Http404
+from .models import SearchHistory, User
+from django.template.loader import render_to_string
 
 
 
@@ -43,8 +47,6 @@ def index(request, id = None):
 
 
 
-from django.shortcuts import get_object_or_404, render
-from django.http import Http404
 
 
 
@@ -152,7 +154,7 @@ def dragAndDrop(request, environment_id):
 
 
 
-from .models import SearchHistory, User
+
 
 def search_environment(request):
     """
@@ -215,11 +217,7 @@ def add_environment(request):
     return render(request, 'base.html', {'environment': environment})
 
 
-from django.shortcuts import get_object_or_404, render
-from .models import UserCanAccess, Environment
 
-from django.template.loader import render_to_string
-from django.http import JsonResponse
 
 def ShowParticipants(request, environment_id):
     environment = get_object_or_404(Environment, environment_id=environment_id)
@@ -246,3 +244,26 @@ def ShowParticipants(request, environment_id):
 
     # For full-page render (fallback)
     return render(request, 'base.html', {'participants_html': participants_html})
+
+
+
+
+def guest_environment_view(request, environment_id):
+    environment = get_object_or_404(Environment, environment_id=environment_id)
+
+    user_id = request.session.get('user_id')
+    if user_id is None:
+       
+
+        # Render the environment for guests
+        tasks = Task.objects.filter(environment_id=environment.environment_id)
+
+        context = {
+            "environment": environment,
+            "tasks": tasks,
+            "todo_tasks": tasks.filter(status='Pending'),
+            "inprogress_tasks": tasks.filter(status='In Progress'),
+            "done_tasks": tasks.filter(status='Completed'),
+        }
+        return render(request, "environment/guest_view.html", context)
+
