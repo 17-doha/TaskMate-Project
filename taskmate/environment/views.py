@@ -342,5 +342,33 @@ def save_participant_accessibility(request):  # Not ready yet
     return JsonResponse({'success': False, 'message': 'Failed to save changes.'})
 
 
+
+
 def add_environment(request):
-    pass
+    if request.method == 'POST':
+        label = request.POST.get('label', '').strip()
+
+        if not label:
+            return JsonResponse({'success': False, 'error': 'Environment label is required.'}, status=400)
+
+        if Environment.objects.filter(label=label).exists():
+            return JsonResponse({'success': False, 'error': 'An environment with this label already exists.'}, status=400)
+
+        try:
+            # Create the environment
+            environment = Environment.objects.create(
+                label=label,
+                is_private=True,
+                admin=request.user
+            )
+            statuses = ['To Do', 'Done', 'In Progress']
+            for status in statuses:
+                Table.objects.create(
+                    environment=environment,
+                    label=status
+                )
+            return JsonResponse({'success': True, 'message': f"Environment '{label}' added successfully."})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': f"An error occurred: {str(e)}"}, status=500)
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
