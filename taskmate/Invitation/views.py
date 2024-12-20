@@ -39,6 +39,8 @@ def create_invitation(request):
         )
         #bt3mel layer feha el user elle howa el reciever we group name reciever.id
         channel_layer = get_channel_layer()
+
+        #async to sync ( the create_invitation is sync but websockets async so async_to_sync make async code is callable via sync code)
         async_to_sync(channel_layer.group_send)(
             f"user_{receiver.id}", 
             {

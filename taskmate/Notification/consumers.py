@@ -9,6 +9,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         self.group_name = f"user_{self.user_id}"
 
         print(self.channel_layer.__dict__)
+        print('/n/n')
         if self.user_id not in self.channel_layer.groups:
             await self.channel_layer.group_add(
                 self.group_name,
