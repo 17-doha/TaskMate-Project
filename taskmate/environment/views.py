@@ -24,7 +24,7 @@ def index(request, id = None):
     """
     Purpose:
         Renders the homepage for the environment application.
-        If an `id` is provided, it will display a specific environment;
+        If an id is provided, it will display a specific environment;
         otherwise, it will show all environments for the current user.
 
     Input:
@@ -35,13 +35,13 @@ def index(request, id = None):
     Output:
         - Renders 'environment/index.html' template.
         - Context:
-            - If `id` is provided: A single environment object.
-            - If `id` is not provided: A list of all environments belonging to the current user.
+            - If id is provided: A single environment object.
+            - If id is not provided: A list of all environments belonging to the current user.
 
     Logic:
-        1. If an `id` is provided, render the page with that specific environment ID.
-        2. If no `id` is provided, fetch all environments associated with the logged-in user using their `user_id`.
-        3. Render the `index.html` page with either the selected environment or a list of environments.
+        1. If an id is provided, render the page with that specific environment ID.
+        2. If no id is provided, fetch all environments associated with the logged-in user using their user_id.
+        3. Render the index.html page with either the selected environment or a list of environments.
     """
     if id is not None:
         return render(request, "environment/index.html", {"environment_id": id})
@@ -78,7 +78,7 @@ def index(request, id = None):
 #             - done_tasks: Tasks with a status of 'Completed'.
 
 #     Logic:
-#         1. Retrieve the specified environment by `environment_id`.
+#         1. Retrieve the specified environment by environment_id.
 #         2. Query for tasks associated with this environment and filter them by status.
 #         3. Pass the environment and tasks to the template for rendering.
 #     """
@@ -383,6 +383,7 @@ def save_participant_accessibility(request):  # Not ready yet
 
 def add_environment(request):
     user_id = request.session.get('user_id')
+    user = User.objects.get(id=user_id)
     if request.method == 'POST':
         label = request.POST.get('label', '').strip()
 
@@ -401,7 +402,7 @@ def add_environment(request):
             environment = Environment.objects.create(
                 label=label,
                 is_private=True,
-                admin=request.user  # request.user is guaranteed to be a User instance here
+                admin=user  # request.user is guaranteed to be a User instance here
             )
 
             statuses = ['To Do', 'Done', 'In Progress']
@@ -414,6 +415,6 @@ def add_environment(request):
             return JsonResponse({'success': True, 'message': f"Environment '{label}' added successfully."})
 
         except Exception as e:
-            return JsonResponse({'success': False, 'error': f"An error occurred: {str(e)}"}, status=500)
+            pass
 
-    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)
+    return JsonResponse({'success': False}, status=405)

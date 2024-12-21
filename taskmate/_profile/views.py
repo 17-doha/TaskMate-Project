@@ -5,6 +5,7 @@ from badge.models import UserBadge, Badge
 from task.models import Task
 from django.db.models import Q
 import base64
+from environment.models import Environment
 
 
 

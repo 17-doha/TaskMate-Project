@@ -3,6 +3,7 @@ from django.utils.timezone import now
 from django.db.models import Q, Count, F
 from task.models import Task
 import json
+from environment.models import Environment
 
 
 def mainpage(request, user_id):
@@ -32,6 +33,9 @@ def mainpage(request, user_id):
     task_counts, total_tasks = get_task_counts(user_id)
     environment_stats_json = get_environment_stats(user_id)
 
+    user_id = request.session.get('user_id')
+    environments = Environment.objects.filter(admin_id=user_id)
+
     context = {
         'tasks_with_environment': tasks_with_environment,
         'priority_tasks': priority_tasks_with_environment,
@@ -43,7 +47,9 @@ def mainpage(request, user_id):
         },
         'total_tasks': total_tasks,
         'environment_stats': environment_stats_json,
+        'environments': environments
     }
+    
 
     return render(request, 'mainpage.html', context)
 
