@@ -33,7 +33,7 @@ urlpatterns = [
     path("main/", include("main.urls")),
     path("task/", include("task.urls")),
     path('invitations/', include('invitations.urls')),
-    path('Invitation/', include('Invitation.urls')),
+    path("Invitation/", include("Invitation.urls", namespace='Invitation')), 
 
 
     #Signup urls
