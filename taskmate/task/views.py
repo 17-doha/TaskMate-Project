@@ -40,6 +40,7 @@ def ViewAllTasks(request):
     queryset = Task.objects.all()
     print(len(queryset))  # Debugging: Print the number of tasks
     context = {
+    context={
         "tasks": queryset,
     }
     return render(request, 'task/view_all.html', context)
@@ -263,12 +264,14 @@ def search_task(request):
     """
     if request.method == "POST":
         searched = request.POST['searched']
-        print(f"Search Term: {searched}")  # Debugging line
-        tasks = Task.objects.filter(content__contains=searched)
+        tasks = Task.objects.filter(
+            Q(content__contains=searched, created_by_id=user_id) | Q(content__contains=searched, assigned_to_id=user_id)
+        )
         
         # Debugging: Print task IDs to check if they're valid
-        for task in tasks:
-            print(f"Task ID: {task.task_id}, Content: {task.content}")
+        user = User.objects.get(id=user_id)
+        if not SearchHistory.objects.filter(content=searched, user_id=user).exists():
+            SearchHistory.objects.create(content=searched, user_id=user)
         
         return render(request, 'search_environment.html', {'searched': searched, 'tasks': tasks})
     else:

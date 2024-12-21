@@ -6,151 +6,102 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TaskMate Dashboard</title>
   <style>
-    /* Sidebar submenu items */
-    .submenu-item {
-      padding: 5px 10px;
-      border-radius: 6px;
-      transition: background 0.3s ease, transform 0.2s ease;
-    }
-
-    .submenu-item:hover {
-      transform: scale(1.02);
-    }
-
-    .submenu-link {
-      display: block;
-      color: #fff;
-      text-decoration: none;
-      font-size: 16px;
-      padding: 10px;
-      border-radius: 6px;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    /* Modal */
-    .modal {
+    /* Modal Styles */
+    .modalyy {
       display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: rgba(0, 0, 0, 0.6);
       justify-content: center;
       align-items: center;
-      z-index: 1000;
+      z-index: 9999;
     }
 
-    .modal-content {
+    .modalyy-content {
       background: white;
       padding: 20px;
-      border-radius: 8px;
-      width: 400px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      animation: fadeIn 0.3s ease-in-out;
     }
 
-    .modal button {
-      margin-top: 10px;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
 
-<<<<<<< HEAD
-    /* Notifications container */
-    #notifications-container {
-      position: absolute;
-      top: 50px;
-      right: 20px;
-      background: #f8f9fa;
-      border: 1px solid #ccc;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-      max-height: 400px;
-      overflow-y: auto;
-      width: 300px;
+    .modalyy-content h4 {
+      margin-bottom: 15px;
+      font-size: 18px;
+      font-weight: bold;
     }
 
-    #notifications-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    .notification-card {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 10px;
-      background: #007bff; /* Blue background color */
-      color: white; /* White text for contrast */
+    .modalyy-content input {
       width: 100%;
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    .add-btn, .cancel-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
       cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+      font-size: 16px;
+      margin: 5px;
+      transition: background-color 0.3s ease;
     }
 
-    .notification-card:hover {
-      transform: scale(1.02);
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    .add-btn { background-color: #6c5ce7; color: white; }
+    .add-btn:hover { background-color: #5548bd; }
+    .cancel-btn { background-color: #8c8888; color: white; }
+    .cancel-btn:hover { background-color: #626060; }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid white;
+      border-radius: 50%;
+      border-top: 2px solid #6c5ce7;
+      animation: spin 0.8s linear infinite;
     }
 
-    .notification-card.read {
-      background: white; /* White background for read notifications */
-      color: #333; /* Darker text color for contrast */
-      border: 1px solid #ccc;
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
-    /* Notification popup */
-    #notification-popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      border: 1px solid #ccc;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-      z-index: 2000;
-      width: 300px;
+    #modal-message {
+      margin-top: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      display: none;
+      padding: 10px;
+      border-radius: 6px;
     }
-=======
-  .modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 400px;
-    text-align: center;
-  }
 
-  .modal-content input[type="text"] {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
+    #modal-message.success {
+      color: green;
+      background-color: #e8f5e9;
+    }
 
-  .modal-content button {
-    font-size: 16px;
-  }
-
-  .modal-content .add-btn:hover {
-    background: #45a049;
-  }
-
-  .modal-content .cancel-btn:hover {
-    background: #e53935;
-  }
-
->>>>>>> origin/Main-Page-Backup
+    #modal-message.error {
+      color: red;
+      background-color: #ffebee;
+    }
   </style>
-
-  <!-- Link to External CSS -->
   <link rel="stylesheet" href="{% static 'base/css/base.css' %}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"rel="stylesheet"/>
-
 </head>
 <body>
   <div class="dashboard">
@@ -180,49 +131,25 @@
               <li class="menu-item add-environment" onclick="openAddEnvironmentModal()">
                 <i class="fas fa-plus"></i> Add Environment
               </li>
-              
             </ul>
           </li>
         </ul>
       </nav>
     </aside>
 
-<<<<<<< HEAD
-    <!-- Modal -->
-    <div id="add-environment-modal" class="modal">
-      <div class="modal-content">
-        <h4>Add New Environment</h4>
-        <form id="add-environment-form" method="POST" action="{% url 'environment:add_environment' %}">
-          {% csrf_token %}
-          <label for="label">Environment Label:</label>
-          <input type="text" id="label" name="label" required>
-
-          <label for="is_private">Private:</label>
-          <input type="checkbox" id="is_private" name="is_private">
-
-          <button type="submit">Add Environment</button>
-        </form>
-        <button type="button" onclick="closeAddEnvironmentModal()">Close</button>
-      </div>
-    </div>
-
-=======
->>>>>>> origin/Main-Page-Backup
     <!-- Main Content -->
     <main class="main-content">
-      <!-- Navbar -->
       <header class="navbar">
         <div class="search-bar">
           <form id="searchForm" method="POST" action="{% url 'task:search_task' %}">
             {% csrf_token %}
             <div class="search-bar-wrapper">
               <input type="text" id="searchInput" name="searched" placeholder="Search for a task or an environment...">
-              <button type="submit" formaction="{% url 'task:search_task' %}" class="search-btn">Search Tasks</button>
-              <button type="submit" formaction="{% url 'environment:search_environment' %}" class="search-btn">Search Environments</button>
+              <button type="submit" formaction="{% url 'task:search_task' %}" class="search-btn" aria-label="Search Tasks">Search Tasks</button>
+              <button type="submit" formaction="{% url 'environment:search_environment' %}" class="search-btn" aria-label="Search Environments">Search Environments</button>
             </div>
           </form>
         </div>
-
         <div class="navbar-right">
           <div class="user-actions">
 <<<<<<< HEAD
@@ -231,128 +158,85 @@
             <a href="{% url '_profile:profile_view' %}"><i class="fas fa-user-circle profile-icon"></i></a>
 =======
             <a href="{% url 'logout' %}">
-           <i class="fa-solid fa-right-from-bracket " style="font-size: 22px;"></i>
+              <i class="fa-solid fa-right-from-bracket" style="font-size: 22px;"></i>
             </a>
-
             <i class="fas fa-adjust theme-toggle-icon" aria-label="Toggle Theme"></i>
             <i class="fas fa-bell notification-icon" aria-label="Notifications"></i>
-            <a href="{% url '_profile:profile_view'%}">
+            <a href="{% url '_profile:profile_view' %}">
               <i class="fas fa-user-circle profile-icon"></i>
             </a>
-
->>>>>>> origin/Main-Page-Backup
           </div>
         </div>
       </header>
-
-      {% block content %}
-      {% endblock %}
+      {% block content %}{% endblock %}
     </main>
   </div>
-  <!-- --------------------------------- Modals ------------------------------------------------- -->
-  <!-- <div id="add-environment-modal" class="modal">
-    <div class="modal-content">
+
+  <!-- Add Environment Modal -->
+  <div id="add-environment-modal" class="modalyy">
+    <div class="modalyy-content">
       <h4>Add New Environment</h4>
       <form id="add-environment-form" method="POST" action="{% url 'environment:add_environment' %}">
         {% csrf_token %}
         <label for="label">Environment Label:</label>
         <input type="text" id="label" name="label" placeholder="Enter environment label" required>
-
-        <div style="margin-top: 20px; display: flex; justify-content: space-between;">
-          
-          <button type="submit" class="add-btn" style="background: #4CAF50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-            Add
-          </button>
-          <button type="button" onclick="closeAddEnvironmentModal()" class="cancel-btn" style="background: #f44336; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
-            Cancel
-          </button>
-        </div>
+        <button type="button" onclick="closeAddEnvironmentModal()" class="cancel-btn">Cancel</button>
+        <button type="submit" id="add-btn" class="add-btn">Add</button>
       </form>
+      <div id="modal-message"></div>
     </div>
-  </div> -->
+  </div>
 
-  <!-- --------------------------------- Modals ------------------------------------------------- -->
-
+  <!-- JavaScript -->
+  <script src="{% static 'base/js/base.js' %}"></script>
   <script>
-    function fetchNotifications() {
-      fetch("{% url 'Notification:fetch_notifications' %}", {
-        method: 'GET',
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    document.getElementById('add-environment-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const form = event.target;
+      const formData = new FormData(form);
+      const addBtn = document.getElementById('add-btn');
+      const messageContainer = document.getElementById('modal-message');
+
+      addBtn.innerHTML = '<span class="spinner"></span> Adding...';
+      addBtn.disabled = true;
+
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-CSRFToken': formData.get('csrfmiddlewaretoken') },
       })
-      .then(response => response.json())
-      .then(data => {
-        // Remove existing notifications container if it exists
-        const existingContainer = document.getElementById('notifications-container');
-        if (existingContainer) existingContainer.remove();
+        .then(response => response.json())
+        .then(data => {
+          addBtn.innerHTML = 'Add';
+          addBtn.disabled = false;
 
-        // Create the notifications container
-        const container = document.createElement('div');
-        container.id = 'notifications-container';
-        container.innerHTML = `
-          <h4>Notifications</h4>
-          <button onclick="closeNotificationsDropdown()">Close</button>
-        `;
-        const list = document.createElement('div');
-        list.id = 'notifications-list';
-        container.append(list);
+          if (data.success) {
+            closeAddEnvironmentModal();
+            alert(data.message);
+          } else {
+            messageContainer.style.display = 'block';
+            messageContainer.className = 'error';
+            messageContainer.textContent = data.error;
+          }
+        })
+        .catch(() => {
+          addBtn.innerHTML = 'Add';
+          addBtn.disabled = false;
 
-        // Populate notifications
-        data.notifications.forEach(n => {
-          const card = document.createElement('div');
-          card.classList.add('notification-card');
-          card.textContent = n.content;
-
-          // Add event listener for click to mark as read and change background
-          card.addEventListener('click', () => {
-            card.classList.add('read'); // Add the "read" class to change color
-            showNotificationDetails(n.content); // Display notification details
-          });
-
-          list.append(card);
+          messageContainer.style.display = 'block';
+          messageContainer.className = 'error';
+          messageContainer.textContent = 'An unexpected error occurred. Please try again.';
         });
+    });
 
-        document.body.append(container);
-      });
+    function closeAddEnvironmentModal() {
+      document.getElementById('add-environment-modal').style.display = 'none';
     }
 
-    function closeNotificationsDropdown() {
-      const container = document.getElementById('notifications-container');
-      if (container) container.remove();
+    function openAddEnvironmentModal() {
+      document.getElementById('add-environment-modal').style.display = 'flex';
     }
-
-<<<<<<< HEAD
-    function showNotificationDetails(content) {
-      // Create or update a popup to show notification details
-      let popup = document.getElementById('notification-popup');
-      if (!popup) {
-        popup = document.createElement('div');
-        popup.id = 'notification-popup';
-        document.body.appendChild(popup);
-      }
-
-      popup.innerHTML = `
-        <h4>Notification Details</h4>
-        <p>${content}</p>
-        <button onclick="closeNotificationPopup()">Close</button>
-      `;
-      popup.style.display = 'block';
-    }
-
-    function closeNotificationPopup() {
-      const popup = document.getElementById('notification-popup');
-      if (popup) popup.style.display = 'none';
-    }
-
-    document.querySelector('.ring-icon').addEventListener('click', fetchNotifications);
-=======
-    // Close modal when clicking outside the modal content
-    window.onclick = function (event) {
-      const modal = document.getElementById('add-environment-modal');
-      if (event.target === modal) {
-        closeAddEnvironmentModal();
-      }
-    };
->>>>>>> origin/Main-Page-Backup
   </script>
 </body>
 </html>
