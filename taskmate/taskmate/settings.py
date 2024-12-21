@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     '_profile',
     'badge',
     'main',
-]
+    'invitations',
+    ]
 SOCIALACCOUNT_LOGIN_ON_GET=True
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -183,11 +184,11 @@ AUTHENTICATION_BACKENDS = (
 
 LOGIN_REDIRECT_URL = '/main/'
 
-#This code accesses the gmail with sarahelsayed202200347 hostname
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "sarahelsayed202200347@gmail.com"
-#This is the app password for authentication
-EMAIL_HOST_PASSWORD = "dtwnmwawgulzelpw"
+# #This code accesses the gmail with sarahelsayed202200347 hostname
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = "sarahelsayed202200347@gmail.com"
+# #This is the app password for authentication
+# EMAIL_HOST_PASSWORD = "dtwnmwawgulzelpw"

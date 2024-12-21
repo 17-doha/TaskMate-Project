@@ -26,9 +26,11 @@
   <div class="container">
     <h1>{{ environment.label }}</h1>
     <div class="buttons">
-      <button class="invite-btn">
+
+      <button class="invite-btn" data-bs-toggle="modal" data-bs-target="#inviteModal">
         <i class="fa fa-plus icon"></i> Invite
-      </button>
+      </button>      
+
       <button class="participants-btn" data-environment-id="{{ environment.environment_id }}" data-bs-toggle="modal" data-bs-target="#participantsModal">
         <i class="fa fa-users icon"></i> Participants
       </button>
@@ -195,6 +197,62 @@
   
   <!-- Pop Up -->
   <script src="{% static 'environment/js/pop_up.js' %}"></script>
+
+    <!-- Invite Modal -->
+  <div class="modal fade" id="inviteModal" tabindex="-1" aria-labelledby="inviteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="inviteModalLabel">Invite User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="inviteForm">
+            <div class="mb-3">
+              <label for="emailInput" class="form-label">User Email</label>
+              <input type="email" class="form-control" id="emailInput" required>
+            </div>
+            <div class="mb-3">
+              <label for="accessTypeSelect" class="form-label">Access Type</label>
+              <select class="form-select" id="accessTypeSelect">
+                <option value="Participant">Participant</option>
+                <option value="subadmin">Subadmin</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Send Invitation</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('inviteForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('emailInput').value;
+      const accessType = document.getElementById('accessTypeSelect').value;
+
+      fetch(`/environment/{{ environment.environment_id }}/send-invitation/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ email, access_type: accessType })
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message);
+        if (data.status === 'success') {
+          document.getElementById('inviteForm').reset();
+          $('#inviteModal').modal('hide');
+        }
+      })
+      .catch(error => console.error('Error:', error));
+    });
+  </script>
+
 
 </body>
 </html>

@@ -2,12 +2,15 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from signup.models import User
 from django.shortcuts import render
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import PBKDF2SHA1PasswordHasher
 from django.contrib.auth import login, logout
+from django.contrib.auth import authenticate, login
 
 def login_user(request):
     '''
@@ -33,23 +36,31 @@ def login_user(request):
         # Perform the exact match query for the email
         try:
             user = User.objects.get(email=email)
-
-            # Comparing both hashed passwords
-            if check_password(password, user.password):
-                # Save the user's ID in the session
-                request.session['user_id'] = user.id
-
-                # Optional: Save additional user data if needed
-                request.session['user_email'] = user.email
-
-                print(user.id, "in the login")
-                return redirect('main')  # Redirect to the main page
-            else:
-                messages.error(request, "Incorrect password. Please try again.")
         
         except User.DoesNotExist:
             messages.error(request, "Email not correct. Please check your input.")
- 
+            return redirect('login')
+
+        # Check if user is verified
+        if not user.is_verified:
+            messages.error(request, "Your email is not verified. Please check your inbox.")
+            return redirect('login')
+
+        user = authenticate(request, username=user.username, password=password)
+
+        # Comparing both hashed passwords
+        if check_password(password, user.password):
+            # Save the user's ID in the session
+            request.session['user_id'] = user.id
+
+            # Optional: Save additional user data if needed
+            request.session['user_email'] = user.email
+
+            print(user.id, "in the login")
+            return redirect('main')  # Redirect to the main page
+        else:
+            messages.error(request, "Incorrect password. Please try again.")
+
     return render(request, 'authentication/login.html')
 
 
@@ -129,4 +140,19 @@ def logout_user(request):
     return redirect('login') 
 
 
+def activate_user(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user and default_token_generator.check_token(user, token):
+        user.is_verified = True
+        user.save()
+        messages.success(request, "Your email has been verified. You can now log in.")
+        return redirect('login')
+    else:
+        messages.error(request, "The verification link is invalid or has expired.")
+        return redirect('signup')
 

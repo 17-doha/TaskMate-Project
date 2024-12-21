@@ -17,4 +17,13 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("theme", "light");
       }
     });
-  });  
+  });
+
+// Select the theme toggle button
+const themeToggleButton = document.querySelector('.theme-toggle-icon');
+
+// Add an event listener to the button
+themeToggleButton.addEventListener('click', () => {
+  // Toggle the dark-mode class on the body
+  document.body.classList.toggle('dark-mode');
+});

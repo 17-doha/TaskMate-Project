@@ -41,3 +41,20 @@ body {
     color: #876cfd;
   }
   
+/* Default light theme styles */
+body {
+    background-color: #ffffff;
+    color: #333;
+  }
+  
+  /* Dark mode styles */
+  body.dark-mode {
+    background-color: #121212;
+    color: #f0f0f0;
+  }
+  
+  /* Optional: Navbar and Sidebar dark mode styles */
+  .navbar, .sidebar {
+    background-color: #1e1e1e;
+  }
+  

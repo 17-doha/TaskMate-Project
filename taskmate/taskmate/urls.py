@@ -22,6 +22,7 @@ from django.contrib.auth import views as auth_views
 
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', views.login_user, name='login'),
@@ -32,8 +33,7 @@ urlpatterns = [
     path("environment/", include("environment.urls")),
     path("main/", include("main.urls")),
     path("task/", include("task.urls")),
-
-
+    path('invitations/', include('invitations.urls')),
 
     #Signup urls
     path('signup/', signup, name='signup'),
