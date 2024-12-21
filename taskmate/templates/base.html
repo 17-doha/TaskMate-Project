@@ -243,11 +243,7 @@
     function openAddEnvironmentModal() {
       document.getElementById('add-environment-modal').style.display = 'flex';
     }
-  </script>
 
-
-
-<script>
     function fetchNotifications() {
       fetch("{% url 'Notification:fetch_notifications' %}", {
         method: 'GET',
