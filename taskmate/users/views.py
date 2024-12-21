@@ -8,6 +8,7 @@ from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import PBKDF2SHA1PasswordHasher
 from django.contrib.auth import login, logout
+from _profile.views import profile_view
 
 def login_user(request):
     '''
@@ -23,7 +24,7 @@ def login_user(request):
     '''
 
     if 'user_id' in request.session:
-        return redirect('Profile')
+        return redirect('_profile:profile_view')
 
     if request.method == 'POST':
         # Get email and password from the POST request
@@ -54,30 +55,44 @@ def login_user(request):
 
 
 
+from django.shortcuts import render, redirect
+
 def main(request):
-    # This is the page to redirect to after login
     """
     Renders the main dashboard page after a successful login.
-
+    
     Logic:
     - Displays the main page for authenticated users.
     - Redirects here after both local and Google sign-ins.
-
+    
     Inputs:
     - request: HttpRequest object.
-
+    
     Outputs:
-    - Renders the 'main.html' template.
+    - Renders the 'main.html' template or redirects to 'main/user_id' if user_id is in the session.
     """
+    
+    # Check if 'user_id' is stored in session
+    if 'user_id' in request.session:
+        user_id = request.session['user_id']
+        # Redirect to 'main/user_id' if user_id exists in session
+        return redirect(f'/main/{user_id}/')
+    
+    # If no user_id in session, just render the main page
     return render(request, 'main.html')
 
 
 
 
-def Profile(request):
-    return render(request, "Profile.html")
 
 
+
+from django.contrib.auth import get_user_model
+from allauth.socialaccount.models import SocialAccount
+from django.shortcuts import redirect
+
+# Get the custom User model
+User = get_user_model()
 
 def google_sign_in_callback(request):
     """
@@ -99,26 +114,34 @@ def google_sign_in_callback(request):
     """
 
     if request.user.is_authenticated:
-        # Check if user exists in the custom User model
+        # Check if user has a linked Google account
         social_account = SocialAccount.objects.filter(user=request.user, provider="google").first()
-       
-        
+
         if social_account:
             email = social_account.extra_data.get("email")
 
             try:
-                User.objects.get(email=email)
+                # Check if the user already exists
+                user = User.objects.get(email=email)
                 print("User already exists")
             except User.DoesNotExist:
-                User.objects.create(
+                # Create a new user if it doesn't exist
+                user = User.objects.create(
                     email=email,
                     username=request.user.username,
                     password="",  # Leave password empty as this is Google sign-in
                 )
+                print("New user created")
 
-        return redirect("main")
+            # Save the user ID to the session
+            request.session["user_id"] = user.id
+            user_id = user.id  # Set user_id for redirect
 
+            return redirect(f"/main/{user_id}/")
+
+    # If not authenticated, redirect to the login page
     return redirect("login")
+
 
 
 def logout_user(request):

@@ -50,4 +50,11 @@ urlpatterns = [
          ), 
         name='password_reset_confirm'),
     path("profile/", include("_profile.urls")),
+<<<<<<< HEAD
+=======
+
+    #badge url
+    path("badge/", include("badge.urls")),
+
+>>>>>>> origin/Main-Page-Backup
 ]
