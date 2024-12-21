@@ -178,20 +178,20 @@
     </main>
   </div>
 
-  <!-- Add Environment Modal -->
-  <div id="add-environment-modal" class="modalyy">
-    <div class="modalyy-content">
-      <h4>Add New Environment</h4>
-      <form id="add-environment-form" method="POST" action="{% url 'environment:add_environment' %}">
-        {% csrf_token %}
-        <label for="label">Environment Label:</label>
-        <input type="text" id="label" name="label" placeholder="Enter environment label" required>
-        <button type="button" onclick="closeAddEnvironmentModal()" class="cancel-btn">Cancel</button>
-        <button type="submit" id="add-btn" class="add-btn">Add</button>
-      </form>
-      <div id="modal-message"></div>
-    </div>
+ <!-- Add Environment Modal -->
+ <div id="add-environment-modal" class="modalyy">
+  <div class="modalyy-content">
+    <h4>Add New Environment</h4>
+    <form id="add-environment-form" method="POST" action="{% url 'environment:add_environment' %}">
+      {% csrf_token %}
+      <label for="label">Environment Label:</label>
+      <input type="text" id="label" name="label" placeholder="Enter environment label" required>
+      <button type="button" onclick="closeAddEnvironmentModal()" class="cancel-btn">Cancel</button>
+      <button type="submit" id="add-btn" class="add-btn">Add</button>
+    </form>
+    <div id="modal-message"></div>
   </div>
+</div>
 
   <!-- JavaScript -->
   <script src="{% static 'base/js/base.js' %}"></script>

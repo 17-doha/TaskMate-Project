@@ -14,9 +14,9 @@ from signup.models import User
 
 
 mapping = {
-    'To Do': 'Pending',
-    'In Progress': 'In Progress',
-    'Done': 'Completed'
+    'To Do': 'PENDING',
+    'In Progress': 'IN PROGRESS',
+    'Done': 'COMPLETED'
 }
 
 def index(request, id = None):
@@ -380,7 +380,9 @@ def save_participant_accessibility(request):  # Not ready yet
 
 
 
+
 def add_environment(request):
+    user_id = request.session.get('user_id')
     if request.method == 'POST':
         label = request.POST.get('label', '').strip()
 
@@ -391,19 +393,26 @@ def add_environment(request):
             return JsonResponse({'success': False, 'error': 'An environment with this label already exists.'}, status=400)
 
         try:
-            # Create the environment
+            # Check if the user is authenticated
+            if user_id is None:
+                return JsonResponse({'success': False, 'error': 'User must be logged in to create an environment.'}, status=403)
+
+            # Create the environment with the logged-in user as the admin
             environment = Environment.objects.create(
                 label=label,
                 is_private=True,
-                admin=request.user
+                admin=request.user  # request.user is guaranteed to be a User instance here
             )
+
             statuses = ['To Do', 'Done', 'In Progress']
             for status in statuses:
                 Table.objects.create(
                     environment=environment,
                     label=status
                 )
+
             return JsonResponse({'success': True, 'message': f"Environment '{label}' added successfully."})
+
         except Exception as e:
             return JsonResponse({'success': False, 'error': f"An error occurred: {str(e)}"}, status=500)
 
