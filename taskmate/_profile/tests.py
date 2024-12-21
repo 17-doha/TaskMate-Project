@@ -30,8 +30,11 @@ class ProfileViewTestCase(TestCase):
         session.save()
 
         # Create a badge
-        self.badge = Badge.objects.first()
-
+        self.badge = Badge.objects.create(
+            badge_name="Test Badge",
+            num_of_tasks="1"
+        )
+        print("------",self.badge)
         # Create UserBadge relation
         UserBadge.objects.create(user=self.user, badge=self.badge)
 
@@ -85,15 +88,15 @@ class ProfileViewTestCase(TestCase):
         self.assertIn('badges', response.context)
         self.assertEqual(response.context['user_profile'], self.user)
 
-        # # Ensure badges are in the context and check that at least one badge is present
+        # # # Ensure badges are in the context and check that at least one badge is present
         self.assertIsInstance(response.context['badges'], list)
         self.assertGreater(len(response.context['badges']), 0)
 
         # # Ensure the badge name is correct
         badge_names = [badge['name'] for badge in response.context['badges']]
-        self.assertIn('Task Starter', badge_names)
+        self.assertIn('Test Badge', badge_names)
 
-        # # Check that the percentage of completed tasks is correct
+        # # # Check that the percentage of completed tasks is correct
         completed_tasks_count = 1  # Task 1 is Done
         all_tasks_count = 2  # Task 1 and Task 2
         expected_percentage = (completed_tasks_count / all_tasks_count) * 100
