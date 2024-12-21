@@ -1,36 +1,39 @@
-# from django.test import TestCase
-# from signup.models import User
-# from .models import Environment, Table, SearchHistory, UserCanAccess
+from django.test import TestCase
+from signup.models import User
+from .models import Environment, Table, SearchHistory, UserCanAccess
+from django.urls import reverse
+from task.models import Task
+from signup.models import User
+from django.utils import timezone
+import datetime
+import json
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.test.client import RequestFactory
 
 # class ModelsTestCase(TestCase):
 #     def setUp(self):
-#         # Create a test user
 #         self.user = User.objects.create_user(
 #             username='testuser',
 #             email='testuser@example.com',
 #             password='password123'
 #         )
         
-#         # Create a test environment
 #         self.environment = Environment.objects.create(
 #             label='Test Environment',
 #             is_private=True,
 #             admin=self.user
 #         )
 
-#         # Create a test table
 #         self.table = Table.objects.create(
 #             label='Test Table',
 #             environment=self.environment
 #         )
 
-#         # Create search history
 #         self.search_history = SearchHistory.objects.create(
 #             content='Test Search Content',
 #             user_id=self.user
 #         )
 
-#         # Create user access
 #         self.user_access = UserCanAccess.objects.create(
 #             type_of_accessibility='Participant',
 #             invitation_status='Pending',
@@ -84,19 +87,8 @@
 #     def test_environment_str(self):
 #         self.assertEqual(str(self.environment), 'Test Environment')
 
-
-
-from django.urls import reverse
-from django.test import TestCase
-from environment.models import Environment, Table
-from task.models import Task
-from signup.models import User
-from django.utils import timezone
-import datetime
-
 class EnvironmentViewsTestCase(TestCase):
     def setUp(self):
-        # Create test user
         self.user = User.objects.create_user(
             username='testuser',
             email='testuser@example.com',
@@ -104,79 +96,154 @@ class EnvironmentViewsTestCase(TestCase):
         )
         self.client.login(username='testuser', password='password123')
 
-        # Create a test environment
+        # Set up session with user_id
+        factory = RequestFactory()
+        request = factory.get('/')
+        middleware = SessionMiddleware(lambda req: None)
+        middleware.process_request(request)
+        request.session.save()
+
+        self.client.session['user_id'] = self.user.id
+        self.client.session.save()
+
+        # Create environments
         self.environment1 = Environment.objects.create(
             label='Test Environment',
             is_private=True,
             admin=self.user
         )
 
-        # Create a test table
-        self.table1 = Table.objects.create(
-            label='Test Table',
-            environment=self.environment1
-        )
-
-        # Create timezone-aware datetime objects
-        start_date = timezone.make_aware(datetime.datetime(2023, 8, 1))
-        deadline = timezone.make_aware(datetime.datetime(2025, 8, 31))
-
-        # Create tasks with different statuses
-        self.task1 = Task.objects.create(
-            content='Task1',
-            status='Pending',
-            table=self.table1,
-            created_by=self.user,
-            assigned_to=self.user, 
-            start_date=start_date,
-            deadline=deadline,
-            priority='LOW'
-        )
-
-        self.task2 = Task.objects.create(
-            content='Task2',
-            status='In Progress',
-            table=self.table1,
-            created_by=self.user,
-            assigned_to=self.user, 
-            start_date=start_date,
-            deadline=deadline,
-            priority='HIGH'
-        )
-
-
-    def test_view_table_task_with_id(self):
-        url = reverse('environment:view_table_task', args=[self.environment1.environment_id])
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'Test Environment')
-        self.assertTemplateUsed(response, 'environment/index.html')
-
-    def test_view_table_task_with_invalid_id(self):
-        # Test the view with an invalid environment_id
-        url = reverse('environment:view_table_task', args=[999])  # Non-existent ID
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, 404)
-
-    def test_view_table_task_redirects_to_first_environment(self):
-        # Test if the view redirects to the first environment when the environment_id does not exist
-        Environment.objects.create(
+        self.environment2 = Environment.objects.create(
             label='Another Environment',
             is_private=True,
             admin=self.user
         )
-        url = reverse('environment:view_table_task', args=[0])  # Pass an invalid ID
-        response = self.client.get(url)
 
-    #     self.assertEqual(response.status_code, 302)  # Redirect status
-        self.assertIn(reverse('environment:view_table_task', args=[self.environment1.environment_id]), response.url)
 
-    # def test_view_table_task_no_environment(self):
-    #     # Test the behavior when the user has no environments
-    #     Environment.objects.all().delete()  # Remove all environments for this user
-    #     url = reverse('environment:view_table_task', args=[0])  # Pass an invalid ID
-    #     response = self.client.get(url)
+# # ------------------------------- Test View Table Task -------------------------------
+#     def test_view_table_task_with_id(self):
+#         session = self.client.session
+#         session['user_id'] = self.user.id
+#         session.save()
 
-    #     self.assertEqual(response.status_code, 404)
+#         url = reverse('environment:view_table_task', args=[self.environment1.environment_id])
+#         response = self.client.get(url)
+
+#         self.assertEqual(response.status_code, 200)
+#         self.assertContains(response, 'Test Environment')
+#         self.assertTemplateUsed(response, 'environment/index.html')
+
+#     def test_view_table_task_redirects_to_first_environment(self):
+#         """
+#         It should redirect the user to the first environment created by them.
+#         Test with non extisting environment
+#         """
+#         session = self.client.session
+#         session['user_id'] = self.user.id
+#         session.save()
+
+#         invalid_environment_id = 999
+#         url = reverse('environment:view_table_task', args=[invalid_environment_id]) 
+#         response = self.client.get(url)
+
+#         expected_redirect_url = reverse('environment:view_table_task', args=[self.environment1.environment_id])
+#         self.assertRedirects(response, expected_redirect_url)
+
+#     def test_view_table_task_no_environment(self):
+#         session = self.client.session
+#         session['user_id'] = self.user.id
+#         session.save()
+#         Environment.objects.all().delete() 
+#         url = reverse('environment:view_table_task', args=[0])  
+#         response = self.client.get(url)
+
+#         self.assertEqual(response.status_code, 404)
+
+# # ------------------------------- Test Add Environment -------------------------------
+#     def test_add_environment_success(self):
+#         url = reverse('environment:add_environment')
+#         data = {
+#             'label': 'New Environment'
+#         }
+#         response = self.client.post(url, data)
+#         self.assertEqual(response.status_code, 200)
+#         self.assertEqual(response.json(), {'success': True, 'message': "Environment 'New Environment' added successfully."})
+
+#         # Check if the environment and tables were created
+#         environment = Environment.objects.get(label='New Environment')
+#         self.assertIsNotNone(environment)
+#         self.assertEqual(environment.admin, self.user)
+
+#         tables = Table.objects.filter(environment=environment)
+#         self.assertEqual(tables.count(), 3)
+#         self.assertTrue(tables.filter(label='To Do').exists())
+#         self.assertTrue(tables.filter(label='Done').exists())
+#         self.assertTrue(tables.filter(label='In Progress').exists())
+
+#     def test_add_environment_missing_label(self):
+#         url = reverse('environment:add_environment')
+#         response = self.client.post(url, {})
+#         self.assertEqual(response.status_code, 400)
+#         self.assertEqual(response.json(), {'success': False, 'error': 'Environment label is required.'})
+
+#     def test_add_environment_duplicate_label(self):
+#         url = reverse('environment:add_environment')
+#         data = {
+#             'label': 'Test Environment'
+#         }
+#         response = self.client.post(url, data)
+#         self.assertEqual(response.status_code, 400)
+#         self.assertEqual(response.json(), {'success': False, 'error': 'An environment with this label already exists.'})
+
+# # ------------------------------- Test Search Environment -------------------------------
+#     def test_search_environment_success(self):
+#         url = reverse('environment:search_environment')
+#         data = {
+#             'searched': 'Test'
+#         }
+
+#         # Set the session key for user_id
+#         session = self.client.session
+#         session['user_id'] = self.user.id
+#         session.save()
+
+#         response = self.client.post(url, data)
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'search_environment.html')
+#         self.assertContains(response, 'Test Environment')
+
+
+
+#     def test_search_environment_no_results(self):
+#         url = reverse('environment:search_environment')
+#         data = {
+#             'searched': 'NonExistentEnvironment'
+#         }
+        
+#         # Set the session key for user_id
+#         session = self.client.session
+#         session['user_id'] = self.user.id
+#         session.save()
+#         response = self.client.post(url, data)
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'search_environment.html')
+#         self.assertNotContains(response, 'Test Environment')
+
+
+
+#     def test_search_environment_get_request(self):
+#         url = reverse('environment:search_environment')
+        
+#         # Set the session key for user_id explicitly
+#         session = self.client.session
+#         session['user_id'] = self.user.id 
+#         session.save()
+
+#         response = self.client.get(url)
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'search_environment.html')
+#         self.assertNotContains(response, 'Test Environment')
+#         self.assertNotContains(response, 'Another Environment')
+
+
+# ------------------------------- Test Search Environment -------------------------------

@@ -51,10 +51,6 @@ def index(request, id = None):
         return render(request, "environment/index.html", {"environments": environments})
 
 
-
-
-
-
 def ViewTableTask(request, environment_id):
     """
     Purpose:
@@ -193,39 +189,20 @@ def search_environment(request):
             - Render the template with an empty context.
     """
     user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('login')
+
     if request.method == "POST":
-
-        # Retrieve the search term
         searched = request.POST['searched']
-        
-        # Query environments based on the search term
         environments = Environment.objects.filter(label__contains=searched, admin_id=user_id)
-        
-        # Retrieve the User instance based on the user_id
         user = User.objects.get(id=user_id)
-
-        # Store the search term in SearchHistory if it's not already there
+        
         if not SearchHistory.objects.filter(content=searched, user_id=user).exists():
             SearchHistory.objects.create(content=searched, user_id=user)
         
         return render(request, 'search_environment.html', {'searched': searched, 'environments': environments})
     else:
-        return render(request, 'search_environment.html', {})   
-
-
-@login_required   #Not ready yet
-def add_environment(request):
-    if request.method == "POST":
-        label = request.POST['label']
-        is_private = 'is_private' in request.POST
-        environment = Environment.objects.create(
-            label=label,
-            is_private=is_private,
-            admin=request.user
-        )
-    return render(request, 'base.html', {'environment': environment})
-
-
+        return render(request, 'search_environment.html', {})
 
 
 def ShowParticipants(request, environment_id):
