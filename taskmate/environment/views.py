@@ -288,7 +288,7 @@ def ShowParticipants(request, environment_id):
         3. Otherwise, render the full page with the participants.
     """
     environment = get_object_or_404(Environment, environment_id=environment_id)
-    participants = UserCanAccess.objects.filter(environment=environment)
+    participants = UserCanAccess.objects.filter(environment=environment,invitation_status='Accepted')
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         # Create the participant HTML dynamically
