@@ -33,6 +33,8 @@ urlpatterns = [
     path("main/", include("main.urls")),
     path("task/", include("task.urls")),
     path('invitations/', include('invitations.urls')),
+    path('Invitation/', include('Invitation.urls')),
+
 
     #Signup urls
     path("Notification/", include("Notification.urls", namespace="Notification")),  # Add namespace here
