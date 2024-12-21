@@ -14,8 +14,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Invitation',
             fields=[
-                ('invitation_id', models.AutoField(primary_key=True, serialize=False)),
-                ('invitation_status', models.CharField(blank=True, choices=[('PENDING', 'Pending'), ('ACCEPTED', 'Accepted'), ('REJECTED', 'Rejected')], max_length=10, null=True)),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('email', models.EmailField(max_length=254)),
+                ('permission', models.CharField(choices=[('view', 'View'), ('edit', 'Edit')], default='view', max_length=10)),
+                ('link', models.URLField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
             ],
         ),

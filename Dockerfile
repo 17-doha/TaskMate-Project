@@ -23,7 +23,8 @@ WORKDIR /app/taskmate
 EXPOSE 8000
 
 # Collect static files
-RUN python manage.py collectstatic --noinput
+# RUN python manage.py collectstatic --noinput
 
 # Run migrations and start the Django development server
-CMD ["daphne","-b", "0.0.0.0", "-p", "8000", "taskmate.asgi:application"]
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && daphne -b 0.0.0.0 -p 8000 taskmate.asgi:application"]
+

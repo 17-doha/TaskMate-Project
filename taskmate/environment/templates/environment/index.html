@@ -347,7 +347,7 @@
         const email = document.getElementById("email").value;
         const environmentLabel = document.getElementById("environmentLabel").value;
 
-        fetch("{% url 'create_invitation' %}", {
+        fetch("{% url 'Invitation:create_invitation' %}", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -366,7 +366,7 @@
 
             // Example WebSocket usage
             if (receiverId) {
-              const socket = new WebSocket('ws://${window.location.host}/ws/Notifications/${receiverId}/');
+              const socket = new WebSocket(`ws://${window.location.host}/ws/Notifications/${receiverId}/`);
               socket.onopen = function () {
                 console.log("WebSocket connected successfully for user:", receiverId);
               };

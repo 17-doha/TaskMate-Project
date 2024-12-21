@@ -89,6 +89,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
    
 ]
 
@@ -183,7 +184,8 @@ USE_TZ = True
 
 ### 34an t48l hash dirs and un hash root then run python manage.py collectstatic then hash root again and unhash dirs
 STATIC_URL = '/static/'
-# STATIC_ROOT = BASE_DIR / 'static'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
