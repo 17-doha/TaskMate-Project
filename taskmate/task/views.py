@@ -9,6 +9,7 @@ from django.db.models import Q
 from environment.models import UserCanAccess
 from django.core.mail import send_mail
 from Notification.models import Notification
+from environment.models import SearchHistory
 
 
 

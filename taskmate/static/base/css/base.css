@@ -211,3 +211,20 @@ transform:   scale(1.02);
     transition: background 0.3s ease, color 0.3s ease;
 }
 
+
+
+.profile-link {
+    text-decoration: none; 
+    color: white; 
+  }
+  
+  .profile-link:hover {
+    color: #f0f0f0;
+  }
+  
+  .menu-item {
+    list-style: none; 
+    display: flex; 
+    align-items: center; 
+    gap: 5px; 
+  }
