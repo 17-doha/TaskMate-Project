@@ -44,4 +44,4 @@ class Task(models.Model):
     # Any query which gets this table, it makes data retreived with this order
     class Meta:
         ordering = ['deadline']
-#mal7ozaaaaaaaaaaaaaa
+
