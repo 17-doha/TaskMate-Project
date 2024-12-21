@@ -96,13 +96,95 @@
     }
 
     #modal-message.error {
-      color: red;
+      color: #ffebee;
       background-color: #ffebee;
     }
 
+    /* Notification Styles */
+    #notifications-container {
+      position: absolute;
+      top: 60px; /* Adjust based on your navbar height */
+      right: 20px;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 300px;
+      max-height: 400px;
+      overflow-y: auto;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 10000;
+    }
 
+    #notifications-container h4 {
+      margin: 10px;
+      font-size: 18px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
 
+    #notifications-container button {
+      margin: 10px;
+      padding: 5px 10px;
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
+    #notifications-list {
+      padding: 10px;
+    }
+
+    .notification-card {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .notification-card:hover {
+      background-color: #f9f9f9;
+    }
+
+    .notification-card.read {
+      background-color: #f0f0f0;
+      color: #888;
+    }
+
+    /* Notification Popup Styles */
+    #notification-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      z-index: 10001;
+    }
+
+    #notification-popup h4 {
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    #notification-popup p {
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+
+    #notification-popup button {
+      padding: 5px 10px;
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   </style>
   <link rel="stylesheet" href="{% static 'base/css/base.css' %}">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
@@ -193,6 +275,11 @@
   </div>
 </div>
 
+  <!-- Notification Popup -->
+  <div id="notification-popup">
+    <!-- Content will be injected by JavaScript -->
+  </div>
+
   <!-- JavaScript -->
   <script src="{% static 'base/js/base.js' %}"></script>
   <script>
@@ -270,12 +357,18 @@
         data.notifications.forEach(n => {
           const card = document.createElement('div');
           card.classList.add('notification-card');
+          if (n.status === "READ") {
+            card.classList.add('read');
+          }
           card.textContent = n.content;
+          card.dataset.id = n.id; // Store notification ID for later use
 
-          // Add event listener for click to mark as read and change background
+          // Add event listener for click to mark as read and show details
           card.addEventListener('click', () => {
-            card.classList.add('read'); // Add the "read" class to change color
-            showNotificationDetails(n.content); // Display notification details
+            if (n.status === "UNREAD") {
+              markNotificationAsRead(n.id, card);
+            }
+            showNotificationDetails(n.content);
           });
 
           list.append(card);
@@ -312,9 +405,30 @@
       if (popup) popup.style.display = 'none';
     }
 
-    document.querySelector('.ring-icon').addEventListener('click', fetchNotifications);
-  </script>
+    function markNotificationAsRead(notificationId, cardElement) {
+      fetch(`/mark_read/${notificationId}/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': '{{ csrf_token }}',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({})
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === "success") {
+          cardElement.classList.add('read');
+        } else {
+          console.error('Failed to mark notification as read:', data.message);
+        }
+      })
+      .catch(() => {
+        console.error('An error occurred while marking the notification as read.');
+      });
+    }
 
+    document.querySelector('.notification-icon').addEventListener('click', fetchNotifications);
+  </script>
 
 </body>
 </html>

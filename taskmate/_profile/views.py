@@ -5,6 +5,7 @@ from badge.models import UserBadge, Badge
 from task.models import Task
 from django.db.models import Q
 import base64
+from environment.models import Environment
 
 
 
@@ -47,14 +48,18 @@ def profile_view(request):
         }
         for ub in earned_badges
     ]
+    user_id = request.session.get('user_id')
+    environments = Environment.objects.filter(admin_id=user_id)
+ 
+
     if(badges == None):
         print("No badges")
     else:
         render(request, '_profile/profile.html', {'user_profile': user_profile,'badges': None,'completed':completed_tasks_count,
-        "all":all_tasks_count,"percentage":persentage})
+        "all":all_tasks_count,"percentage":persentage, "environments": environments})
 
     # Pass the user profile to the template
-    return render(request, '_profile/profile.html', {'user_profile': user_profile,'badges': badges,'completed':completed_tasks_count,"all":all_tasks_count,"percentage":persentage})
+    return render(request, '_profile/profile.html', {'user_profile': user_profile,'badges': badges,'completed':completed_tasks_count,"all":all_tasks_count,"percentage":persentage, "environments": environments})
 
 
 
