@@ -20,7 +20,7 @@ jobs:
 
       - name: Log in to ACR
         run: |
-          az acr login --name ${{ secrets.ACR_NAME }}
+          az acr login --name taskmate2
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -28,14 +28,14 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.ACR_NAME }}.azurecr.io/taskmate:latest
+          tags: taskmate2.azurecr.io/taskmate:latest
 
       - name: Deploy to Azure Web App
         run: |
           az webapp config container set \
-            --name ${{ secrets.WEB_APP_NAME }} \
-            --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --docker-custom-image-name ${{ secrets.ACR_NAME }}.azurecr.io/taskmate:latest \
-            --registry-login-server ${{ secrets.ACR_NAME }}.azurecr.io \
-            --registry-username ${{ secrets.ACR_USERNAME }} \
-            --registry-password ${{ secrets.ACR_PASSWORD }}
+            --name HTaskmate \
+            --resource-group DockerTaskMate \
+            --docker-custom-image-name nginx.azurecr.io/taskmate:latest \
+            --registry-login-server taskmate2.azurecr.io \
+            --registry-username taskmate2 \
+            --registry-password lCHEHLcUfgzeiUg+k7LD018QTccSbgLl8xuYeX+XwA+ACRAGUVGi
