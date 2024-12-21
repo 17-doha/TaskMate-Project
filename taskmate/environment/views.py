@@ -8,7 +8,6 @@ from django.http import HttpResponseForbidden
 from django.http import Http404
 from .models import SearchHistory, User
 from django.template.loader import render_to_string
-
 from signup.models import User
 
 
@@ -56,8 +55,6 @@ def index(request, id = None):
 
 
 
-
-
 def ViewTableTask(request, environment_id):
     """
     Purpose:
@@ -81,7 +78,7 @@ def ViewTableTask(request, environment_id):
     
     # Try to retrieve the environment
     try:
-        environment = Environment.objects.get(environment_id=environment_id, admin=user_id)
+        environment = Environment.objects.get(environment_id=environment_id)
     except Environment.DoesNotExist:
         # If the environment is not found or doesn't belong to the logged-in user, get the first environment that belongs to the user
         environment = Environment.objects.filter(admin=user_id).first()
