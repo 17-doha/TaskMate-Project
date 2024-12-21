@@ -1,0 +1,302 @@
+.chart-title {
+  text-align: right;
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: -20px;
+  margin-top: 10px;
+  margin-right: 50px;
+}
+    /* Container to position the chart */
+    .chart-container {
+      margin-top: 30px;
+      margin-left: 950px;
+  
+    }
+
+    /* Ensure the canvas is contained properly */
+    #chart {
+      max-width: 350px;
+      max-height: 350px;
+    }
+
+    /* Card container styling */
+
+    .card-container {
+      display: flex;
+      gap: 20px;
+      justify-content: right;
+      margin-top: -345px;
+      margin-right: 360px;
+     
+    }
+
+    .card {
+      background-color: #f8f9fa; 
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+      padding: 20px;
+      width: 250px; 
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease; 
+      
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .card h3 {
+      color: #343a40; 
+    }
+
+    .card p {
+      color: #6c757d;
+    }
+
+    .card img {
+      width: 24px;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .card-count {
+      font-size: 2em;
+    }
+
+    .card-total {
+      font-size: 0.9em;
+      color: #666;
+    }
+
+    .todo {
+      background-color: #ffcccc;
+    }
+
+    .in-progress {
+      background-color: #fff8b3;
+    }
+
+    .done {
+      background-color: #ccffcc;
+    }
+    
+
+
+    /* Priority Task Section */
+    .priority-task-container {
+      position: absolute; 
+        top: 310px;
+        left: 270px; 
+        display: flex; 
+        gap: 35px; 
+        z-index: 1; 
+    }
+    .task-card {
+      background-color: #fff; 
+      border-radius: 10px; 
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      padding: 15px; 
+      width: 390px; 
+      text-align: left;
+      position: relative; 
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+  .task-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+
+ 
+  .task-card .title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  
+  .task-card .priority {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-weight: bold;
+  }
+
+  .task-card .high-priority {
+    background-color: white; 
+    color: #ef4444; 
+    border: 2px solid #ef4444;
+  }
+
+  /*  medium priority */
+  .task-card .medium-priority {
+    background-color: white;
+    color: #f59e0b; 
+    border: 2px solid #f59e0b;
+  }
+
+  .task-card .low-priority {
+    background-color: white; 
+    color: #10b981; 
+    border: 2px solid #10b981;
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin: 10px 0;
+  }
+
+  .progress-bar div {
+    height: 8px;
+    border-radius: 5px;
+  }
+
+  .progress-bar .done {
+    background-color: #28a745;
+    width: 50%; 
+  }
+
+
+  .upcoming-deadlines {
+    position: absolute; 
+    top: 570px; 
+    left: 270px; 
+    display: flex; 
+    gap: 35px; 
+    z-index: 1;
+  }
+  
+
+.upcoming-deadlines-card {
+  background-color: #fff; 
+  border-radius: 10px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+  padding: 15px;
+  width: 250px; 
+  text-align: left; 
+  position: relative; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.upcoming-deadlines-card:hover {
+  transform: translateY(-5px); 
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
+}
+
+.upcoming-deadlines-title {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #333; 
+  margin-bottom: 5px; 
+}
+
+.upcoming-deadlines-info {
+  font-size: 0.9em; 
+  color: #777; 
+  margin-bottom: 10px;
+  text-decoration: underline; 
+}
+
+
+.upcoming-deadlines-info p {
+  background-color: #ffe5e5; 
+  color: #ff6b6b; 
+  font-weight: bold;
+  padding: 5px 10px; 
+  border-radius: 5px; 
+  display: inline-block; 
+  margin: 0; 
+}
+
+.upcoming-deadlines-header {
+  font-size: 1.5em; 
+  font-weight: bold; 
+  color: #333; 
+  margin-bottom: 105px;
+  margin-top: 250px;
+  text-align: left;
+  margin-left: 35px; 
+}
+
+
+.no-deadlines {
+  text-align: center;
+  margin-top: 20px;
+  color: #6c63ff; 
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.no-deadlines-message {
+  margin-bottom: 20px;
+  margin-top: -200px;
+  margin-left: 300px;
+}
+
+.no-deadlines-animation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Character Animation */
+.character {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  animation: bounce 2s infinite;
+}
+
+.face {
+  width: 100px;
+  height: 100px;
+  background: #ffeb3b;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-left: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.eyes {
+  display: flex;
+  gap: 10px;
+}
+
+.eye {
+  width: 15px;
+  height: 15px;
+  background: #333;
+  border-radius: 50%;
+}
+
+.mouth {
+  position: absolute;
+  bottom: 20px;
+  width: 30px;
+  height: 15px;
+  background: #e57373;
+  border-radius: 50%;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}

@@ -4,21 +4,27 @@ from .models import Environment, Table, SearchHistory, UserCanAccess
 from task.models import Task
 import json
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from django.http import Http404
+from .models import SearchHistory, User
+from django.template.loader import render_to_string
 from signup.models import User
 
 
-# Mapping for drag-and-drop functionality
+
+
 mapping = {
-    'To Do': 'Pending',
-    'In Progress': 'In Progress',
-    'Done': 'Completed'
+    'To Do': 'PENDING',
+    'In Progress': 'IN PROGRESS',
+    'Done': 'COMPLETED'
 }
 
-def index(request, id=None):
+def index(request, id = None):
+    # user_id = request.session.get('user_id') "Hash this to access the user_id in any other view"
     """
     Purpose:
         Renders the homepage for the environment application.
-        If an `id` is provided, it will display a specific environment;
+        If an id is provided, it will display a specific environment;
         otherwise, it will show all environments for the current user.
 
     Input:
@@ -29,13 +35,13 @@ def index(request, id=None):
     Output:
         - Renders 'environment/index.html' template.
         - Context:
-            - If `id` is provided: A single environment object.
-            - If `id` is not provided: A list of all environments belonging to the current user.
+            - If id is provided: A single environment object.
+            - If id is not provided: A list of all environments belonging to the current user.
 
     Logic:
-        1. If an `id` is provided, render the page with that specific environment ID.
-        2. If no `id` is provided, fetch all environments associated with the logged-in user using their `user_id`.
-        3. Render the `index.html` page with either the selected environment or a list of environments.
+        1. If an id is provided, render the page with that specific environment ID.
+        2. If no id is provided, fetch all environments associated with the logged-in user using their user_id.
+        3. Render the index.html page with either the selected environment or a list of environments.
     """
     if id is not None:
         return render(request, "environment/index.html", {"environment_id": id})
@@ -43,6 +49,55 @@ def index(request, id=None):
         user_id = request.session.get('user_id')
         environments = Environment.objects.filter(admin_id=user_id)
         return render(request, "environment/index.html", {"environments": environments})
+
+
+
+
+
+
+
+
+
+# def ViewTableTask(request, environment_id):
+#     """
+#     Purpose:
+#         Displays tasks associated with a specific environment, grouped by their status.
+
+#     Input:
+#         - HTTP Method: GET
+#         - Path Parameters:
+#             - environment_id: The ID of the environment.
+#         - Query Parameters: None.
+
+#     Output:
+#         - Renders 'environment/index.html'.
+#         - Context:
+#             - environment: The requested Environment object.
+#             - todo_tasks: Tasks with a status of 'Pending'.
+#             - inprogress_tasks: Tasks with a status of 'In Progress'.
+#             - done_tasks: Tasks with a status of 'Completed'.
+
+#     Logic:
+#         1. Retrieve the specified environment by environment_id.
+#         2. Query for tasks associated with this environment and filter them by status.
+#         3. Pass the environment and tasks to the template for rendering.
+#     """
+#     environment = get_object_or_404(Environment, environment_id=environment_id)
+#     tasks = Task.objects.filter(environment_id=environment)
+#     print(tasks)
+#     # make a list for each type 
+#     todo_tasks = tasks.filter(status='Pending')
+#     # print(todo_tasks[0].priority)
+#     inprogress_tasks = tasks.filter(status='In Progress')
+#     done_tasks = tasks.filter(status='Completed')
+
+#     context = {
+#         "environment": environment,
+#         "todo_tasks": tasks.filter(status='Pending'),
+#         "inprogress_tasks": tasks.filter(status='In Progress'),
+#         "done_tasks": tasks.filter(status='Completed'),
+#     }
+#     return render(request, 'environment/index.html', context)
 
 
 def ViewTableTask(request, environment_id):
@@ -58,29 +113,53 @@ def ViewTableTask(request, environment_id):
         - Query Parameters: None.
 
     Output:
-        - Renders 'environment/index.html' template.
+
+        - Renders 'environment/index.html'.
         - Context:
             - environment: The requested Environment object.
             - todo_tasks: Tasks with a status of 'Pending'.
             - inprogress_tasks: Tasks with a status of 'In Progress'.
             - done_tasks: Tasks with a status of 'Completed'.
-        
+
     Logic:
-        1. Retrieve the specified environment using `environment_id`.
-        2. Query the database for tasks related to this environment.
-        3. Filter tasks based on their status (Pending, In Progress, Completed).
-        4. Render the 'index.html' page with the filtered tasks.
+        1. Retrieve the specified environment by environment_id.
+        2. Query for tasks associated with this environment and filter them by status.
+        3. Pass the environment and tasks to the template for rendering.
+
     """
+    user_id = request.session.get('user_id')
+    # Ensure the user is logged in
+    if user_id == "None":
+        raise Http404("User is not authenticated.")
+    
+    # Try to retrieve the environment
+    try:
+        environment = Environment.objects.get(environment_id=environment_id)
+    except Environment.DoesNotExist:
+        # If the environment is not found or doesn't belong to the logged-in user, get the first environment that belongs to the user
+        environment = Environment.objects.filter(admin=user_id).first()
+
+        if environment is None:
+            raise Http404("No environment found for this user.")
+        
+        # Redirect to the new environment's page
+        return redirect('environment:view_table_task', environment_id=environment.environment_id)
+
+    # Now that we have the correct environment, fetch the tasks for it
+    tasks = Task.objects.filter(environment_id=environment.environment_id)  # Change environment to environment_id
+
     environment = get_object_or_404(Environment, environment_id=environment_id)
     tasks = Task.objects.filter(environment_id=environment)
-    
-    # make a list for each task type 
-    todo_tasks = tasks.filter(status='Pending')
-    inprogress_tasks = tasks.filter(status='In Progress')
-    done_tasks = tasks.filter(status='Completed')
+
+
+    # make a list for each type 
+    todo_tasks = tasks.filter(status='PENDING')
+    # print(todo_tasks[0].priority)
+    inprogress_tasks = tasks.filter(status='IN PROGRESS')
+    done_tasks = tasks.filter(status='COMPLETED')
+
 
     user_id = request.session.get('user_id')
-    print('user_id', user_id)
     environments = Environment.objects.filter(admin_id=user_id)
     
     context = {
@@ -88,8 +167,11 @@ def ViewTableTask(request, environment_id):
         "todo_tasks": todo_tasks,
         "inprogress_tasks": inprogress_tasks,
         "done_tasks": done_tasks,
+
         "environments": environments,
+
     }
+    
     return render(request, 'environment/index.html', context)
 
 
@@ -137,6 +219,10 @@ def dragAndDrop(request, environment_id):
     return JsonResponse({'status': 'error', 'message': 'Invalid request.'})
 
 
+
+
+
+
 def search_environment(request):
     """
     Purpose:
@@ -165,24 +251,20 @@ def search_environment(request):
             - Render the template with an empty context.
     """
     user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('login')
+
     if request.method == "POST":
-
-        # Retrieve the search term
         searched = request.POST['searched']
-        
-        # Query environments based on the search term
         environments = Environment.objects.filter(label__contains=searched, admin_id=user_id)
-        
-        # Retrieve the User instance based on the user_id
         user = User.objects.get(id=user_id)
-
-        # Store the search term in SearchHistory if it's not already there
+        
         if not SearchHistory.objects.filter(content=searched, user_id=user).exists():
             SearchHistory.objects.create(content=searched, user_id=user)
         
         return render(request, 'search_environment.html', {'searched': searched, 'environments': environments})
     else:
-        return render(request, 'search_environment.html', {})   
+        return render(request, 'search_environment.html', {})
 
 
 def ShowParticipants(request, environment_id):
@@ -229,6 +311,33 @@ def ShowParticipants(request, environment_id):
             participants_html = "<p>There are no participants.</p>"
 
         return JsonResponse({'html': participants_html})
+
+    # For full-page render (fallback)
+    return render(request, 'base.html', {'participants_html': participants_html})
+
+
+
+
+def guest_environment_view(request, environment_id):
+    environment = get_object_or_404(Environment, environment_id=environment_id)
+
+    user_id = request.session.get('user_id')
+    if user_id is None:
+       
+
+        # Render the environment for guests
+        tasks = Task.objects.filter(environment_id=environment.environment_id)
+
+        context = {
+            "environment": environment,
+            "tasks": tasks,
+            "todo_tasks": tasks.filter(status='Pending'),
+            "inprogress_tasks": tasks.filter(status='In Progress'),
+            "done_tasks": tasks.filter(status='Completed'),
+        }
+        return render(request, "environment/guest_view.html", context)
+
+
     return render(request, 'base.html', {'participants': participants})
 
 
@@ -267,3 +376,45 @@ def save_participant_accessibility(request):  # Not ready yet
         return JsonResponse({'success': True, 'message': 'Changes saved successfully.'})
 
     return JsonResponse({'success': False, 'message': 'Failed to save changes.'})
+
+
+
+
+
+def add_environment(request):
+    user_id = request.session.get('user_id')
+    user = User.objects.get(id=user_id)
+    if request.method == 'POST':
+        label = request.POST.get('label', '').strip()
+
+        if not label:
+            return JsonResponse({'success': False, 'error': 'Environment label is required.'}, status=400)
+
+        if Environment.objects.filter(label=label).exists():
+            return JsonResponse({'success': False, 'error': 'An environment with this label already exists.'}, status=400)
+
+        try:
+            # Check if the user is authenticated
+            if user_id is None:
+                return JsonResponse({'success': False, 'error': 'User must be logged in to create an environment.'}, status=403)
+
+            # Create the environment with the logged-in user as the admin
+            environment = Environment.objects.create(
+                label=label,
+                is_private=True,
+                admin=user  # request.user is guaranteed to be a User instance here
+            )
+
+            statuses = ['To Do', 'Done', 'In Progress']
+            for status in statuses:
+                Table.objects.create(
+                    environment=environment,
+                    label=status
+                )
+
+            return JsonResponse({'success': True, 'message': f"Environment '{label}' added successfully."})
+
+        except Exception as e:
+            pass
+
+    return JsonResponse({'success': False}, status=405)

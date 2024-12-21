@@ -36,6 +36,9 @@ SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = [
+    'Notification',
+    'Invitation',
+    'channels',
     'password_reset',
     'environment.apps.EnvironmentConfig',
     'django.contrib.admin',
@@ -57,6 +60,13 @@ INSTALLED_APPS = [
     'main',
     'invitations',
     ]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
+
 SOCIALACCOUNT_LOGIN_ON_GET=True
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -102,6 +112,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'taskmate.wsgi.application'
+ASGI_APPLICATION = 'taskmate.asgi.application'
 
 #Update the settings.py file Allowed host list which was empty
 ALLOWED_HOSTS = ['127.0.0.1','localhost']
@@ -127,7 +138,12 @@ DATABASES = {
         },
     },
 }
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',  # SQLite engine
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),  # Database file stored in the base directory
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

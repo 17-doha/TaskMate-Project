@@ -1,0 +1,35 @@
+@startuml
+
+actor User
+entity "Django System" as Django
+entity "Session (Singleton)" as Session
+entity "Task App" as TaskApp
+entity "Environment App" as EnvApp
+entity "Notification App" as NotificationApp
+entity "Main App" as MainApp
+entity "Search App" as SearchApp
+entity "Profile App" as ProfileApp
+
+User -> Django : Log in / Sign up (credentials)
+Django -> Session : Create session (Singleton)
+Session -> Session : Store user_id in session
+
+note right of Session : Session acts as a Singleton\nonly one instance per user
+
+Session -> TaskApp : Inject session (user_id)
+Session -> EnvApp : Inject session (user_id)
+Session -> NotificationApp : Inject session (user_id)
+Session -> MainApp : Inject session (user_id)
+Session -> SearchApp : Inject session (user_id)
+Session -> ProfileApp : Inject session (user_id)
+
+TaskApp -> Session : Access session.user_id
+EnvApp -> Session : Access session.user_id
+NotificationApp -> Session : Access session.user_id
+MainApp -> Session : Access session.user_id
+SearchApp -> Session : Access session.user_id
+ProfileApp -> Session : Access session.user_id
+
+note left of Session : Session provides user_id to\napps via Dependency Injection
+
+@enduml
