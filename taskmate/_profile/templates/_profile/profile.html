@@ -34,19 +34,25 @@
       <div class="form">
         <div>
           <label for="firstName">Full Name</label>
-          <input type="text" name="first_name" value="{{ user_profile.first_name }}" id="firstName" readonly>
+          <input type="text" name="first_name" value="{{ user_profile.first_name }}" id="firstName" readonly required>
         </div>
         <div>
           <label for="lastName">Last Name</label>
-          <input type="text" name="last_name" value="{{ user_profile.last_name }}" id="lastName" readonly>
+          <input type="text" name="last_name" value="{{ user_profile.last_name }}" id="lastName" readonly required>
         </div>
         <div>
           <label for="phone_number">phone_number</label>
-          <input type="text" name="phone_number" value="{{ user_profile.phone_number }}" id="phone_number" readonly>
+          <input type="text" name="phone_number" value="{{ user_profile.phone_number }}" id="phone_number" readonly required>
+          {% for error in form.phone_number.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
         </div>
         <div>
           <label for="age">Age</label>
-          <input type="text" name="age" value="{{ user_profile.age }}" id="phone_number" readonly>
+          <input type="text" name="age" value="{{ user_profile.age }}" id="age" readonly required>
+            {% for error in form.age.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
         </div>
         <button class="save-button" id="saveBtn"style="display: none;" >Save Changes</button>
       </div>

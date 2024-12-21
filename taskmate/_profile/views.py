@@ -17,13 +17,12 @@ from environment.models import Environment
 # View to display the profile
 def profile_view(request):
     user_id = request.session.get('user_id')
-    print("print", user_id)
     # Get the user profile by ID
-    user_profile = get_object_or_404(User, id=user_id) #default for now
+    user_profile = get_object_or_404(User, id=user_id) 
     
     completed_tasks_count = Task.objects.filter(
     assigned_to=user_profile, 
-    status='Done').count()
+    table__label='Done').count()
 
     all_tasks_count = Task.objects.filter(assigned_to=user_profile).count()
     if(all_tasks_count == 0):
@@ -54,9 +53,8 @@ def profile_view(request):
 
     if(badges == None):
         print("No badges")
-    else:
-        render(request, '_profile/profile.html', {'user_profile': user_profile,'badges': None,'completed':completed_tasks_count,
-        "all":all_tasks_count,"percentage":persentage, "environments": environments})
+        return render(request, '_profile/profile.html', {'user_profile': user_profile,'badges': None,'completed':completed_tasks_count,
+        "all":all_tasks_count,"percentage":persentage})
 
     # Pass the user profile to the template
     return render(request, '_profile/profile.html', {'user_profile': user_profile,'badges': badges,'completed':completed_tasks_count,"all":all_tasks_count,"percentage":persentage, "environments": environments})
@@ -66,7 +64,7 @@ def profile_view(request):
 # View to edit the profile
 def profile_edit(request):
     user_id = request.session.get('user_id')
-    user_profile = User.objects.get(id=user_id) #default fro now
+    user_profile = User.objects.get(id=user_id)
 
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=user_profile) 
@@ -83,6 +81,9 @@ def profile_edit(request):
 
 def profile_delete(request):
     user_id = request.session.get('user_id')
-    user = get_object_or_404(User, id = user_id) #default for now
-    user.delete()   
-    return redirect('/')
+    user = get_object_or_404(User, id = user_id) 
+    user.delete()    
+    session = request.session
+    session['user_id'] = None
+    return redirect('/logout/')
+    

@@ -15,7 +15,8 @@ from environment.models import SearchHistory
 
 
 
-# A view to show all tasks with the edit and delete buttons for testing
+
+# A view to show all tasks with the edit and delete buttons for testing not an actual ui 
 def ViewAllTasks(request):
     
     """
@@ -255,6 +256,8 @@ def search_task(request):
       - Renders 'search_environment.html' with no context.
     """
     if request.method == "POST":
+        # Retrieve the search term
+
         searched = request.POST['searched']
 
         tasks = Task.objects.filter(
@@ -296,6 +299,7 @@ def View_Task(request, task_id):
     environment_url = f"/environment/{environment_id}/"
 
     return redirect(environment_url)
+
 
 
 #send email for the assigned user

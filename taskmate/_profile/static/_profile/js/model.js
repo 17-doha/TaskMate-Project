@@ -23,7 +23,6 @@ cancelBtn.onclick = function() {
 // When the user clicks on "Yes, Delete", perform the deletion action
 confirmBtn.onclick = function() {
   // Perform your delete action here
-  alert("Item Deleted!");
   modal.style.display = "none"; // Close the modal
 }
 
