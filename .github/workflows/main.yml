@@ -38,4 +38,4 @@ jobs:
             --docker-custom-image-name nginx.azurecr.io/taskmate:latest \
             --registry-login-server taskmate2.azurecr.io \
             --registry-username taskmate2 \
-            --registry-password "Ioibe2Bw+gEnn1ZscV4nQsWHDSIQchE79jrb19F12k+ACRCGvz/R"
+            --registry-password "lCHEHLcUfgzeiUg+k7LD018QTccSbgLl8xuYeX+XwA+ACRAGUVGi"
