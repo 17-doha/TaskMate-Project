@@ -1,0 +1,14 @@
+@startuml
+actor User
+entity "Django Application" as App
+entity "Settings" as Settings
+entity "Middleware" as Middleware
+
+User -> App: Send HTTP request
+App -> Middleware: Call Middleware classes (chain of middleware)
+Middleware -> Settings: Access settings (e.g., settings.DEBUG)
+Settings -> Middleware: Return setting value
+Middleware -> App: Pass control to next middleware
+App -> User: Send response
+
+@enduml
