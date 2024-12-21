@@ -309,7 +309,7 @@
 
             // Example WebSocket usage
             if (receiverId) {
-              const socket = new WebSocket('ws://${window.location.host}/ws/Notifications/${receiverId}/');
+              const socket = new WebSocket(`ws://${window.location.host}/ws/Notifications/${receiverId}/`);
               socket.onopen = function () {
                 console.log("WebSocket connected successfully for user:", receiverId);
               };
