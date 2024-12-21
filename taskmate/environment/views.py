@@ -8,7 +8,6 @@ from django.http import HttpResponseForbidden
 from django.http import Http404
 from .models import SearchHistory, User
 from django.template.loader import render_to_string
-
 from signup.models import User
 
 
@@ -100,6 +99,7 @@ def index(request, id = None):
 #     }
 #     return render(request, 'environment/index.html', context)
 
+
 def ViewTableTask(request, environment_id):
     """
     Purpose:
@@ -134,7 +134,7 @@ def ViewTableTask(request, environment_id):
     
     # Try to retrieve the environment
     try:
-        environment = Environment.objects.get(environment_id=environment_id, admin=user_id)
+        environment = Environment.objects.get(environment_id=environment_id)
     except Environment.DoesNotExist:
         # If the environment is not found or doesn't belong to the logged-in user, get the first environment that belongs to the user
         environment = Environment.objects.filter(admin=user_id).first()
@@ -251,39 +251,20 @@ def search_environment(request):
             - Render the template with an empty context.
     """
     user_id = request.session.get('user_id')
+    if not user_id:
+        return redirect('login')
+
     if request.method == "POST":
-
-        # Retrieve the search term
         searched = request.POST['searched']
-        
-        # Query environments based on the search term
         environments = Environment.objects.filter(label__contains=searched, admin_id=user_id)
-        
-        # Retrieve the User instance based on the user_id
         user = User.objects.get(id=user_id)
-
-        # Store the search term in SearchHistory if it's not already there
+        
         if not SearchHistory.objects.filter(content=searched, user_id=user).exists():
             SearchHistory.objects.create(content=searched, user_id=user)
         
         return render(request, 'search_environment.html', {'searched': searched, 'environments': environments})
     else:
-        return render(request, 'search_environment.html', {})   
-
-
-@login_required   #Not ready yet
-def add_environment(request):
-    if request.method == "POST":
-        label = request.POST['label']
-        is_private = 'is_private' in request.POST
-        environment = Environment.objects.create(
-            label=label,
-            is_private=is_private,
-            admin=request.user
-        )
-    return render(request, 'base.html', {'environment': environment})
-
-
+        return render(request, 'search_environment.html', {})
 
 
 def ShowParticipants(request, environment_id):
@@ -397,5 +378,33 @@ def save_participant_accessibility(request):  # Not ready yet
     return JsonResponse({'success': False, 'message': 'Failed to save changes.'})
 
 
+
+
 def add_environment(request):
-    pass
+    if request.method == 'POST':
+        label = request.POST.get('label', '').strip()
+
+        if not label:
+            return JsonResponse({'success': False, 'error': 'Environment label is required.'}, status=400)
+
+        if Environment.objects.filter(label=label).exists():
+            return JsonResponse({'success': False, 'error': 'An environment with this label already exists.'}, status=400)
+
+        try:
+            # Create the environment
+            environment = Environment.objects.create(
+                label=label,
+                is_private=True,
+                admin=request.user
+            )
+            statuses = ['To Do', 'Done', 'In Progress']
+            for status in statuses:
+                Table.objects.create(
+                    environment=environment,
+                    label=status
+                )
+            return JsonResponse({'success': True, 'message': f"Environment '{label}' added successfully."})
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': f"An error occurred: {str(e)}"}, status=500)
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'}, status=405)

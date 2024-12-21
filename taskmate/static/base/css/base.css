@@ -21,7 +21,7 @@ body {
 }
 
 .sidebar {
-    width: 15%;
+    width: 17%;
     background: linear-gradient(135deg, #443fa1, #a486fe);
     padding: 20px;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
@@ -213,6 +213,7 @@ transform:   scale(1.02);
 
 
 
+
 .profile-link {
     text-decoration: none; 
     color: white; 
@@ -228,3 +229,34 @@ transform:   scale(1.02);
     align-items: center; 
     gap: 5px; 
   }
+
+.submenu {
+    display: none;
+  }
+  
+  /* Show the submenu when the "show" class is added */
+  .submenu.show {
+    display: block;
+  }
+      /* Styling for submenu items */
+      .submenu-item {
+        padding: 5px 10px;
+        border-radius: 6px; /* Rounded corners */
+        transition: background 0.3s ease, transform 0.2s ease;
+      }
+  
+      .submenu-item:hover {
+        transform: scale(1.02); /* Slightly enlarge the item */
+      }
+  
+      /* Styling for the link inside submenu items */
+      .submenu-link {
+        display: block; /* Make the link block-level for full clickable area */
+        color: #fff; /* Text color */
+        text-decoration: none; /* Remove underline */
+        font-size: 16px;
+        padding: 10px 10px; /* Padding for better click area */
+        border-radius: 6px; /* Rounded corners */
+        transition: background 0.3s ease, color 0.3s ease; /* Smooth transitions */
+      }
+
