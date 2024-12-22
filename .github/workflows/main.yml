@@ -8,7 +8,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
+    env:
+      ACTIONS_RUNNER_DEBUG: true
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -20,7 +21,7 @@ jobs:
 
       - name: Log in to ACR
         run: |
-          az acr login --name ${{ secrets.ACR_NAME }}
+          az acr login --name taskmate2
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -28,14 +29,21 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.ACR_NAME }}.azurecr.io/taskmate:latest
+          tags: taskmate2.azurecr.io/nginx:v1
 
       - name: Deploy to Azure Web App
-        run: |
+        run: |  
           az webapp config container set \
-            --name ${{ secrets.WEB_APP_NAME }} \
-            --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --docker-custom-image-name ${{ secrets.ACR_NAME }}.azurecr.io/taskmate:latest \
-            --registry-login-server ${{ secrets.ACR_NAME }}.azurecr.io \
-            --registry-username ${{ secrets.ACR_USERNAME }} \
-            --registry-password ${{ secrets.ACR_PASSWORD }}
+            --name TaskMateHello \
+            --os-type Linux \
+            --cpu 1 \
+            --memory 1 \
+            --resource-group DockerTaskMate \
+            --name nginx-container \
+            --image taskmate2.azurecr.io/nginx:v1 \
+            --registry-username taskmate2 \
+            --registry-password lCHEHLcUfgzeiUg+k7LD018QTccSbgLl8xuYeX+XwA+ACRAGUVGi \
+            --registry-login-server taskmate2.azurecr.io \
+            --ip-address Public \
+            --dns-name-label taskmate-dns \
+            --ports 8000
