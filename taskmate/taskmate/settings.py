@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-&@&39d^^#r%lg624ae@h(e327pnt9^1j=7n5*+*#u=_dw_)9^a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # AUTH_USER_MODEL = 'users.User'
 
@@ -67,6 +67,7 @@ SOCIALACCOUNT_PROVIDERS = {
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -99,7 +100,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'taskmate.wsgi.application'
 
 #Update the settings.py file Allowed host list which was empty
-ALLOWED_HOSTS = ['127.0.0.1','localhost']
+ALLOWED_HOSTS = ["*"]
 EMAIL_USE_TLS = True 
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -167,6 +168,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+STATICSTORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
