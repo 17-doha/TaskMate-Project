@@ -34,7 +34,7 @@ class LoginUserTestCase(TestCase):
         """
         Setup a test user in the database.
         """
-        self.email = "dohaahemdan@gmail.com"
+        self.email = "dohamdan@gmail.com"
         self.password = "Dohah@885522"
         self.user = User.objects.create(
             email=self.email,
