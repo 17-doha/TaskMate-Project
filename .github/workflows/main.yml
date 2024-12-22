@@ -10,8 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ACTIONS_RUNNER_DEBUG: true
-      ACTIONS_STEP_DEBUG: true
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
