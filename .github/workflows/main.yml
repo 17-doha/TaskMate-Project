@@ -35,7 +35,7 @@ jobs:
           az webapp config container set \
             --name HTaskmate \
             --resource-group DockerTaskMate \
-            --docker-custom-image-name nginx.azurecr.io/taskmate:latest \
+            --docker-custom-image-name nginx.azurecr.io/nginx:v1 \
             --registry-login-server taskmate2.azurecr.io \
             --registry-username taskmate2 \
             --registry-password "lCHEHLcUfgzeiUg+k7LD018QTccSbgLl8xuYeX+XwA+ACRAGUVGi"
