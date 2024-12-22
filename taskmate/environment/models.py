@@ -26,3 +26,56 @@ class Table(models.Model):
     
     class Meta:
         db_table = 'table'  
+
+
+# Search environment history
+class SearchHistory(models.Model):
+    search_history_id = models.AutoField(primary_key=True) 
+    content = models.CharField(max_length=255, unique=True) 
+    user_id = models.ForeignKey(
+        User,
+        related_name='user_search_history',
+        on_delete=models.CASCADE
+    )  # referencing the User
+
+    class Meta:
+        db_table = 'search_history'
+
+
+
+class UserCanAccess(models.Model):
+    ACCESSIBILITY_CHOICES = [
+        ('Participant', 'Participant'),
+        ('subadmin', 'subadmin'),
+        ('Admin', 'Admin')
+    ]
+    
+    INVITATION_STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Accepted', 'Accepted'),
+        ('Rejected', 'Rejected')
+    ]
+    
+    type_of_accessibility = models.CharField(max_length=20, choices=ACCESSIBILITY_CHOICES)
+    invitation_status = models.CharField(max_length=20, choices=INVITATION_STATUS_CHOICES, default='Pending')
+    user = models.ForeignKey(User, related_name='user_access', on_delete=models.CASCADE)
+    environment = models.ForeignKey(Environment, related_name='user_accesses', on_delete=models.CASCADE)
+    
+    class Meta:
+        db_table = 'user_can_access'
+        unique_together = ('user', 'environment')  # Ensures no duplicate entries for the same user and environment
+    def grant_access(self):
+        self.type_of_accessibility = 'Participant'
+        self.save()
+
+    def revoke_access(self):
+        self.type_of_accessibility = 'Revoked'
+        self.save()
+
+    def check_access(self):
+        return self.type_of_accessibility in ['Participant', 'subadmin', 'Admin']
+
+    def update_invitation_status(self, status):
+        if status in dict(self.INVITATION_STATUS_CHOICES):
+            self.invitation_status = status
+            self.save()

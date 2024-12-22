@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile UI</title>
+  <link rel="stylesheet" href="{% static '_profile/css/profile.css' %}">
+  <link rel="stylesheet" href="{% static '_profile/css/footer.css' %}">
+  <link rel="stylesheet" href="{% static '_profile/css/form.css' %}">
+  <link rel="stylesheet" href="{% static '_profile/css/model.css' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="profile">
+        <img src="{% static '_profile/imgs/female.png' %}" alt="Profile Picture">
+        <div>
+          <h2>{{ user_profile.first_name }} {{ user_profile.last_name }}</h2>
+          <p>{{ user_profile.username }}</p>
+          <button  id="editBtn" style="background: transparent; border: none; padding: 0; cursor: pointer;">
+            <i class="fa-solid fa-pen-to-square" style="font-size: 16px; color: #6c63ff;"></i>
+          </button>
+        </div>
+      </div>
+      <button id="deleteBtn" class="delete-button">Delete</button>
+    </div>
+    <form id="UserprofileForm" method="POST" action="{% url '_profile:profile_edit' %}">
+      {% csrf_token %}
+      <div class="form">
+        <div>
+          <label for="firstName">Full Name</label>
+          <input type="text" name="first_name" value="{{ user_profile.first_name }}" id="firstName" readonly required>
+        </div>
+        <div>
+          <label for="lastName">Last Name</label>
+          <input type="text" name="last_name" value="{{ user_profile.last_name }}" id="lastName" readonly required>
+        </div>
+        <div>
+          <label for="phone_number">phone_number</label>
+          <input type="text" name="phone_number" value="{{ user_profile.phone_number }}" id="phone_number" readonly required>
+          {% for error in form.phone_number.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div>
+          <label for="age">Age</label>
+          <input type="text" name="age" value="{{ user_profile.age }}" id="age" readonly required>
+            {% for error in form.age.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <button class="save-button" id="saveBtn"style="display: none;" >Save Changes</button>
+      </div>
+    </form>
+    <div class="flex-container">
+      <div class="email-section">
+        <h3>My Email Address</h3>
+        <div class="email-item">
+          <i class="fa-regular fa-envelope"></i>
+          <div>
+            <p>{{ user_profile.email }}</p>
+            <p style="color: #6c757d; font-size: 12px;">1 month ago</p>
+          </div>
+        </div>
+        <br>
+        
+      </div>
+      <div class="badge-progress-container">
+        <h3>Badge Progress</h3>
+        <div class="badge-progress-label">
+          {% if all > 0 %}
+              Topic Completion: {{ completed }}/{{ all }} of your tasks done
+          {% else %}
+              Topic Completion: {{ completed }}/0 (No tasks available)
+          {% endif %}
+        </div>
+        <div class="complete-bar" >
+          <!-- @ts-ignore -->
+            <div class="progress-bar " style="width: {{ percentage }}%;"></div>
+        </div>
+        <div class="dropdown">
+          <a id="showAllBtn" class="add-email">Show All <i class="fa-solid fa-medal"></i></a>
+          <div id="dropdownContent" class="dropdown-content">
+
+            <div class="badge-list">
+              {% if badges %}
+                  <div class="badge-container">
+                      {% for badge in badges %}
+                          <div class="badge-item">
+                              <img src="data:image/png;base64,{{ badge.icon }}" alt="{{ badge.name }}" class="badge-icon">
+                              <span style="font-size: 12px;">{{ badge.name }}</span>
+                          </div>
+                          {% if forloop.counter|divisibleby:2 %}
+                  </div>
+                  <div class="badge-container">
+                          {% endif %}
+                      {% endfor %}
+                  </div>
+                          {% else %}
+                  <p class="no-badges-message">No Badges...But you still can earn some <i class="fa-solid fa-face-smile-wink"></i> </p>
+              {% endif %}
+          </div>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!------------------------------------------------------- Model ------------------------------------------------------>
+  <div id="confirmationModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeBtn">&times;</span>
+      <p>Are you sure you want to delete this item?</p>
+      <a class="delete-button" id="confirmBtn" href="{% url '_profile:profile_delete' %}" class="btn btn-danger">Delete Account</a>
+      <button id="cancelBtn" class="cancel-btn cancel-button">Cancel</button>
+    </div>
+  </div>
+  <!-- --------------------------------------------------------------------------------------------------------------- -->
+
+</body>
+<script src="{% static '_profile/js/badges.js' %}"></script>
+<script src="{% static '_profile/js/edit.js' %}"></script>
+<script src="{% static '_profile/js/model.js' %}"></script>
+</html>
+{% endblock %}

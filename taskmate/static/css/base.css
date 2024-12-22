@@ -1,0 +1,60 @@
+body {
+    background-color: #ffffff;
+    color: #333;
+  }
+  
+  .sidebar {
+    background-color: #f4f4f4;
+  }
+  
+  .navbar {
+    background-color: #ffffff;
+    color: #333;
+  }
+  
+  body.dark-mode {
+    background-color: #121212;
+    color: #f4f4f4;
+  }
+  
+  .sidebar.dark-mode {
+    background-color: #333333;
+  }
+  
+  .navbar.dark-mode {
+    background-color: #333333;
+    color: #f4f4f4;
+  }
+  
+  /* Adjust icons and links */
+  body.dark-mode .theme-toggle-icon {
+    color: #f4f4f4;
+  }
+  
+  body.dark-mode .menu-item,
+  body.dark-mode .submenu-link {
+    color: #f4f4f4;
+  }
+  
+  body.dark-mode .menu-item:hover,
+  body.dark-mode .submenu-link:hover {
+    color: #876cfd;
+  }
+  
+/* Default light theme styles */
+body {
+    background-color: #ffffff;
+    color: #333;
+  }
+  
+  /* Dark mode styles */
+  body.dark-mode {
+    background-color: #121212;
+    color: #f0f0f0;
+  }
+  
+  /* Optional: Navbar and Sidebar dark mode styles */
+  .navbar, .sidebar {
+    background-color: #1e1e1e;
+  }
+  

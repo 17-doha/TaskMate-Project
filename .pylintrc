@@ -1,0 +1,7 @@
+[MASTER]
+load-plugins=pylint_django
+generated-members=objects
+init-hook='import sys; sys.path.append("C:/Users/Doha/Taskmatev5")'
+
+# Disable some Pylint warnings
+disable=fixme

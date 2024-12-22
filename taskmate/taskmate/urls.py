@@ -22,21 +22,26 @@ from django.contrib.auth import views as auth_views
 
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/', views.login_user, name='login'),
     path('login/', include('django.contrib.auth.urls')),
-    path('main/', views.main, name='main'),
     path('accounts/', include('allauth.urls')),
     path("", include("users.urls")),
-    # redirection to environment app urls
     path("environment/", include("environment.urls")),
+    path("main/", include("main.urls")),
     path("task/", include("task.urls")),
+    path('invitations/', include('invitations.urls')),
+    path("Invitation/", include("Invitation.urls", namespace='Invitation')), 
 
 
     #Signup urls
+    path("Notification/", include("Notification.urls", namespace="Notification")),  # Add namespace here
+
+    # Signup urls
     path('signup/', signup, name='signup'),
-    path('activate/<uidb64>/<token>/', activate_mail, name = "activate"),
+    path('activate/<uidb64>/<token>/', activate_mail, name="activate"),
 
     path('password-reset/', 
          auth_views.PasswordResetView.as_view(template_name='password_reset/password_reset.html'),
@@ -49,5 +54,8 @@ urlpatterns = [
          success_url=reverse_lazy('login')
          ), 
         name='password_reset_confirm'),
+    path("profile/", include("_profile.urls")),
+    path("badge/", include("badge.urls")),
+
 
 ]

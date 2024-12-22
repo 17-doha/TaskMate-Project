@@ -1,0 +1,49 @@
+name: Deploy to Azure
+
+on:
+  push:
+    branches:
+      - main  #trigger for main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      ACTIONS_RUNNER_DEBUG: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Log in to ACR
+        run: |
+          az acr login --name taskmate2
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: taskmate2.azurecr.io/nginx:v1
+
+      - name: Deploy to Azure Web App
+        run: |  
+          az webapp config container set \
+            --name TaskMateHello \
+            --os-type Linux \
+            --cpu 1 \
+            --memory 1 \
+            --resource-group DockerTaskMate \
+            --name nginx-container \
+            --image taskmate2.azurecr.io/nginx:v1 \
+            --registry-username taskmate2 \
+            --registry-password lCHEHLcUfgzeiUg+k7LD018QTccSbgLl8xuYeX+XwA+ACRAGUVGi \
+            --registry-login-server taskmate2.azurecr.io \
+            --ip-address Public \
+            --dns-name-label taskmate-dns \
+            --ports 8000

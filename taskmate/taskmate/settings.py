@@ -27,6 +27,8 @@ SECRET_KEY = 'django-insecure-&@&39d^^#r%lg624ae@h(e327pnt9^1j=7n5*+*#u=_dw_)9^a
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split()
+
 
 ALLOWED_HOSTS = ["*"]
 
@@ -36,6 +38,9 @@ SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = [
+    'Notification',
+    'Invitation',
+    'channels',
     'password_reset',
     'environment.apps.EnvironmentConfig',
     'django.contrib.admin',
@@ -52,7 +57,18 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google', 
     'task',
     'signup',
-]
+    '_profile',
+    'badge',
+    'main',
+    'invitations',
+    ]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
+
 SOCIALACCOUNT_LOGIN_ON_GET=True
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -75,6 +91,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
    
 ]
 
@@ -98,8 +116,10 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'taskmate.wsgi.application'
+ASGI_APPLICATION = 'taskmate.asgi.application'
 
 #Update the settings.py file Allowed host list which was empty
+
 ALLOWED_HOSTS = ["*"]
 EMAIL_USE_TLS = True 
 EMAIL_HOST = "smtp.gmail.com"
@@ -113,17 +133,22 @@ AUTH_USER_MODEL = 'signup.User'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'mssql',
+#         'NAME': 'Taskmate',
+#         'OPTIONS': {
+#             'driver': 'ODBC Driver 17 for SQL Server',
+#             'trusted_connection': 'yes',
+#         },
+#     },
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'mssql',
-        'NAME': 'Taskmate',
-        'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',
-            'trusted_connection': 'yes',
-        },
-    },
+        'ENGINE': 'django.db.backends.sqlite3',  # SQLite engine
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),  # Database file stored in the base directory
+    }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -142,6 +167,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 
 # Internationalization
@@ -162,7 +188,8 @@ USE_TZ = True
 
 ### 34an t48l hash dirs and un hash root then run python manage.py collectstatic then hash root again and unhash dirs
 STATIC_URL = '/static/'
-# STATIC_ROOT = BASE_DIR / 'static'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
@@ -180,11 +207,11 @@ AUTHENTICATION_BACKENDS = (
 
 LOGIN_REDIRECT_URL = '/main/'
 
-#This code accesses the gmail with sarahelsayed202200347 hostname
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "sarahelsayed202200347@gmail.com"
-#This is the app password for authentication
-EMAIL_HOST_PASSWORD = "dtwnmwawgulzelpw"
+# #This code accesses the gmail with sarahelsayed202200347 hostname
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = "sarahelsayed202200347@gmail.com"
+# #This is the app password for authentication
+# EMAIL_HOST_PASSWORD = "dtwnmwawgulzelpw"

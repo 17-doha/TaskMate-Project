@@ -1,0 +1,23 @@
+services:
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"  # Expose port 80 on the host
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro  # Mount the custom config file
+    depends_on:
+      - web  # Ensure Nginx waits for the web service to be ready
+
+  web:
+    build:
+      context: .  # Build the web service from the current directory
+    ports:
+      - "8000:8000"  # Map container port 8000 to host port 8000
+    volumes:
+      - .:/app  # Mount the project directory inside the container for development
+    environment:
+      PYTHONUNBUFFERED: "1"  # Prevent Python output buffering
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             daphne -b 0.0.0.0 -p 8000 taskmate.asgi:application"

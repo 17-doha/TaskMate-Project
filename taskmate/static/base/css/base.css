@@ -21,7 +21,7 @@ body {
 }
 
 .sidebar {
-    width: 15%;
+    width: 17%;
     background: linear-gradient(135deg, #443fa1, #a486fe);
     padding: 20px;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
@@ -92,7 +92,7 @@ body {
 }
 
 .menu-item.dropdown .submenu {
-    display: none;
+    display: none; /* Initially hidden */
     position: absolute;
     top: 100%;
     left: 0;
@@ -101,11 +101,13 @@ body {
     border-radius: 8px;
     padding: 10px 0;
     z-index: 10;
+    transition: opacity 0.3s ease;
 }
 
 .menu-item.dropdown.open .submenu {
     display: block;
 }
+
 
 .submenu li {
     padding: 8px 15px;
@@ -188,3 +190,73 @@ header.navbar {
 .user-actions i:hover {
     color: #6c63ff;
 }
+
+.submenu-item {
+    padding: 5px 10px;
+    border-radius: 6px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.submenu-item:hover {
+transform:   scale(1.02);
+}
+
+.submenu-link {
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 10px 10px;
+    border-radius: 6px;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+
+
+
+.profile-link {
+    text-decoration: none; 
+    color: white; 
+  }
+  
+  .profile-link:hover {
+    color: #f0f0f0;
+  }
+  
+  .menu-item {
+    list-style: none; 
+    display: flex; 
+    align-items: center; 
+    gap: 5px; 
+  }
+
+.submenu {
+    display: none;
+  }
+  
+  /* Show the submenu when the "show" class is added */
+  .submenu.show {
+    display: block;
+  }
+      /* Styling for submenu items */
+      .submenu-item {
+        padding: 5px 10px;
+        border-radius: 6px; /* Rounded corners */
+        transition: background 0.3s ease, transform 0.2s ease;
+      }
+  
+      .submenu-item:hover {
+        transform: scale(1.02); /* Slightly enlarge the item */
+      }
+  
+      /* Styling for the link inside submenu items */
+      .submenu-link {
+        display: block; /* Make the link block-level for full clickable area */
+        color: #fff; /* Text color */
+        text-decoration: none; /* Remove underline */
+        font-size: 16px;
+        padding: 10px 10px; /* Padding for better click area */
+        border-radius: 6px; /* Rounded corners */
+        transition: background 0.3s ease, color 0.3s ease; /* Smooth transitions */
+      }
+

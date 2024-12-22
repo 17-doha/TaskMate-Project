@@ -6,6 +6,15 @@ from django.utils.encoding import force_str
 from signup.models import User
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.hashers import check_password
+import re
+
+def is_valid_email(email):
+    """
+    Validates an email address format using regex.
+    """
+    email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    return re.match(email_regex, email) is not None
+
 
 # View to render the homepage
 def home(request):
@@ -21,22 +30,10 @@ def home(request):
     return render(request, 'users/base.html')
 
 # View to handle user signup
+from django.contrib import messages
+
 def signup(request):
-    """
-    Handles the user signup process:
-    - Validates the input data.
-    - Checks for duplicate email registration.
-    - Creates and saves a new user in the database.
-
-    Parameters:
-    - request: HttpRequest object containing form data submitted via POST.
-
-    Returns:
-    - On success: Redirects to the login page with a success message.
-    - On failure: Renders the signup page with error messages.
-    """
     if request.method == 'POST':
-        # Extract form data
         first_name = request.POST.get("first_name", "").strip()
         last_name = request.POST.get("last_name", "").strip()
         email = request.POST.get("email", "").strip()
@@ -46,21 +43,49 @@ def signup(request):
         # Check if passwords match
         if password != confirm_password:
             messages.error(request, "Passwords do not match!")
-            return redirect('signup')
+            return render(request, 'signup.html', {
+                'form_data': {
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'email': email
+                }
+            })
         
+        if not is_valid_email(email):
+            messages.error(request, "Enter a valid email address.")
+            return render(request, 'signup.html', {
+                'form_data': {
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'email': email
+                }
+            })
+
         # Ensure all fields are filled
         if not all([first_name, last_name, email, password, confirm_password]):
-            messages.error(request, "All fields are required.")
-            return render(request, "signup.html")
+            messages.info(request, "All fields are required.")
+            return render(request, 'signup.html', {
+                'form_data': {
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'email': email
+                }
+            })
 
         # Check if email is already registered
         if User.objects.filter(email=email).exists():
             messages.error(request, "Email is already registered!")
-            return redirect('signup')
+            return render(request, 'signup.html', {
+                'form_data': {
+                    'first_name': first_name,
+                    'last_name': last_name,
+                    'email': email
+                }
+            })
 
         # Create the new user
         user = User.objects.create_user(
-            username=email,  # Using email as username
+            username=email,
             email=email,
             password=password,
             first_name=first_name,
@@ -68,8 +93,8 @@ def signup(request):
         )
         user.save()
 
-        # Notify user to verify email
-        messages.success(request, "Signup successful! Please Check your email to verify your account.")
+        # Notify user of success
+        messages.success(request, "Signup successful! Please check your email to verify your account.")
         return redirect("login") 
 
     return render(request, 'signup.html')

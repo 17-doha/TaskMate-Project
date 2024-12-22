@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static '/main/css/mainpage.css' %}">
+ 
+
+</head>
+
+
+<body>
+  
+
+  <div class="chart-title" id = "chart-title">Progress Overview</div>
+  <div class="chart-container" id="chart-container">
+    <canvas id="chart" width="350" height="350"></canvas>
+  </div>
+
+ 
+
+
+
+  <!-- Priority Task Section -->
+ 
+  <div class="priority-task-container">
+    {% for task_with_env in priority_tasks %}
+    <div class="task-card">
+      <div
+        class="priority {% if task_with_env.task.priority == 'HIGH' %}high-priority{% elif task_with_env.task.priority == 'MID' %}medium-priority{% elif task_with_env.task.priority == 'LOW' %}low-priority{% endif %}">
+        {% if task_with_env.task.priority == 'HIGH' %}
+        High Priority
+        {% elif task_with_env.task.priority == 'MID' %}
+        Med Priority
+        {% else %}
+        Low Priority
+        {% endif %}
+      </div>
+      <div class="task-title">{{ task_with_env.task.content }}</div> <br>
+      <div class="upcoming-deadlines-info">on {{ task_with_env.environment_name }}</div>
+
+
+      <div class="upcoming-deadlines-info">
+        <p>Due: {{ task_with_env.task.deadline|date:"F j, Y" }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+
+  <!-- Card section -->
+  
+  <div class="card-container">
+    <!-- Card for To Do -->
+    <div class="card todo">
+      <div class="card-title">To Do</div>
+      <div class="card-count">{{ task_counts.todo }}</div>
+      <div class="card-total">/ {{ task_counts.total }}</div>
+    </div>
+
+    <!-- Card for In Progress -->
+    <div class="card in-progress">
+      <div class="card-title">In Progress</div>
+      <div class="card-count">{{ task_counts.in_progress }}</div>
+      <div class="card-total">/ {{ task_counts.total }}</div>
+    </div>
+
+    <!-- Card for Done -->
+    <div class="card done">
+      <div class="card-title">Done</div>
+      <div class="card-count">{{ task_counts.done }}</div>
+      <div class="card-total">/ {{ task_counts.total }}</div>
+    </div>
+  </div>
+
+
+
+  <!-- Priority Task Section -->
+   {% if tasks_with_environment %}
+  <h3 class="upcoming-deadlines-header">Upcoming Deadlines</h3>
+  {% endif %}
+
+
+  <div class="upcoming-deadlines">
+    {% for item in tasks_with_environment %}
+    <div class="upcoming-deadlines-card">
+      <!-- Task Title -->
+      <div class="upcoming-deadlines-title">{{ item.task.content }}</div><br>
+
+      <!-- Environment Name -->
+      <div class="upcoming-deadlines-info">on {{ item.environment_name|default:"No Environment" }}</div>
+
+      <!-- Deadline -->
+      <div class="upcoming-deadlines-info">
+        <p>Due: {{ item.task.deadline|date:"F j, Y" }}</p>
+      </div>
+    </div>
+    {% empty %}
+    <div class="no-deadlines">
+      <div class="no-deadlines-message">
+        🎉 Woohoo! No upcoming deadlines!
+      </div>
+      <div class="no-deadlines-animation">
+        <div class="character">
+          <div class="face">
+            <div class="eyes">
+              <div class="eye"></div>
+              <div class="eye"></div>
+            </div>
+            <div class="mouth"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <script>const environmentStats = JSON.parse('{{ environment_stats|escapejs }}') || [];</script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
+  <script src="{% static 'main/js/main.js' %}"></script>
+
+
+</body>
+
+</html>
+
+{% endblock %}

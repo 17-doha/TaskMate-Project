@@ -1,0 +1,25 @@
+@startuml
+title Template Inheritance for base.html
+
+abstract class BaseTemplate {
+    +search_bar
+    +side_bar
+}
+
+class EnvironmentTemplate {
+    +custom_environment_section
+}
+
+class ProfileTemplate {
+    +profile_details_section
+}
+
+class MainTemplate {
+    +dashboard_section
+}
+
+BaseTemplate <|-- EnvironmentTemplate
+BaseTemplate <|-- ProfileTemplate
+BaseTemplate <|-- MainTemplate
+
+@enduml
