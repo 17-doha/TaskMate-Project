@@ -21,7 +21,7 @@ jobs:
 
       - name: Log in to ACR
         run: |
-          az acr login --name taskmate2
+          az acr login --name elcontainer
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -29,14 +29,21 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: taskmate2.azurecr.io/taskmate:latest
+          tags: elcontainer.azurecr.io/taskmate:v1
 
       - name: Deploy to Azure Web App
-        run: |
+        run: |  
           az webapp config container set \
-            --name TaskmateHello \
-            --resource-group DockerTaskMate \
-            --docker-custom-image-name taskmate2.azurecr.io/taskmate2:v1 \
-            --registry-login-server taskmate2.azurecr.io \
-            --registry-username taskmate2 \
-            --registry-password "lCHEHLcUfgzeiUg+k7LD018QTccSbgLl8xuYeX+XwA+ACRAGUVGi"
+            --name TaskMateHello \
+            --os-type Linux \
+            --cpu 1 \
+            --memory 1 \
+            --resource-group TaskMate \
+            --name taskmate-container \
+            --image elcontainer.azurecr.io/taskmate:v1 \
+            --registry-username elcontainer \
+            --registry-password uALXb5olgOUL7LQnkFxFRDn5xadIlHbTc+9fWzVpJT+ACRC9EQQ5 \
+            --registry-login-server elcontainer.azurecr.io \
+            --ip-address Public \
+            --dns-name-label taskmate-dns \
+            --ports 8000
