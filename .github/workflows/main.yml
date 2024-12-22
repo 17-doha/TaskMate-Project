@@ -33,9 +33,9 @@ jobs:
       - name: Deploy to Azure Web App
         run: |
           az webapp config container set \
-            --name HTaskmate \
+            --name TaskmateHello \
             --resource-group DockerTaskMate \
-            --docker-custom-image-name nginx.azurecr.io/nginx:v1 \
+            --docker-custom-image-name taskmate2.azurecr.io/nginx:v1 \
             --registry-login-server taskmate2.azurecr.io \
             --registry-username taskmate2 \
             --registry-password "lCHEHLcUfgzeiUg+k7LD018QTccSbgLl8xuYeX+XwA+ACRAGUVGi"
