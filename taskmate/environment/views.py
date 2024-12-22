@@ -175,6 +175,7 @@ def ViewTableTask(request, environment_id):
     return render(request, 'environment/index.html', context)
 
 
+
 def dragAndDrop(request, environment_id):
     """
     Purpose:
