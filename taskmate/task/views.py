@@ -378,5 +378,6 @@ def send_task_completion_email(task):
             status="UNREAD"
         )
         print("Completion email sent successfully.")
+        print("ee")
     except User.DoesNotExist:
         print("There is an error through sending the email")
