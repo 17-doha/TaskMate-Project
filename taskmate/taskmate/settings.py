@@ -28,7 +28,8 @@ SECRET_KEY = 'django-insecure-&@&39d^^#r%lg624ae@h(e327pnt9^1j=7n5*+*#u=_dw_)9^a
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["taskmate-project-production.up.railway.app"]
+
 
 # AUTH_USER_MODEL = 'users.User'
 
@@ -78,9 +79,14 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {'access_type':'online'}
     }
 }
+CSRF_TRUSTED_ORIGINS = [
+    "https://taskmate-project-production.up.railway.app"
+ 
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -89,7 +95,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware'
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+
    
 ]
 
@@ -116,7 +123,9 @@ WSGI_APPLICATION = 'taskmate.wsgi.application'
 ASGI_APPLICATION = 'taskmate.asgi.application'
 
 #Update the settings.py file Allowed host list which was empty
-ALLOWED_HOSTS = ['127.0.0.1','localhost']
+
+ALLOWED_HOSTS = ["taskmate-project-production.up.railway.app",]
+
 EMAIL_USE_TLS = True 
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -191,6 +200,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+STATICSTORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
