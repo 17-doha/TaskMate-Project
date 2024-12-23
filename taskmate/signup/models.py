@@ -54,7 +54,7 @@ def send_activation_email(sender, instance, created, **kwargs):
         <div>
         <h3>Hi {instance.first_name},</h3>
         <p>Please confirm your email address by clicking the link below:</p>
-        <a href="http://127.0.0.1:8000/activate/{uid}/{token}" style="color:white; text-decoration: none;border-radius: 25px; background-color: #8661ff; padding: 7px 25px;"> <strong>Verify Email<strong></a>
+        <a href="https://taskmate-project-production.up.railway.app/activate/{uid}/{token}" style="color:white; text-decoration: none;border-radius: 25px; background-color: #8661ff; padding: 7px 25px;"> <strong>Verify Email<strong></a>
         <p>Thank you!</p>
         </div>
         """
